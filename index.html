@@ -2,75 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>5 Dakikada İngilizce - Practice (Vers.1.6)</title>
+<title>5 Dakikada İngilizce - Practice (Vers.1.7)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  margin:0;
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: #0f172a;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
+  margin:0; font-family: 'Segoe UI', sans-serif; background: #0f172a;
+  height:100vh; display:flex; justify-content:center; align-items:center; color:white;
 }
 .app{
-  background:rgba(30, 41, 59, 0.7);
-  backdrop-filter:blur(20px);
-  padding:40px;
-  border-radius:28px;
-  width:95%;
-  max-width:500px;
-  text-align:center;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  background:rgba(30, 41, 59, 0.9); padding:40px; border-radius:28px;
+  width:95%; max-width:500px; text-align:center; border: 1px solid #38bdf8;
 }
-h2 { font-size: 22px; margin: 0; color: #94a3b8; }
-.sub-title {
-  font-size: 18px;
-  color: #38bdf8;
-  font-weight: 800;
-  margin: 10px 0 30px 0;
-}
-#phrase{
-  font-size:34px;
-  font-weight:800;
-  margin:30px 0;
-  color: #2dd4bf;
-  min-height: 50px;
-  line-height: 1.2;
-}
-button{
-  padding:16px 20px;
-  margin:8px;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  font-size:16px;
-  font-weight: bold;
-  transition: 0.2s;
-}
-button:active { transform: scale(0.95); }
-.start{background:#38bdf8; color:#0f172a; width: 100%; font-size: 18px; margin-bottom: 15px;}
-.ctrl{background:#334155; color:white; width: 45%;}
-.next{background:#2dd4bf; color:#0f172a; width: 100%; display:none;}
-.correct-text{color:#2dd4bf; font-size:24px; font-weight:bold; margin-top: 15px;}
-.wrong-text{color:#fb7185; font-size:18px; font-weight:bold; margin-top: 15px;}
-.stats{margin-top:30px; font-size:13px; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;}
+h2 { font-size: 20px; color: #94a3b8; margin:0; }
+.sub-title { font-size: 22px; color: #38bdf8; font-weight: 800; margin: 10px 0 20px 0; }
+#phrase{ font-size:32px; font-weight:800; margin:20px 0; color: #2dd4bf; min-height: 80px; display:flex; align-items:center; justify-content:center; }
+button{ padding:16px; margin:5px; border:none; border-radius:12px; cursor:pointer; font-size:16px; font-weight: bold; transition: 0.2s; }
+.start{ background:#38bdf8; color:#0f172a; width: 100%; margin-bottom: 10px; }
+.ctrl{ background:#334155; color:white; width: 47%; }
+.next{ background:#2dd4bf; color:#0f172a; width: 100%; margin-top:10px; display:none; }
+#result{ font-size: 20px; font-weight: bold; margin: 15px 0; height: 30px; }
+.correct-text{ color:#2dd4bf; }
+.wrong-text{ color:#fb7185; }
+.stats{ margin-top:20px; font-size:12px; opacity: 0.5; border-top: 1px solid #334155; padding-top: 10px; }
 </style>
 </head>
-
 <body>
 
 <div class="app">
-  <h2>5 Dakikada İngilizce (Vers.1.6)</h2>
+  <h2>5 Dakikada İngilizce (Vers.1.7)</h2>
   <div class="sub-title">1. KUR SPEAKING PRACTICE</div>
   
-  <div id="phrase">Loading...</div>
+  <div id="phrase">Phrases Loading...</div>
 
-  <button class="start" id="startBtn">🎤 TAP TO SPEAK</button><br>
+  <button class="start" id="startBtn">🎤 TAP TO SPEAK</button>
   <button class="ctrl" id="listenBtn">🔊 Listen</button>
   <button class="ctrl" id="backBtn">⬅ Back</button>
   <button class="next" id="nextBtn">Next Phrase ▶</button>
@@ -78,85 +43,72 @@ button:active { transform: scale(0.95); }
   <div id="result"></div>
 
   <div class="stats">
-    Order: <span id="current">1</span> / <span id="total">0</span><br>
-    ✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
+    Order: <span id="current">1</span> / <span id="total">0</span> | ✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
   </div>
 </div>
 
 <script>
-/* VERSION: 1.6
-   - Target Noun: "children"
-   - Grammatically filtered: (a/an removed for plural)
-   - Strict Sequential Order: Preposition -> Determiner -> children
-   - Pure JS Audio Context sounds (Tink & Low Dıt)
+/* VERSION: 1.7
+   - Audio: Fixed by using a more robust Oscillator trigger
+   - Flow: Next button appears immediately after correct answer
+   - Grammar: children only, sequential order
 */
 
-// 1. Verilen Edatlar
 const preps = ["of", "to", "for", "from", "with", "without", "after", "before", "about", "because of", "in", "on", "at"];
-
-// 2. Verilen Belirteçler (a/an çıkarıldı çünkü isim "children")
-const dets = ["the", "2", "3", "4", "my", "your"];
-
+const dets = ["the", "two", "three", "four", "my", "your"];
 const noun = "children";
 
-// 3. Kombinasyon Oluşturucu (Tam Sıralı)
 let phrases = [];
 preps.forEach(p => {
   dets.forEach(d => {
-    // Sayıları kelimeye çeviriyoruz ki ses tanıma daha iyi anlasın (2 -> two)
-    let dLabel = d;
-    if(d === "2") dLabel = "two";
-    if(d === "3") dLabel = "three";
-    if(d === "4") dLabel = "four";
-    
-    phrases.push(`${p} ${dLabel} ${noun}`);
+    phrases.push(`${p} ${d} ${noun}`);
   });
 });
 
-// ================= SES SİSTEMİ =================
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playSound(isCorrect) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    if (isCorrect) {
-        osc.frequency.setValueAtTime(800, audioCtx.currentTime); 
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.1);
-    } else {
-        osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.2);
-    }
-    osc.start();
-}
-
-// ================= UYGULAMA MANTIĞI =================
-let index = 0;
-let correctCount = 0;
-let wrongCount = 0;
-let solved = new Array(phrases.length).fill(false);
-
+let index = 0, correctCount = 0, wrongCount = 0;
 const phraseEl = document.getElementById("phrase");
 const resultEl = document.getElementById("result");
 const nextBtn = document.getElementById("nextBtn");
+const startBtn = document.getElementById("startBtn");
 
 document.getElementById("total").textContent = phrases.length;
+
+// --- GÜVENLİ SES SİSTEMİ ---
+function playBeep(isCorrect) {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = context.createOscillator();
+    const gain = context.createGain();
+    
+    osc.connect(gain);
+    gain.connect(context.destination);
+    
+    if(isCorrect) {
+        osc.frequency.setValueAtTime(600, context.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(900, context.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.2);
+    } else {
+        osc.frequency.setValueAtTime(200, context.currentTime);
+        gain.gain.setValueAtTime(0.1, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.2);
+    }
+    
+    osc.start();
+    osc.stop(context.currentTime + 0.2);
+}
 
 function render() {
   phraseEl.textContent = phrases[index];
   document.getElementById("current").textContent = index + 1;
   document.getElementById("correct").textContent = correctCount;
   document.getElementById("wrong").textContent = wrongCount;
-  nextBtn.style.display = solved[index] ? "block" : "none";
 }
 
 function speak() {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(phrases[index]);
   u.lang = "en-US";
-  u.rate = 1.0; 
+  u.rate = 1.0;
   window.speechSynthesis.speak(u);
 }
 
@@ -165,43 +117,60 @@ const rec = new SR();
 rec.lang = "en-US";
 
 rec.onstart = () => {
-    document.getElementById("startBtn").innerText = "Listening...";
-    document.getElementById("startBtn").style.background = "#fb7185";
+    startBtn.innerText = "Listening...";
+    startBtn.style.background = "#fb7185";
 };
 
 rec.onresult = e => {
-  const spoken = e.results[0][0].transcript.toLowerCase().trim();
-  const target = phrases[index].toLowerCase().trim();
+    const spoken = e.results[0][0].transcript.toLowerCase().trim();
+    const target = phrases[index].toLowerCase().trim();
 
-  // %70 benzerlik veya tam eşleşme
-  if (spoken === target || spoken.includes("children")) {
-    if(!solved[index]) { solved[index] = true; correctCount++; }
-    resultEl.innerHTML = '<div class="correct-text">✅ Correct</div>';
-    playSound(true); 
-  } else {
-    wrongCount++;
-    resultEl.innerHTML = `<div class="wrong-text">❌ Said: "${spoken}"</div>`;
-    playSound(false);
-  }
-  render();
+    // Çok esnek eşleşme: Hedefteki kelimelerin çoğu varsa kabul et
+    const isCloseEnough = target.split(' ').every(word => spoken.includes(word));
+
+    if (spoken === target || isCloseEnough) {
+        correctCount++;
+        resultEl.innerHTML = '<span class="correct-text">✅ Correct!</span>';
+        nextBtn.style.display = "block";
+        playBeep(true);
+    } else {
+        wrongCount++;
+        resultEl.innerHTML = '<span class="wrong-text">❌ Try Again</span>';
+        playBeep(false);
+    }
+    render();
 };
 
 rec.onend = () => {
-    document.getElementById("startBtn").innerText = "🎤 TAP TO SPEAK";
-    document.getElementById("startBtn").style.background = "#38bdf8";
+    startBtn.innerText = "🎤 TAP TO SPEAK";
+    startBtn.style.background = "#38bdf8";
 };
 
-document.getElementById("startBtn").onclick = () => { rec.start(); };
+startBtn.onclick = () => { 
+    resultEl.innerHTML = "";
+    rec.start(); 
+};
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("nextBtn").onclick = () => {
-    if(index < phrases.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
+    if(index < phrases.length - 1) {
+        index++;
+        resultEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        render();
+        speak();
+    }
 };
 document.getElementById("backBtn").onclick = () => {
-    if(index > 0) { index--; resultEl.innerHTML = ""; render(); speak(); }
+    if(index > 0) {
+        index--;
+        resultEl.innerHTML = "";
+        nextBtn.style.display = "none";
+        render();
+        speak();
+    }
 };
 
 render();
 </script>
-
 </body>
 </html>

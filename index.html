@@ -2,72 +2,61 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Speaking Drill Stable</title>
+<title>Combination Speaking Drill</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+body{
+  margin:0;
+  font-family:system-ui;
+  background:linear-gradient(135deg,#141e30,#243b55);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
 }
-
-.app {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(14px);
-  padding: 32px;
-  border-radius: 18px;
-  width: 90%;
-  max-width: 520px;
-  text-align: center;
-  color: white;
+.app{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  padding:30px;
+  border-radius:18px;
+  width:95%;
+  max-width:650px;
+  text-align:center;
 }
-
-#phrase {
-  font-size: 28px;
-  margin: 24px 0;
-  font-weight: 600;
+#phrase{
+  font-size:28px;
+  font-weight:600;
+  margin:25px 0;
 }
-
-button {
-  padding: 12px 18px;
-  margin: 6px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 15px;
+button{
+  padding:12px 18px;
+  margin:6px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
 }
-
-.start { background:#00c6ff; color:#fff; }
-.ctrl { background:#444; color:#fff; }
-.next { background:#00ffb3; color:#000; display:none; }
-
-.correct { color:#00ffb3; font-size:22px; }
-.wrong { color:#ff6b6b; font-size:22px; }
-
-.stats {
-  margin-top: 18px;
-  font-size: 14px;
-}
+.start{background:#00c6ff;color:white;}
+.ctrl{background:#444;color:white;}
+.next{background:#00ffb3;color:black;display:none;}
+.correct{color:#00ffb3;font-size:22px;}
+.wrong{color:#ff6b6b;font-size:22px;}
+.stats{margin-top:15px;font-size:14px;}
 </style>
 </head>
-
 <body>
 
 <div class="app">
-
 <h2>🎤 Speaking Drill</h2>
 
 <div id="phrase"></div>
 
-<button class="start" onclick="initApp()">▶ Start Session</button><br>
-<button class="ctrl" onclick="speak()">🔊 Listen</button>
-<button class="ctrl" onclick="goBack()">⬅ Back</button>
-<button class="next" id="nextBtn" onclick="goNext()">Next ▶</button>
+<button class="start" id="startBtn">▶ Start</button><br>
+<button class="ctrl" id="listenBtn">🔊 Listen</button>
+<button class="ctrl" id="backBtn">⬅ Back</button>
+<button class="next" id="nextBtn">Next ▶</button>
 
 <div id="result"></div>
 
@@ -76,151 +65,136 @@ Phrase <span id="current"></span>/<span id="total"></span><br>
 ✅ <span id="correct">0</span> |
 ❌ <span id="wrong">0</span>
 </div>
-
 </div>
 
-<audio id="ok" src="https://actions.google.com/sounds/v1/ui/positive_confirmation.ogg"></audio>
-<audio id="bad" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="okSound" src="https://actions.google.com/sounds/v1/ui/positive_confirmation.ogg"></audio>
+<audio id="badSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
 <script>
-// ================= DATA =================
-const preps = ["of","to","for","from","with","without","after","before","about","because of"];
-const dets = ["the","my","your","two","three","four"];
+
+// ================== DATA ==================
+const prepositions = [
+"of","to","for","from","with","without","after",
+"before","about","because of","in","on","at"
+];
+
+const determiners = [
+"the","a","2","3","4","my","your"
+];
+
 const noun = "children";
 
-const phrases = [];
-preps.forEach(p=>dets.forEach(d=>phrases.push(`${p} ${d} ${noun}`)));
+// ====== TÜM KOMBINASYONLARI ÜRET ======
+let phrases = [];
+prepositions.forEach(p=>{
+  determiners.forEach(d=>{
+    phrases.push(`${p} ${d} ${noun}`);
+  });
+});
 
-let index = 0;
-let correctCount = 0;
-let wrongCount = 0;
-let initialized = false;
-
-// hangi cümle doğru söylendi
-const solved = new Array(phrases.length).fill(false);
+let index=0;
+let correctCount=0;
+let wrongCount=0;
+let solved=new Array(phrases.length).fill(false);
 
 // ================= ELEMENTS =================
-const phraseEl = document.getElementById("phrase");
-const resultEl = document.getElementById("result");
-const nextBtn = document.getElementById("nextBtn");
-const okSound = document.getElementById("ok");
-const badSound = document.getElementById("bad");
+const phraseEl=document.getElementById("phrase");
+const resultEl=document.getElementById("result");
+const nextBtn=document.getElementById("nextBtn");
+const correctEl=document.getElementById("correct");
+const wrongEl=document.getElementById("wrong");
+const currentEl=document.getElementById("current");
+const totalEl=document.getElementById("total");
+const okSound=document.getElementById("okSound");
+const badSound=document.getElementById("badSound");
 
-okSound.volume = 1;
-badSound.volume = 1;
+totalEl.textContent=phrases.length;
 
-// ================= UI =================
-function render() {
-  phraseEl.textContent = phrases[index] || "🎉 Done!";
-  document.getElementById("current").textContent = index + 1;
-  document.getElementById("total").textContent = phrases.length;
-  document.getElementById("correct").textContent = correctCount;
-  document.getElementById("wrong").textContent = wrongCount;
-
-  // Next sadece doğruysa aktif
-  nextBtn.style.display = solved[index] ? "inline-block" : "none";
+function render(){
+  phraseEl.textContent=phrases[index];
+  currentEl.textContent=index+1;
+  correctEl.textContent=correctCount;
+  wrongEl.textContent=wrongCount;
+  nextBtn.style.display=solved[index]?"inline-block":"none";
 }
 render();
 
 // ================= US VOICE =================
-let usVoice = null;
-
-function loadVoice() {
-  const voices = speechSynthesis.getVoices();
-  usVoice =
-    voices.find(v => v.name.includes("Google US English")) ||
-    voices.find(v => v.lang === "en-US") ||
-    voices.find(v => v.lang.startsWith("en")) ||
-    voices[0];
+let usVoice=null;
+function loadVoice(){
+  const voices=speechSynthesis.getVoices();
+  usVoice=voices.find(v=>v.name.includes("Google")&&v.lang==="en-US")
+        ||voices.find(v=>v.lang==="en-US")
+        ||voices[0];
 }
-speechSynthesis.onvoiceschanged = loadVoice;
+speechSynthesis.onvoiceschanged=loadVoice;
 
-function speak() {
+function speak(){
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(phrases[index]);
-  u.lang = "en-US";
-  u.rate = 0.9;
-  u.voice = usVoice;
+  const u=new SpeechSynthesisUtterance(phrases[index]);
+  u.lang="en-US";
+  u.rate=0.9;
+  if(usVoice)u.voice=usVoice;
   speechSynthesis.speak(u);
 }
 
-// ================= AUDIO UNLOCK =================
-function unlockAudio() {
-  okSound.play().then(()=>okSound.pause()).catch(()=>{});
-  badSound.play().then(()=>badSound.pause()).catch(()=>{});
-}
+// ================= SPEECH RECOGNITION =================
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const rec=new SR();
+rec.lang="en-US";
+rec.continuous=false;
 
-// ================= SPEECH =================
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR();
-rec.lang = "en-US";
-rec.continuous = false;
-
-function normalize(t) {
+function normalize(t){
   return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
 }
 
-function similarity(a,b) {
-  const aw = a.split(" ");
-  const bw = b.split(" ");
-  let m = 0;
-  bw.forEach(w => { if (aw.includes(w)) m++; });
-  return m / bw.length;
-}
+rec.onresult=e=>{
+  const spoken=normalize(e.results[0][0].transcript);
+  const target=normalize(phrases[index]);
 
-// ================= INIT =================
-function initApp() {
-  if (initialized) return;
-  loadVoice();
-  unlockAudio();
-  rec.start();
-  initialized = true;
-}
-
-// ================= RESULT =================
-rec.onresult = e => {
-  const spoken = normalize(e.results[0][0].transcript);
-  const target = normalize(phrases[index]);
-
-  if (similarity(spoken,target) >= 0.75) {
-    if (!solved[index]) correctCount++;
-    solved[index] = true;
-
-    resultEl.innerHTML = `<div class="correct">✅ CORRECT</div>`;
-    okSound.currentTime = 0;
+  if(spoken===target){
+    if(!solved[index]){
+      solved[index]=true;
+      correctCount++;
+    }
+    resultEl.innerHTML='<div class="correct">✅ CORRECT</div>';
+    okSound.currentTime=0;
     okSound.play();
-  } else {
+  }else{
     wrongCount++;
-    resultEl.innerHTML = `<div class="wrong">❌ TRY AGAIN</div>`;
-    badSound.currentTime = 0;
+    resultEl.innerHTML='<div class="wrong">❌ TRY AGAIN</div>';
+    badSound.currentTime=0;
     badSound.play();
   }
   render();
 };
 
-rec.onend = () => {
-  if (initialized) rec.start();
+// ================= BUTTONS =================
+document.getElementById("startBtn").onclick=()=>{
+  loadVoice();
+  rec.start();
 };
 
-// ================= NAVIGATION =================
-function goNext() {
-  if (solved[index] && index < phrases.length - 1) {
+document.getElementById("listenBtn").onclick=speak;
+
+document.getElementById("nextBtn").onclick=()=>{
+  if(solved[index] && index<phrases.length-1){
     index++;
-    resultEl.innerHTML = "";
+    resultEl.innerHTML="";
     render();
     speak();
   }
-}
+};
 
-function goBack() {
-  if (index > 0 && solved[index - 1]) {
+document.getElementById("backBtn").onclick=()=>{
+  if(index>0 && solved[index-1]){
     index--;
-    resultEl.innerHTML = "";
+    resultEl.innerHTML="";
     render();
     speak();
   }
-}
-</script>
+};
 
+</script>
 </body>
 </html>

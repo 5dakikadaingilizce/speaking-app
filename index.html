@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grammar-Aware Speaking Drill - Vers.1.1</title>
+<title>5 Dakikada İngilizce - Practice (Vers.1.3)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  font-family:system-ui;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background:linear-gradient(135deg,#141e30,#243b55);
   height:100vh;
   display:flex;
@@ -18,64 +18,70 @@ body{
 }
 .app{
   background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(12px);
-  padding:30px;
-  border-radius:18px;
+  backdrop-filter:blur(15px);
+  padding:35px;
+  border-radius:20px;
   width:95%;
   max-width:600px;
   text-align:center;
-  position: relative;
+  border: 1px solid rgba(255,255,255,0.15);
 }
-.version-tag {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 11px;
-  opacity: 0.5;
+h2 {
+  font-size: 24px;
+  margin: 0;
+  color: #fff;
+}
+.sub-title {
+  font-size: 14px;
+  color: #00c6ff;
+  font-weight: bold;
+  margin: 5px 0 25px 0;
+  opacity: 0.9;
 }
 #phrase{
-  font-size:30px;
+  font-size:32px;
   font-weight:700;
-  margin:20px 0;
+  margin:25px 0;
   color: #00ffb3;
-  text-shadow: 0 0 10px rgba(0,255,179,0.3);
+  min-height: 40px;
 }
 button{
-  padding:14px 20px;
-  margin:6px;
+  padding:15px 25px;
+  margin:8px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
   font-size:16px;
   font-weight: bold;
-  transition: 0.2s;
+  transition: all 0.2s;
 }
 button:active { transform: scale(0.95); }
-.start{background:#00c6ff;color:white;}
-.ctrl{background:#444;color:white;}
-.next{background:#00ffb3;color:black; display:none;}
-.correct{color:#00ffb3;font-size:24px; font-weight:bold;}
-.wrong{color:#ff6b6b;font-size:24px; font-weight:bold;}
-.stats{margin-top:20px;font-size:14px; opacity: 0.8; line-height: 1.6;}
+.start{background:#00c6ff; color:white; width: 80%;}
+.ctrl{background:#334155; color:white;}
+.next{background:#10b981; color:white; display:none;}
+.correct{color:#10b981; font-size:24px; font-weight:bold; margin-top: 15px;}
+.wrong{color:#ff6b6b; font-size:20px; font-weight:bold; margin-top: 15px;}
+.stats{margin-top:30px; font-size:14px; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;}
 </style>
 </head>
 
 <body>
 
 <div class="app">
-  <div class="version-tag">Vers.1.1</div>
-  <h2>🎤 Speaking Practice</h2>
-  <div id="phrase">Loading phrases...</div>
+  <h2>5 Dakikada İngilizce (Vers.1.3)</h2>
+  <div class="sub-title">1. KUR SPEAKING PRACTICE</div>
+  
+  <div id="phrase">Loading...</div>
 
-  <button class="start" id="startBtn">🎤 START SPEAKING</button><br>
-  <button class="ctrl" id="listenBtn">🔊 Listen Word</button>
+  <button class="start" id="startBtn">🎤 TAP TO SPEAK</button><br>
+  <button class="ctrl" id="listenBtn">🔊 Listen</button>
   <button class="ctrl" id="backBtn">⬅ Back</button>
-  <button class="next" id="nextBtn">Next ▶</button>
+  <button class="next" id="nextBtn">Next Phrase ▶</button>
 
   <div id="result"></div>
 
   <div class="stats">
-    Phrase <span id="current"></span> / <span id="total"></span><br>
+    Progress: <span id="current"></span> / <span id="total"></span><br>
     ✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
   </div>
 </div>
@@ -84,12 +90,11 @@ button:active { transform: scale(0.95); }
 <audio id="badSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
 
 <script>
-/* VERSION: 1.1
+/* VERSION: 1.3
    CHANGES: 
-   - Speed increased (1.1x)
-   - AudioContext unlock added
-   - Grammar engine fixed (no more 'a children')
-   - Version tag added to UI
+   - Revision number moved to main title.
+   - Reduced pronunciation sensitivity (Fuzzy Matching).
+   - Levinshtein Distance logic added for better user experience.
 */
 
 // ================= GRAMMAR ENGINE =================
@@ -127,6 +132,36 @@ prepositions.forEach(p => {
   });
 });
 
+// ================= FUZZY MATCHING (ESNEK KARŞILAŞTIRMA) =================
+function getSimilarity(s1, s2) {
+  let longer = s1.length < s2.length ? s2 : s1;
+  let shorter = s1.length < s2.length ? s1 : s2;
+  if (longer.length == 0) return 1.0;
+  return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length);
+}
+
+function editDistance(s1, s2) {
+  s1 = s1.toLowerCase(); s2 = s2.toLowerCase();
+  let costs = new Array();
+  for (let i = 0; i <= s1.length; i++) {
+    let lastValue = i;
+    for (let j = 0; j <= s2.length; j++) {
+      if (i == 0) costs[j] = j;
+      else {
+        if (j > 0) {
+          let newValue = costs[j - 1];
+          if (s1.charAt(i - 1) != s2.charAt(j - 1))
+            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+          costs[j - 1] = lastValue;
+          lastValue = newValue;
+        }
+      }
+    }
+    if (i > 0) costs[s2.length] = lastValue;
+  }
+  return costs[s2.length];
+}
+
 // ================= STATE =================
 let index = 0;
 let correctCount = 0;
@@ -150,12 +185,11 @@ function render() {
 }
 render();
 
-// ================= SPEAKING (FAST) =================
 function speak() {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(phrases[index]);
   u.lang = "en-US";
-  u.rate = 1.1; // Hızlı ve akıcı
+  u.rate = 1.0; 
   window.speechSynthesis.speak(u);
 }
 
@@ -163,7 +197,6 @@ function speak() {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
-rec.continuous = false;
 
 rec.onstart = () => {
     document.getElementById("startBtn").innerText = "Listening...";
@@ -171,51 +204,40 @@ rec.onstart = () => {
 };
 
 rec.onresult = e => {
-  const spoken = e.results[0][0].transcript.toLowerCase().replace(/[^\w\s]/g,"").trim();
+  const spoken = e.results[0][0].transcript.toLowerCase().trim();
   const target = phrases[index].toLowerCase().trim();
 
-  if(spoken === target) {
+  // Hassasiyeti burada ayarlıyoruz: %75 benzerlik yeterli
+  const similarity = getSimilarity(spoken, target);
+
+  if(spoken === target || similarity > 0.75) {
     if(!solved[index]) { solved[index] = true; correctCount++; }
-    resultEl.innerHTML = '<div class="correct">✅ PERFECT!</div>';
-    okSound.play(); 
+    resultEl.innerHTML = '<div class="correct">✅ WELL DONE!</div>';
+    okSound.play().catch(() => {}); 
   } else {
     wrongCount++;
     resultEl.innerHTML = `<div class="wrong">❌ You said: "${spoken}"</div>`;
-    badSound.play();
+    badSound.play().catch(() => {});
   }
   render();
 };
 
 rec.onend = () => {
-    document.getElementById("startBtn").innerText = "🎤 START SPEAKING";
+    document.getElementById("startBtn").innerText = "🎤 TAP TO SPEAK";
     document.getElementById("startBtn").style.background = "#00c6ff";
 };
 
 // ================= BUTTON ACTIONS =================
 document.getElementById("startBtn").onclick = () => {
-    // Tarayıcıyı ses çalmak için zorla (Unlock)
-    okSound.play().then(() => { okSound.pause(); okSound.currentTime = 0; });
+    okSound.play().then(() => { okSound.pause(); okSound.currentTime = 0; }).catch(() => {});
     rec.start();
 };
-
 document.getElementById("listenBtn").onclick = speak;
-
 document.getElementById("nextBtn").onclick = () => {
-    if(index < phrases.length - 1) {
-      index++; 
-      resultEl.innerHTML = ""; 
-      render(); 
-      speak();
-    }
+    if(index < phrases.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
 };
-
 document.getElementById("backBtn").onclick = () => {
-    if(index > 0) { 
-      index--; 
-      resultEl.innerHTML = ""; 
-      render(); 
-      speak(); 
-    }
+    if(index > 0) { index--; resultEl.innerHTML = ""; render(); speak(); }
 };
 </script>
 

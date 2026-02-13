@@ -1,217 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v2.4</title>
+    <title>Sistematik İngilizce v4.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
-
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.85);
-            --primary: #38bdf8;
-            --secondary: #2dd4bf;
-            --accent: #fb7185;
-            --text-main: #f8fafc;
-            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316);
+            --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.9);
+            --primary: #38bdf8; --secondary: #2dd4bf;
+            --accent: #fb7185; --text-main: #f8fafc;
         }
-
         body {
             margin: 0; font-family: 'Inter', sans-serif; 
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            height: 100vh; display: flex; justify-content: center; align-items: center; 
-            color: var(--text-main); overflow: hidden; position: relative;
+            height: 100vh; display: flex; justify-content: center; align-items: center; color: var(--text-main);
+            overflow: hidden;
         }
-
-        .version-tag {
-            position: absolute; top: 20px; right: 20px; font-size: 10px; font-weight: bold;
-            color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
         .app {
-            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 30px; border-radius: 35px; width: 88%; max-width: 420px; text-align: center; 
-            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 40px; width: 85%; max-width: 400px; text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-
-        .app-logo { width: 90px; height: 90px; margin-bottom: 10px; object-fit: contain; }
-        
-        h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
-        .sub-title { 
-            font-size: 19px; font-weight: 900; margin: 5px 0 15px 0; 
-            background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        /* Cümle ve Çeviri Alanı */
-        .phrase-container { min-height: 120px; display: flex; flex-direction: column; justify-content: center; margin: 10px 0; }
-        #phrase { font-size: 28px; font-weight: 800; color: var(--secondary); margin: 0; line-height: 1.2; }
-        #translation { 
-            font-size: 18px; color: #94a3b8; margin-top: 10px; font-style: italic; 
-            opacity: 0; transition: 0.3s; 
-        }
-        #translation.visible { opacity: 1; }
-
-        .start { 
+        .progress-info { font-size: 11px; color: var(--primary); font-weight: bold; margin-bottom: 10px; }
+        #phrase { font-size: 26px; font-weight: 800; color: var(--secondary); margin: 15px 0; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        #translation { font-size: 18px; color: #94a3b8; margin-bottom: 20px; font-style: italic; visibility: hidden; }
+        #translation.visible { visibility: visible; }
+        .main-btn { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; 
-            width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800;
-            border: none; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
-            animation: pulse 2.5s infinite;
+            width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; border: none; cursor: pointer;
         }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-
-        .ctrl-container { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
-        .ctrl { 
-            background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 14px; 
-            border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 13px;
-        }
-        .btn-translate { width: 100%; background: rgba(45, 212, 191, 0.2); color: var(--secondary); border: 1px solid var(--secondary); }
-
-        #result { font-size: 15px; font-weight: 700; margin: 10px 0; height: 35px; }
-        .correct-text { color: var(--secondary); }
-        .wrong-text { color: var(--accent); }
-        .heard-text { display: block; font-size: 11px; color: #64748b; font-weight: normal; }
-
-        .stats { 
-            margin-top: 10px; font-size: 11px; color: #94a3b8; background: rgba(15, 23, 42, 0.4);
-            padding: 12px; border-radius: 20px; display: flex; justify-content: space-between;
-        }
-        .stat-value { color: var(--primary); font-weight: 800; font-size: 14px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-s { background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+        #result { margin-top: 10px; font-size: 13px; font-weight: bold; min-height: 20px; }
     </style>
 </head>
 <body>
 
-<div class="version-tag">VERSİYON 2.4</div>
-
 <div class="app">
-    <img src="logo.png" alt="Logo" class="app-logo">
-    <h2>5 Dakikada İngilizce</h2>
-    <div class="sub-title">SPEAKING PRACTICE</div>
-    
-    <div class="phrase-container">
-        <div id="phrase">Loading...</div>
-        <div id="translation">Türkçe Çeviri</div>
+    <div class="progress-info" id="progressText">Yükleniyor...</div>
+    <div id="phrase">BAŞLAMAK İÇİN DOKUN</div>
+    <div id="translation">Çeviri</div>
+    <button class="main-btn" id="speakBtn">KONUŞMAYI BAŞLAT</button>
+    <div class="controls">
+        <button class="btn-s" onclick="playAudio()">DİNLE (🔈)</button>
+        <button class="btn-s" onclick="toggleTrans()">ÇEVİRİ (👁️)</button>
+        <button class="btn-s" style="grid-column: span 2;" onclick="manualNext()">SIRADAKİNE GEÇ ➡️</button>
     </div>
-
-    <button class="start" id="startBtn">TAP TO SPEAK</button>
-    
-    <div class="ctrl-container">
-        <button class="ctrl" id="listenBtn">LISTEN</button>
-        <button class="ctrl" id="backBtn">BACK</button>
-        <button class="ctrl btn-translate" id="toggleTransBtn">SHOW TRANSLATION</button>
-    </div>
-
     <div id="result"></div>
-
-    <div class="stats">
-        <div class="stat-item">ORDER <span class="stat-value" id="current">1</span></div>
-        <div class="stat-item">TOTAL <span class="stat-value" id="total">0</span></div>
-        <div class="stat-item">✅ <span class="stat-value" id="correct" style="color:#2dd4bf">0</span></div>
-        <div class="stat-item">❌ <span class="stat-value" id="wrong" style="color:#fb7185">0</span></div>
-    </div>
 </div>
 
 <script>
-// --- MANUEL CÜMLE VE ÇEVİRİ LİSTESİ ---
-const data = [
-    { en: "of the children", tr: "çocukların" },
-    { en: "to the children", tr: "çocuklara" },
-    { en: "for the children", tr: "çocuklar için" },
-    { en: "from the children", tr: "çocuklardan" },
-    { en: "with the children", tr: "çocuklarla birlikte" },
-    { en: "without the children", tr: "çocuklar olmadan" },
-    { en: "of two children", tr: "iki çocuğun" },
-    { en: "of my children", tr: "benim çocuklarımın" }
+// CSV'DEN ALINAN 280 İSİM (Tam Liste)
+const nouns = [
+    {en:"day", tr:"gün"}, {en:"monday", tr:"pazartesi"}, {en:"tuesday", tr:"salı"}, {en:"wednesday", tr:"çarşamba"},
+    {en:"thursday", tr:"perşembe"}, {en:"friday", tr:"cuma"}, {en:"saturday", tr:"cumartesi"}, {en:"sunday", tr:"pazar"},
+    {en:"holiday", tr:"tatil"}, {en:"birthday", tr:"doğum günü"}, {en:"month", tr:"ay"}, {en:"january", tr:"ocak"},
+    {en:"february", tr:"şubat"}, {en:"march", tr:"mart"}, {en:"april", tr:"nisan"}, {en:"may", tr:"mayıs"},
+    {en:"june", tr:"haziran"}, {en:"july", tr:"temmuz"}, {en:"august", tr:"ağustos"}, {en:"september", tr:"eylül"},
+    {en:"october", tr:"ekim"}, {en:"november", tr:"kasım"}, {en:"december", tr:"aralık"}, {en:"season", tr:"mevsim"},
+    {en:"spring", tr:"ilkbahar"}, {en:"summer", tr:"yaz"}, {en:"autumn", tr:"sonbahar"}, {en:"winter", tr:"kış"},
+    {en:"time", tr:"zaman"}, {en:"second", tr:"saniye"}, {en:"minute", tr:"dakika"}, {en:"hour", tr:"saat"},
+    {en:"week", tr:"hafta"}, {en:"year", tr:"yıl"}, {en:"job", tr:"iş"}, {en:"teacher", tr:"öğretmen"},
+    {en:"waiter", tr:"garson"}, {en:"student", tr:"öğrenci"}, {en:"manager", tr:"müdür"}, {en:"soldier", tr:"asker"},
+    {en:"cop", tr:"polis"}, {en:"nurse", tr:"hemşire"}, {en:"doctor", tr:"doktor"}, {en:"vet", tr:"veteriner"},
+    {en:"lawyer", tr:"avukat"}, {en:"cook", tr:"aşçı"}, {en:"worker", tr:"işçi"}, {en:"work", tr:"çalışma"},
+    {en:"place", tr:"yer"}, {en:"house", tr:"ev"}, {en:"school", tr:"okul"}, {en:"bank", tr:"banka"},
+    {en:"hospital", tr:"hastane"}, {en:"shop", tr:"dükkan"}, {en:"cafe", tr:"kafe"}, {en:"restaurant", tr:"restoran"},
+    {en:"office", tr:"ofis"}, {en:"bedroom", tr:"yatak odası"}, {en:"kitchen", tr:"mutfak"}, {en:"living room", tr:"oturma odası"},
+    {en:"bathroom", tr:"banyo"}, {en:"guest room", tr:"misafir odası"}, {en:"room", tr:"oda"}, {en:"armchair", tr:"koltuk"},
+    {en:"chair", tr:"sandalye"}, {en:"computer", tr:"bilgisayar"}, {en:"table", tr:"masa"}, {en:"desk", tr:"sıra"},
+    {en:"bed", tr:"yatak"}, {en:"couch", tr:"kanepe"}, {en:"phone", tr:"telefon"}, {en:"tv", tr:"televizyon"},
+    {en:"spoon", tr:"kaşık"}, {en:"fork", tr:"çatal"}, {en:"knife", tr:"bıçak"}, {en:"plate", tr:"tabak"},
+    {en:"cup", tr:"fincan"}, {en:"glass", tr:"bardak"}, {en:"bottle", tr:"şişe"}, {en:"dishes", tr:"bulaşıklar"},
+    {en:"dishwasher", tr:"bulaşık makinesi"}, {en:"laundry", tr:"çamaşır"}, {en:"laundry machine", tr:"çamaşır makinesi"},
+    {en:"app", tr:"uygulama"}, {en:"photo", tr:"fotoğraf"}, {en:"social media", tr:"sosyal medya"}, {en:"picture", tr:"resim"},
+    {en:"fridge", tr:"buzdolabı"}, {en:"stove", tr:"ocak"}, {en:"oven", tr:"fırın"}, {en:"strawberry", tr:"çilek"},
+    {en:"apple", tr:"elma"}, {en:"banana", tr:"muz"}, {en:"orange", tr:"portakal"}, {en:"cherry", tr:"kiraz"},
+    {en:"tomato", tr:"domates"}, {en:"cucumber", tr:"salatalık"}, {en:"pepper", tr:"biber"}, {en:"potato", tr:"patates"},
+    {en:"turkey", tr:"türkiye"}, {en:"turkish", tr:"türkçe"}, {en:"america", tr:"amerika"}, {en:"american", tr:"amerikan"},
+    {en:"germany", tr:"almanya"}, {en:"german", tr:"alman"}, {en:"france", tr:"fransa"}, {en:"french", tr:"fransız"},
+    {en:"italy", tr:"italya"}, {en:"italian", tr:"italyan"}, {en:"england", tr:"ingiltere"}, {en:"english", tr:"ingilizce"},
+    {en:"russia", tr:"rusya"}, {en:"russian", tr:"rusça"}, {en:"china", tr:"çin"}, {en:"chinese", tr:"çince"},
+    {en:"bird", tr:"kuş"}, {en:"cat", tr:"kedi"}, {en:"fish", tr:"balık"}, {en:"animal", tr:"hayvan"},
+    {en:"dog", tr:"köpek"}, {en:"horse", tr:"at"}, {en:"monkey", tr:"maymun"}, {en:"fly", tr:"sinek"},
+    {en:"mouse", tr:"fare"}, {en:"snake", tr:"yılan"}, {en:"elephant", tr:"fil"}, {en:"man", tr:"adam"},
+    {en:"woman", tr:"kadın"}, {en:"person", tr:"kişi"}, {en:"child", tr:"çocuk"}, {en:"boy", tr:"erkek çocuk"},
+    {en:"girl", tr:"kız çocuk"}, {en:"baby", tr:"bebek"}, {en:"teenager", tr:"genç"}, {en:"family", tr:"aile"},
+    {en:"parents", tr:"ebeveyn"}, {en:"father", tr:"baba"}, {en:"mother", tr:"anne"}, {en:"grandfather", tr:"dede"},
+    {en:"grandmother", tr:"büyükanne"}, {en:"son", tr:"oğul"}, {en:"daughter", tr:"kız evlat"}, {en:"brother", tr:"erkek kardeş"},
+    {en:"sister", tr:"kız kardeş"}, {en:"aunt", tr:"hala/teyze"}, {en:"uncle", tr:"amca/dayı"}, {en:"cousin", tr:"kuzen"},
+    {en:"here", tr:"bura"}, {en:"there", tr:"ora"}, {en:"yesterday", tr:"dün"}, {en:"today", tr:"bugün"},
+    {en:"tomorrow", tr:"yarın"}, {en:"breakfast", tr:"kahvaltı"}, {en:"lunch", tr:"öğle yemeği"}, {en:"dinner", tr:"akşam yemeği"},
+    {en:"village", tr:"köy"}, {en:"town", tr:"kasaba"}, {en:"city", tr:"şehir"}, {en:"country", tr:"ülke"},
+    {en:"river", tr:"nehir"}, {en:"sea", tr:"deniz"}, {en:"lake", tr:"göl"}, {en:"mountain", tr:"dağ"},
+    {en:"car", tr:"araba"}, {en:"bus", tr:"otobüs"}, {en:"train", tr:"tren"}, {en:"ship", tr:"gemi"},
+    {en:"boat", tr:"tekne"}, {en:"plane", tr:"uçak"}, {en:"bike", tr:"bisiklet"}, {en:"motorbike", tr:"motosiklet"},
+    {en:"road", tr:"yol"}, {en:"street", tr:"sokak"}, {en:"bridge", tr:"köprü"}, {en:"tunnel", tr:"tünel"},
+    {en:"bus stop", tr:"durak"}, {en:"station", tr:"istasyon"}, {en:"airport", tr:"havaalanı"}, {en:"subway", tr:"metro"},
+    {en:"morning", tr:"sabah"}, {en:"noon", tr:"öğle"}, {en:"afternoon", tr:"öğleden sonra"}, {en:"evening", tr:"akşam"},
+    {en:"night", tr:"gece"}, {en:"question", tr:"soru"}, {en:"answer", tr:"cevap"}, {en:"problem", tr:"sorun"},
+    {en:"report", tr:"rapor"}, {en:"meeting", tr:"toplantı"}, {en:"money", tr:"para"}, {en:"sky", tr:"gökyüzü"},
+    {en:"star", tr:"yıldız"}, {en:"moon", tr:"ay"}, {en:"world", tr:"dünya"}, {en:"earth", tr:"yeryüzü"},
+    {en:"sun", tr:"güneş"}, {en:"weather", tr:"hava"}, {en:"rain", tr:"yağmur"}, {en:"wind", tr:"rüzgar"},
+    {en:"snow", tr:"kar"}, {en:"cloud", tr:"bulut"}, {en:"fog", tr:"sis"}, {en:"storm", tr:"fırtına"},
+    {en:"tree", tr:"ağaç"}, {en:"forest", tr:"orman"}, {en:"garden", tr:"bahçe"}, {en:"flower", tr:"çiçek"},
+    {en:"grass", tr:"çimen"}, {en:"door", tr:"kapı"}, {en:"window", tr:"pencere"}, {en:"floor", tr:"zemin"},
+    {en:"life", tr:"hayat"}, {en:"love", tr:"aşk"}, {en:"luck", tr:"şans"}, {en:"color", tr:"renk"},
+    {en:"thing", tr:"şey"}, {en:"ball", tr:"top"}, {en:"book", tr:"kitap"}, {en:"notebook", tr:"defter"},
+    {en:"pencil", tr:"kalem"}, {en:"toy", tr:"oyuncak"}, {en:"story", tr:"hikaye"}, {en:"number", tr:"sayı"},
+    {en:"song", tr:"şarkı"}, {en:"clothes", tr:"giysi"}, {en:"coat", tr:"mont"}, {en:"dress", tr:"elbise"},
+    {en:"hat", tr:"şapka"}, {en:"jacket", tr:"ceket"}, {en:"jeans", tr:"kot"}, {en:"shirt", tr:"gömlek"},
+    {en:"shoes", tr:"ayakkabı"}, {en:"shorts", tr:"şort"}, {en:"socks", tr:"çorap"}, {en:"sweater", tr:"kazak"},
+    {en:"trousers", tr:"pantolon"}, {en:"watch", tr:"saat"}, {en:"t-shirt", tr:"tişört"}, {en:"hamburger", tr:"hamburger"},
+    {en:"cake", tr:"kek"}, {en:"chicken", tr:"tavuk"}, {en:"dessert", tr:"tatlı"}, {en:"egg", tr:"yumurta"},
+    {en:"olive", tr:"zeytin"}, {en:"pasta", tr:"makarna"}, {en:"pizza", tr:"pizza"}, {en:"salad", tr:"salata"},
+    {en:"food", tr:"yemek"}, {en:"tea", tr:"çay"}, {en:"coffee", tr:"kahve"}, {en:"water", tr:"su"},
+    {en:"coke", tr:"kola"}, {en:"orange juice", tr:"p.suyu"}, {en:"milk", tr:"süt"}, {en:"oil", tr:"yağ"},
+    {en:"drinks", tr:"içecekler"}, {en:"salt", tr:"tuz"}, {en:"sugar", tr:"şeker"}, {en:"bread", tr:"ekmek"},
+    {en:"butter", tr:"tereyağı"}, {en:"honey", tr:"bal"}, {en:"jam", tr:"reçel"}, {en:"meat", tr:"et"},
+    {en:"cheese", tr:"peynir"}, {en:"body", tr:"vücut"}, {en:"arm", tr:"kol"}, {en:"leg", tr:"bacak"},
+    {en:"hand", tr:"el"}, {en:"finger", tr:"parmak"}, {en:"foot", tr:"ayak"}, {en:"toe", tr:"ayak parmağı"},
+    {en:"face", tr:"yüz"}, {en:"eye", tr:"göz"}, {en:"ear", tr:"kulak"}, {en:"nose", tr:"burun"},
+    {en:"mouth", tr:"ağız"}, {en:"tooth", tr:"diş"}, {en:"hair", tr:"saç"}, {en:"tongue", tr:"dil"},
+    {en:"head", tr:"baş"}
 ];
 
-let index = 0, correctCount = 0, wrongCount = 0, isTransVisible = false;
-const phraseEl = document.getElementById("phrase");
-const transEl = document.getElementById("translation");
-const resultEl = document.getElementById("result");
-const startBtn = document.getElementById("startBtn");
-const toggleBtn = document.getElementById("toggleTransBtn");
+const preps = ["of", "to", "for", "from", "with", "without", "after", "before", "about", "because of", "on"];
+const dets = ["a/an", "the", "my", "your", "two", "three"];
 
-document.getElementById("total").textContent = data.length;
+let nIdx = 0, pIdx = 0, dIdx = 0;
+let currentEN = "", currentTR = "";
 
-function playBeep(isCorrect) {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioCtx();
-    if (ctx.state === 'suspended') ctx.resume();
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.type = 'triangle';
-    osc.connect(g); g.connect(ctx.destination);
-    osc.frequency.setValueAtTime(isCorrect ? 800 : 150, ctx.currentTime);
-    g.gain.setValueAtTime(0.4, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-    osc.start(); osc.stop(ctx.currentTime + 0.3);
+// Akıllı Çoğul Motoru
+function getPlural(word) {
+    const irregulars = { "child":"children", "man":"men", "woman":"women", "person":"people", "mouse":"mice", "tooth":"teeth", "foot":"feet", "knife":"knives" };
+    if(irregulars[word]) return irregulars[word];
+    if(word.endsWith("y") && !/[aeiou]y$/.test(word)) return word.slice(0,-1) + "ies";
+    if(word.endsWith("s") || word.endsWith("sh") || word.endsWith("ch")) return word + "es";
+    return word + "s";
 }
 
-function render() {
-    phraseEl.textContent = data[index].en;
-    transEl.textContent = data[index].tr;
-    if(!isTransVisible) transEl.classList.remove("visible");
-    document.getElementById("current").textContent = index + 1;
-    document.getElementById("correct").textContent = correctCount;
-    document.getElementById("wrong").textContent = wrongCount;
+// Sesli Harf Kontrolü (an/a için)
+function checkVowel(word) {
+    return /^[aeiou]/i.test(word) || word === "hour";
 }
 
-toggleBtn.onclick = () => {
-    isTransVisible = !isTransVisible;
-    transEl.classList.toggle("visible");
-    toggleBtn.innerText = isTransVisible ? "HIDE TRANSLATION" : "SHOW TRANSLATION";
-};
+function generate() {
+    let n = nouns[nIdx];
+    let p = preps[pIdx];
+    let d = dets[dIdx];
+    
+    let finalDet = d;
+    let finalNoun = n.en;
+    
+    if(d === "a/an") finalDet = checkVowel(n.en) ? "an" : "a";
+    if(d === "two" || d === "three") finalNoun = getPlural(n.en);
+    
+    currentEN = `${p} ${finalDet} ${finalNoun}`.replace(/\s+/g, ' ');
+    currentTR = `${n.tr} (${p} - ${d})`; 
 
-function speak() {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(data[index].en);
-    u.lang = "en-US"; u.rate = 0.85; window.speechSynthesis.speak(u);
+    document.getElementById("phrase").textContent = currentEN;
+    document.getElementById("translation").textContent = currentTR;
+    document.getElementById("translation").classList.remove("visible");
+    document.getElementById("progressText").textContent = `İSİM: ${nIdx+1}/${nouns.length} | EDAT: ${pIdx+1}/${preps.length} | BELİRTEÇ: ${dIdx+1}/${dets.length}`;
+}
+
+function manualNext() {
+    dIdx++;
+    if(dIdx >= dets.length) { dIdx = 0; pIdx++; }
+    if(pIdx >= preps.length) { pIdx = 0; nIdx++; }
+    if(nIdx >= nouns.length) { nIdx = 0; alert("Liste Başa Döndü!"); }
+    generate();
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR();
-rec.lang = "en-US";
-
-rec.onstart = () => { startBtn.innerText = "LISTENING..."; startBtn.style.background = "#fb7185"; startBtn.style.animation = "none"; };
-
+const rec = new SR(); rec.lang = "en-US";
 rec.onresult = e => {
-    const spoken = e.results[0][0].transcript.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    const target = data[index].en.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-
-    const targetWords = target.split(" ");
-    const spokenWords = spoken.split(" ");
-    const matches = targetWords.filter(w => spokenWords.includes(w));
-    const ratio = matches.length / targetWords.length;
-
-    if (spoken === target || ratio >= 0.75) {
-        correctCount++;
-        resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
-        playBeep(true);
-        setTimeout(() => {
-            if(index < data.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
-            else { resultEl.innerHTML = "🏆 COURSE COMPLETED!"; }
-        }, 1200);
+    let spoken = e.results[0][0].transcript.toLowerCase().trim();
+    if(spoken === currentEN.toLowerCase()) {
+        document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>✅ HARİKA!</span>";
+        setTimeout(manualNext, 1200);
     } else {
-        wrongCount++;
-        resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
-        playBeep(false);
+        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>❌ Duyulan: "${spoken}"</span>`;
     }
-    render();
 };
 
-rec.onend = () => { startBtn.innerText = "TAP TO SPEAK"; startBtn.style.background = ""; startBtn.style.animation = "pulse 2.5s infinite"; };
+document.getElementById("speakBtn").onclick = () => rec.start();
+function playAudio() {
+    let u = new SpeechSynthesisUtterance(currentEN); u.lang = "en-US"; window.speechSynthesis.speak(u);
+}
+function toggleTrans() { document.getElementById("translation").classList.toggle("visible"); }
 
-startBtn.onclick = () => { resultEl.innerHTML = ""; try { rec.start(); } catch(e) {} };
-document.getElementById("listenBtn").onclick = speak;
-document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; resultEl.innerHTML = ""; render(); speak(); } };
-
-render();
+generate();
 </script>
 </body>
 </html>

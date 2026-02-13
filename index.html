@@ -109,6 +109,9 @@ const resultEl = document.getElementById("result");
 const okSound = document.getElementById("ok");
 const badSound = document.getElementById("bad");
 
+okSound.volume = 0.7;
+badSound.volume = 0.7;
+
 function render() {
   phraseEl.textContent = phrases[i] || "🎉 Done!";
   document.getElementById("current").textContent = i+1;
@@ -154,21 +157,17 @@ function normalize(t){
   return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
 }
 
-// daha akıllı benzerlik
 function similarity(a,b){
-  const aWords = a.split(" ");
-  const bWords = b.split(" ");
-  let match = 0;
-  bWords.forEach(w=>{
-    if(aWords.includes(w)) match++;
-  });
-  return match / bWords.length;
+  const aW = a.split(" ");
+  const bW = b.split(" ");
+  let m = 0;
+  bW.forEach(w=>{ if(aW.includes(w)) m++; });
+  return m / bW.length;
 }
 
 // ================= INIT =================
 function initApp(){
   if(initialized) return;
-
   loadVoice();
   unlockAudio();
   rec.start();
@@ -182,29 +181,32 @@ rec.onresult = e => {
 
   if(similarity(spoken,target) >= 0.75){
     ok++;
+    resultEl.innerHTML = `<div class="correct">✅ CORRECT</div>`;
+
     okSound.currentTime = 0;
     okSound.play();
-    resultEl.innerHTML = `<div class="correct">✅ CORRECT</div>`;
-    i++;
+
     setTimeout(()=>{
+      i++;
       render();
       speak();
-    },700);
+    },900);
+
   } else {
     bad++;
+    resultEl.innerHTML = `<div class="wrong">❌ TRY AGAIN</div>`;
+
     badSound.currentTime = 0;
     badSound.play();
     if(navigator.vibrate) navigator.vibrate(120);
-    resultEl.innerHTML = `<div class="wrong">❌ TRY AGAIN</div>`;
+
+    render();
   }
-  render();
 };
 
 // 🔁 otomatik devam
 rec.onend = () => {
-  if(initialized && i < phrases.length) {
-    rec.start();
-  }
+  if(initialized && i < phrases.length) rec.start();
 };
 
 // ================= CONTROLS =================

@@ -45,8 +45,17 @@ button {
 .start { background:#00c6ff; color:#fff; }
 .ctrl { background:#444; color:#fff; }
 
-.correct { color:#00ffb3; }
-.wrong { color:#ff6b6b; }
+.correct { 
+  color:#00ffb3; 
+  font-size:22px;
+  margin-top:10px;
+}
+
+.wrong { 
+  color:#ff6b6b; 
+  font-size:22px;
+  margin-top:10px;
+}
 
 .stats {
   margin-top: 18px;
@@ -92,6 +101,7 @@ preps.forEach(p=>dets.forEach(d=>phrases.push(`${p} ${d} ${noun}`)));
 
 let i = 0, ok = 0, bad = 0;
 let initialized = false;
+let femaleVoice = null;
 
 // ================= UI =================
 const phraseEl = document.getElementById("phrase");
@@ -105,9 +115,28 @@ function render() {
   document.getElementById("total").textContent = phrases.length;
   document.getElementById("correct").textContent = ok;
   document.getElementById("wrong").textContent = bad;
-  resultEl.textContent = "";
 }
 render();
+
+// ================= GOOGLE FEMALE VOICE =================
+function loadVoice(){
+  const voices = speechSynthesis.getVoices();
+  femaleVoice =
+    voices.find(v=>v.name.includes("Google") && v.lang.includes("en")) ||
+    voices.find(v=>v.lang.includes("en") && v.name.toLowerCase().includes("female")) ||
+    voices.find(v=>v.lang.includes("en")) ||
+    voices[0];
+}
+speechSynthesis.onvoiceschanged = loadVoice;
+
+function speak(){
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(phrases[i]);
+  u.lang = "en-US";
+  u.rate = 0.9;
+  u.voice = femaleVoice;
+  speechSynthesis.speak(u);
+}
 
 // ================= AUDIO UNLOCK =================
 function unlockAudio() {
@@ -125,18 +154,24 @@ function normalize(t){
   return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
 }
 
+// daha akıllı benzerlik
 function similarity(a,b){
-  let m = 0;
-  a.split(" ").forEach(w=>{ if(b.includes(w)) m++; });
-  return m / b.split(" ").length;
+  const aWords = a.split(" ");
+  const bWords = b.split(" ");
+  let match = 0;
+  bWords.forEach(w=>{
+    if(aWords.includes(w)) match++;
+  });
+  return match / bWords.length;
 }
 
 // ================= INIT =================
 function initApp(){
   if(initialized) return;
 
-  unlockAudio();          // 🔓 ses kilidi
-  rec.start();            // 🎤 mic izni (1 kere)
+  loadVoice();
+  unlockAudio();
+  rec.start();
   initialized = true;
 }
 
@@ -145,23 +180,27 @@ rec.onresult = e => {
   const spoken = normalize(e.results[0][0].transcript);
   const target = normalize(phrases[i]);
 
-  if(similarity(spoken,target) >= 0.8){
+  if(similarity(spoken,target) >= 0.75){
     ok++;
     okSound.currentTime = 0;
     okSound.play();
-    resultEl.innerHTML = `<div class="correct">✔ Correct</div>`;
+    resultEl.innerHTML = `<div class="correct">✅ CORRECT</div>`;
     i++;
+    setTimeout(()=>{
+      render();
+      speak();
+    },700);
   } else {
     bad++;
     badSound.currentTime = 0;
     badSound.play();
-    if(navigator.vibrate) navigator.vibrate(150);
-    resultEl.innerHTML = `<div class="wrong">✖ Try again</div>`;
+    if(navigator.vibrate) navigator.vibrate(120);
+    resultEl.innerHTML = `<div class="wrong">❌ TRY AGAIN</div>`;
   }
   render();
 };
 
-// 🔁 otomatik devam (izin tekrar sormaz)
+// 🔁 otomatik devam
 rec.onend = () => {
   if(initialized && i < phrases.length) {
     rec.start();
@@ -169,15 +208,9 @@ rec.onend = () => {
 };
 
 // ================= CONTROLS =================
-function skip(){ i++; render(); }
-function back(){ if(i>0) i--; render(); }
+function skip(){ i++; render(); speak(); }
+function back(){ if(i>0) i--; render(); speak(); }
 
-function speak(){
-  const u = new SpeechSynthesisUtterance(phrases[i]);
-  u.lang = "en-US";
-  u.rate = 0.9;
-  speechSynthesis.speak(u);
-}
 </script>
 
 </body>

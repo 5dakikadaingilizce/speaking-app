@@ -2,13 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v2.4</title>
+    <title>5 Dakikada İngilizce - Practice v2.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="logo.png">
 
     <style>
         :root {
@@ -28,19 +26,13 @@
             color: var(--text-main); overflow: hidden; position: relative;
         }
 
-        .version-tag {
-            position: absolute; top: 20px; right: 20px; font-size: 10px; font-weight: bold;
-            color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
         .app {
             background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 30px; border-radius: 35px; width: 88%; max-width: 420px; text-align: center; 
+            padding: 25px; border-radius: 35px; width: 88%; max-width: 420px; text-align: center; 
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
-        .app-logo { width: 90px; height: 90px; margin-bottom: 10px; object-fit: contain; }
+        .app-logo { width: 80px; height: 80px; margin-bottom: 5px; object-fit: contain; }
         
         h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
         .sub-title { 
@@ -48,41 +40,43 @@
             background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* Cümle Alanı */
         .phrase-container { min-height: 100px; display: flex; flex-direction: column; justify-content: center; margin: 10px 0; }
-        #phrase { font-size: 28px; font-weight: 800; color: var(--secondary); margin: 0; line-height: 1.2; }
+        #phrase { font-size: 28px; font-weight: 800; color: var(--secondary); margin: 0; line-height: 1.2; text-transform: uppercase; }
 
         .start { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; 
-            width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800;
+            width: 100%; padding: 18px; border-radius: 20px; font-size: 18px; font-weight: 800;
             border: none; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
             animation: pulse 2.5s infinite;
         }
 
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        .ctrl-container { display: flex; gap: 10px; margin: 15px 0; }
+        .ctrl-container { display: flex; gap: 8px; margin: 15px 0; }
         .ctrl { 
-            background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 14px; 
-            border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 13px;
-            cursor: pointer;
+            background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; 
+            border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 12px;
+            cursor: pointer; transition: 0.2s;
         }
+        .ctrl:active { transform: scale(0.95); background: var(--primary); color: #0f172a; }
 
-        #result { font-size: 15px; font-weight: 700; margin: 10px 0; height: 35px; }
+        #result { font-size: 14px; font-weight: 700; margin: 10px 0; height: 35px; }
         .correct-text { color: var(--secondary); }
         .wrong-text { color: var(--accent); }
-        .heard-text { display: block; font-size: 11px; color: #64748b; font-weight: normal; }
 
         .stats { 
-            margin-top: 10px; font-size: 11px; color: #94a3b8; background: rgba(15, 23, 42, 0.4);
-            padding: 12px; border-radius: 20px; display: flex; justify-content: space-between;
+            margin-top: 10px; font-size: 10px; color: #94a3b8; background: rgba(15, 23, 42, 0.4);
+            padding: 12px; border-radius: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
         }
-        .stat-value { color: var(--primary); font-weight: 800; font-size: 14px; }
+        .stat-item { display: flex; justify-content: space-between; align-items: center; padding: 0 5px; }
+        .stat-value { color: var(--primary); font-weight: 800; font-size: 12px; }
+
+        .footer-logo { margin-top: 20px; opacity: 0.5; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .footer-logo img { width: 25px; height: 25px; }
+        .footer-logo span { font-size: 12px; font-weight: 900; letter-spacing: 1px; color: #94a3b8; }
     </style>
 </head>
 <body>
-
-<div class="version-tag">VERSİYON 2.4</div>
 
 <div class="app">
     <img src="logo.png" alt="Logo" class="app-logo">
@@ -98,6 +92,7 @@
     <div class="ctrl-container">
         <button class="ctrl" id="listenBtn">LISTEN</button>
         <button class="ctrl" id="backBtn">BACK</button>
+        <button class="ctrl" id="nextBtn">NEXT</button>
     </div>
 
     <div id="result"></div>
@@ -108,19 +103,18 @@
         <div class="stat-item">COMPLETED <span class="stat-value" id="correct" style="color:#2dd4bf">0</span></div>
         <div class="stat-item">REMAINING <span class="stat-value" id="remaining" style="color:#fb7185">0</span></div>
     </div>
+
+    <div class="footer-logo">
+        <img src="logo.png" alt="Mini Logo">
+        <span>5 MIN ENGLISH</span>
+    </div>
 </div>
 
 <script>
-// --- MANUEL CÜMLE LİSTESİ ---
 const data = [
-    { en: "of the children", tr: "çocukların" },
-    { en: "to the children", tr: "çocuklara" },
-    { en: "for the children", tr: "çocuklar için" },
-    { en: "from the children", tr: "çocuklardan" },
-    { en: "with the children", tr: "çocuklarla birlikte" },
-    { en: "without the children", tr: "çocuklar olmadan" },
-    { en: "of two children", tr: "iki çocuğun" },
-    { en: "of my children", tr: "benim çocuklarımın" }
+    { en: "of the day" }, { en: "to the day" }, { en: "for the day" },
+    { en: "from the day" }, { en: "with the day" }, { en: "without the day" },
+    { en: "of my children" }, { en: "to your school" }
 ];
 
 let index = 0, correctCount = 0;
@@ -130,25 +124,11 @@ const startBtn = document.getElementById("startBtn");
 
 document.getElementById("total").textContent = data.length;
 
-function playBeep(isCorrect) {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioCtx();
-    if (ctx.state === 'suspended') ctx.resume();
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.type = 'triangle';
-    osc.connect(g); g.connect(ctx.destination);
-    osc.frequency.setValueAtTime(isCorrect ? 800 : 150, ctx.currentTime);
-    g.gain.setValueAtTime(0.4, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-    osc.start(); osc.stop(ctx.currentTime + 0.3);
-}
-
 function render() {
     phraseEl.textContent = data[index].en;
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
-    document.getElementById("remaining").textContent = data.length - index;
+    document.getElementById("remaining").textContent = data.length - (index + 1);
 }
 
 function speak() {
@@ -167,25 +147,18 @@ rec.onresult = e => {
     const spoken = e.results[0][0].transcript.toLowerCase().replace(/[.,!?;:]/g, "").trim();
     const target = data[index].en.toLowerCase().replace(/[.,!?;:]/g, "").trim();
 
-    const targetWords = target.split(" ");
-    const spokenWords = spoken.split(" ");
-    const matches = targetWords.filter(w => spokenWords.includes(w));
-    const ratio = matches.length / targetWords.length;
+    // Of/Off toleransı için akıllı kontrol
+    const isCorrect = (spoken === target) || (spoken.replace("off", "of") === target);
 
-    if (spoken === target || ratio >= 0.75) {
+    if (isCorrect) {
         correctCount++;
         resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
-        playBeep(true);
         setTimeout(() => {
             if(index < data.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
-            else { 
-                document.getElementById("remaining").textContent = "0";
-                resultEl.innerHTML = "🏆 COURSE COMPLETED!"; 
-            }
-        }, 1200);
+            else { resultEl.innerHTML = "🏆 COMPLETED!"; }
+        }, 1000);
     } else {
-        resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
-        playBeep(false);
+        resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span>`;
     }
     render();
 };
@@ -195,6 +168,7 @@ rec.onend = () => { startBtn.innerText = "TAP TO SPEAK"; startBtn.style.backgrou
 startBtn.onclick = () => { resultEl.innerHTML = ""; try { rec.start(); } catch(e) {} };
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; resultEl.innerHTML = ""; render(); speak(); } };
+document.getElementById("nextBtn").onclick = () => { if(index < data.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); } };
 
 render();
 </script>

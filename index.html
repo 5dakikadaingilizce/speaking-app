@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grammar-Aware Speaking Drill (Fixed)</title>
+<title>Grammar-Aware Speaking Drill - Vers.1.1</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:linear-gradient(135deg,#0f172a,#1e293b);
+  font-family:system-ui;
+  background:linear-gradient(135deg,#141e30,#243b55);
   height:100vh;
   display:flex;
   justify-content:center;
@@ -17,114 +17,117 @@ body{
   color:white;
 }
 .app{
-  background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(15px);
-  padding:40px;
-  border-radius:24px;
-  width:90%;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+  padding:30px;
+  border-radius:18px;
+  width:95%;
   max-width:600px;
   text-align:center;
-  border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+}
+.version-tag {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 11px;
+  opacity: 0.5;
 }
 #phrase{
-  font-size:32px;
+  font-size:30px;
   font-weight:700;
-  margin:30px 0;
-  color: #38bdf8;
-  min-height: 40px;
+  margin:20px 0;
+  color: #00ffb3;
+  text-shadow: 0 0 10px rgba(0,255,179,0.3);
 }
 button{
-  padding:14px 24px;
-  margin:8px;
+  padding:14px 20px;
+  margin:6px;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   cursor:pointer;
   font-size:16px;
-  font-weight: 600;
-  transition: all 0.2s;
+  font-weight: bold;
+  transition: 0.2s;
 }
-.start{background:#0ea5e9;color:white;}
-.start:active{transform: scale(0.95);}
-.ctrl{background:#334155;color:white;}
-.next{background:#10b981;color:white; display:none;}
-.correct{color:#10b981; font-size:24px; font-weight: bold; margin-top: 10px;}
-.wrong{color:#f43f5e; font-size:24px; font-weight: bold; margin-top: 10px;}
-.stats{margin-top:25px; font-size:14px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 15px;}
+button:active { transform: scale(0.95); }
+.start{background:#00c6ff;color:white;}
+.ctrl{background:#444;color:white;}
+.next{background:#00ffb3;color:black; display:none;}
+.correct{color:#00ffb3;font-size:24px; font-weight:bold;}
+.wrong{color:#ff6b6b;font-size:24px; font-weight:bold;}
+.stats{margin-top:20px;font-size:14px; opacity: 0.8; line-height: 1.6;}
 </style>
 </head>
 
 <body>
 
 <div class="app">
-<h2>🎤 Speaking Drill</h2>
+  <div class="version-tag">Vers.1.1</div>
+  <h2>🎤 Speaking Practice</h2>
+  <div id="phrase">Loading phrases...</div>
 
-<div id="phrase">Yükleniyor...</div>
+  <button class="start" id="startBtn">🎤 START SPEAKING</button><br>
+  <button class="ctrl" id="listenBtn">🔊 Listen Word</button>
+  <button class="ctrl" id="backBtn">⬅ Back</button>
+  <button class="next" id="nextBtn">Next ▶</button>
 
-<button class="start" id="startBtn">🎤 TAP TO SPEAK</button><br>
-<button class="ctrl" id="listenBtn">🔊 Listen Word</button>
-<button class="ctrl" id="backBtn">⬅ Back</button>
-<button class="next" id="nextBtn">Next Phrase ▶</button>
+  <div id="result"></div>
 
-<div id="result"></div>
-
-<div class="stats">
-Phrase <span id="current">1</span>/<span id="total">0</span><br>
-✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
+  <div class="stats">
+    Phrase <span id="current"></span> / <span id="total"></span><br>
+    ✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
+  </div>
 </div>
-</div>
+
+<audio id="okSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+<audio id="badSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3" preload="auto"></audio>
 
 <script>
-// ================= GRAMMAR CONFIG =================
-const prepositions = ["of","to","for","from","with","in","on","at"];
+/* VERSION: 1.1
+   CHANGES: 
+   - Speed increased (1.1x)
+   - AudioContext unlock added
+   - Grammar engine fixed (no more 'a children')
+   - Version tag added to UI
+*/
 
+// ================= GRAMMAR ENGINE =================
+const prepositions = ["of","to","for","from","with","in","on","at"];
 const determiners = [
   { type:"article", value:"a" },
   { type:"article", value:"an" },
   { type:"number", value:"two" },
   { type:"number", value:"three" },
-  { type:"possessive", value:"my" },
-  { type:"possessive", value:"your" }
+  { type:"possessive", value:"my" }
 ];
-
 const nouns = [
-  { word:"child", plural:false },
-  { word:"children", plural:true },
-  { word:"apple", plural:false, startsWithVowel: true },
-  { word:"apples", plural:true, startsWithVowel: true },
-  { word:"car", plural:false },
-  { word:"cars", plural:true }
+  { word:"child", plural:false, vowel:false },
+  { word:"children", plural:true, vowel:false },
+  { word:"apple", plural:false, vowel:true },
+  { word:"apples", plural:true, vowel:true },
+  { word:"car", plural:false, vowel:false },
+  { word:"cars", plural:true, vowel:false }
 ];
 
-// ================= GRAMMAR ENGINE (FIXED) =================
 function isValid(det, noun) {
-  // 1. Çoğul isimlerle "a/an" asla gelmez
-  if(det.type === "article" && noun.plural) return false;
-  
-  // 2. "An" sadece sesli harfle başlayan tekil isimle gelir
-  if(det.value === "an" && !noun.startsWithVowel) return false;
-  
-  // 3. "A" sesli harfle başlayanla gelmez
-  if(det.value === "a" && noun.startsWithVowel) return false;
-
-  // 4. Sayılar (two, three) sadece çoğul isimlerle gelir
-  if(det.type === "number" && !noun.plural) return false;
-
+  if (det.type === "article" && noun.plural) return false;
+  if (det.value === "an" && !noun.vowel) return false;
+  if (det.value === "a" && noun.vowel) return false;
+  if (det.type === "number" && !noun.plural) return false;
   return true;
 }
 
-// ================= BUILD PHRASES =================
 let phrases = [];
 prepositions.forEach(p => {
   determiners.forEach(d => {
     nouns.forEach(n => {
-      if(isValid(d, n)) {
-        phrases.push(`${p} ${d.value} ${n.word}`);
-      }
+      if(isValid(d, n)) phrases.push(`${p} ${d.value} ${n.word}`);
     });
   });
 });
 
-// ================= STATE & LOGIC =================
+// ================= STATE =================
 let index = 0;
 let correctCount = 0;
 let wrongCount = 0;
@@ -133,6 +136,8 @@ let solved = new Array(phrases.length).fill(false);
 const phraseEl = document.getElementById("phrase");
 const resultEl = document.getElementById("result");
 const nextBtn = document.getElementById("nextBtn");
+const okSound = document.getElementById("okSound");
+const badSound = document.getElementById("badSound");
 
 document.getElementById("total").textContent = phrases.length;
 
@@ -143,47 +148,26 @@ function render() {
   document.getElementById("wrong").textContent = wrongCount;
   nextBtn.style.display = solved[index] ? "inline-block" : "none";
 }
+render();
 
-// ================= SOUND EFFECTS (SYSTEM GENERATED) =================
-function playSound(type) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  if(type === 'ok') {
-    osc.frequency.setValueAtTime(500, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-  } else {
-    osc.frequency.setValueAtTime(150, ctx.currentTime);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-  }
-  osc.start();
-  osc.stop(ctx.currentTime + 0.3);
-}
-
-// ================= SPEECH (LISTEN) =================
+// ================= SPEAKING (FAST) =================
 function speak() {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(phrases[index]);
   u.lang = "en-US";
-  u.rate = 0.8;
+  u.rate = 1.1; // Hızlı ve akıcı
   window.speechSynthesis.speak(u);
 }
 
-// ================= RECOGNITION (FIXED) =================
+// ================= RECOGNITION =================
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
-rec.interimResults = false;
+rec.continuous = false;
 
 rec.onstart = () => {
     document.getElementById("startBtn").innerText = "Listening...";
-    document.getElementById("startBtn").style.background = "#ef4444";
+    document.getElementById("startBtn").style.background = "#ff4b2b";
 };
 
 rec.onresult = e => {
@@ -191,44 +175,48 @@ rec.onresult = e => {
   const target = phrases[index].toLowerCase().trim();
 
   if(spoken === target) {
-    if(!solved[index]) {
-      solved[index] = true;
-      correctCount++;
-    }
+    if(!solved[index]) { solved[index] = true; correctCount++; }
     resultEl.innerHTML = '<div class="correct">✅ PERFECT!</div>';
-    playSound('ok');
+    okSound.play(); 
   } else {
     wrongCount++;
     resultEl.innerHTML = `<div class="wrong">❌ You said: "${spoken}"</div>`;
-    playSound('bad');
+    badSound.play();
   }
   render();
 };
 
 rec.onend = () => {
-    document.getElementById("startBtn").innerText = "🎤 TAP TO SPEAK";
-    document.getElementById("startBtn").style.background = "#0ea5e9";
+    document.getElementById("startBtn").innerText = "🎤 START SPEAKING";
+    document.getElementById("startBtn").style.background = "#00c6ff";
 };
 
-// ================= NAVIGATION =================
-document.getElementById("startBtn").onclick = () => rec.start();
+// ================= BUTTON ACTIONS =================
+document.getElementById("startBtn").onclick = () => {
+    // Tarayıcıyı ses çalmak için zorla (Unlock)
+    okSound.play().then(() => { okSound.pause(); okSound.currentTime = 0; });
+    rec.start();
+};
+
 document.getElementById("listenBtn").onclick = speak;
+
 document.getElementById("nextBtn").onclick = () => {
-  if(index < phrases.length - 1) {
-    index++;
-    resultEl.innerHTML = "";
-    render();
-  }
-};
-document.getElementById("backBtn").onclick = () => {
-  if(index > 0) {
-    index--;
-    resultEl.innerHTML = "";
-    render();
-  }
+    if(index < phrases.length - 1) {
+      index++; 
+      resultEl.innerHTML = ""; 
+      render(); 
+      speak();
+    }
 };
 
-render();
+document.getElementById("backBtn").onclick = () => {
+    if(index > 0) { 
+      index--; 
+      resultEl.innerHTML = ""; 
+      render(); 
+      speak(); 
+    }
+};
 </script>
 
 </body>

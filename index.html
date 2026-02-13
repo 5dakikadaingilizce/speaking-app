@@ -114,16 +114,15 @@
 </div>
 
 <script>
-// --- CÜMLE LİSTESİ ---
 const data = [
-    { en: "of the children", tr: "çocukların" },
-    { en: "to the children", tr: "çocuklara" },
-    { en: "for the children", tr: "çocuklar için" },
-    { en: "from the children", tr: "çocuklardan" },
-    { en: "with the children", tr: "çocuklarla birlikte" },
-    { en: "without the children", tr: "çocuklar olmadan" },
-    { en: "of two children", tr: "iki çocuğun" },
-    { en: "of my children", tr: "benim çocuklarımın" }
+    { en: "of the children" },
+    { en: "to the children" },
+    { en: "for the children" },
+    { en: "from the children" },
+    { en: "with the children" },
+    { en: "without the children" },
+    { en: "of two children" },
+    { en: "of my children" }
 ];
 
 let index = 0, correctCount = 0;
@@ -163,6 +162,8 @@ function speak() {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
+rec.continuous = false; // Konuşma biter bitmez durması için
+rec.interimResults = false; // Sadece kesin sonucu alması için
 
 rec.onstart = () => { startBtn.innerText = "LISTENING..."; startBtn.style.background = "#fb7185"; startBtn.style.animation = "none"; };
 
@@ -179,10 +180,11 @@ rec.onresult = e => {
         correctCount++;
         resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
         playBeep(true);
+        // HIZLI GEÇİŞ: 500ms sonra sonraki soruya geçer
         setTimeout(() => {
             if(index < data.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
             else { resultEl.innerHTML = "🏆 COMPLETED!"; }
-        }, 1200);
+        }, 500); 
     } else {
         resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
         playBeep(false);

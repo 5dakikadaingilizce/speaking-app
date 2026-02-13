@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v1.9</title>
+    <title>5 Dakikada İngilizce - Practice v2.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,11 +13,12 @@
     <style>
         :root {
             --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.75);
+            --card-bg: rgba(30, 41, 59, 0.8);
             --primary: #38bdf8;
             --secondary: #2dd4bf;
             --accent: #fb7185;
             --text-main: #f8fafc;
+            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316); /* Kırmızı-Turuncu geçiş */
         }
 
         body {
@@ -45,71 +46,78 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
+        /* Çerçevesiz Logo */
         .app-logo {
-            width: 85px; height: 85px; 
-            border-radius: 22px; 
+            width: 100px; height: 100px; 
             margin-bottom: 15px;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
-            border: 2px solid var(--primary);
+            object-fit: contain;
         }
 
-        h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
-        .sub-title { font-size: 18px; color: var(--primary); font-weight: 800; margin: 5px 0 20px 0; }
+        h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
+        
+        /* Renkli Speaking Practice Yazısı */
+        .sub-title { 
+            font-size: 20px; 
+            font-weight: 900; 
+            margin: 8px 0 20px 0; 
+            background: var(--logo-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
 
         #phrase { 
-            font-size: 30px; 
+            font-size: 28px; 
             font-weight: 800; 
-            margin: 20px 0; 
+            margin: 15px 0; 
             color: var(--secondary); 
-            min-height: 100px; 
+            min-height: 90px; 
             display: flex; 
             align-items: center; 
             justify-content: center;
-            line-height: 1.3;
-            text-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
+            line-height: 1.2;
         }
 
-        /* Mikrofon Butonu */
         .start { 
-            background: linear-gradient(135deg, var(--primary), #0ea5e9);
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             color: #0f172a; 
             width: 100%; 
-            padding: 18px;
-            border-radius: 18px;
+            padding: 20px;
+            border-radius: 20px;
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 800;
             border: none;
             cursor: pointer;
             box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
-            transition: 0.3s;
             animation: pulse 2.5s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.03); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.6); }
+            50% { transform: scale(1.02); }
             100% { transform: scale(1); }
         }
 
-        .start:active { transform: scale(0.95); }
-
         .ctrl-container { display: flex; gap: 12px; margin: 15px 0; }
         .ctrl { 
-            background: #334155; color: white; flex: 1; padding: 14px; 
-            border-radius: 14px; border: none; font-weight: 600; cursor: pointer;
+            background: rgba(51, 65, 85, 0.6); 
+            color: white; flex: 1; padding: 16px; 
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);
+            font-weight: 600; cursor: pointer;
         }
 
-        #result { font-size: 18px; font-weight: 700; margin: 15px 0; height: 30px; }
+        #result { font-size: 16px; font-weight: 700; margin: 10px 0; height: 40px; }
         .correct-text { color: var(--secondary); }
         .wrong-text { color: var(--accent); }
+        .heard-text { display: block; font-size: 12px; color: #64748b; font-weight: normal; margin-top: 4px; }
 
         .stats { 
-            margin-top: 20px; 
-            font-size: 12px; 
+            margin-top: 15px; 
+            font-size: 11px; 
             color: #94a3b8; 
             background: rgba(15, 23, 42, 0.4);
             padding: 15px;
-            border-radius: 18px;
+            border-radius: 20px;
             display: flex;
             justify-content: space-between;
         }
@@ -126,11 +134,11 @@
     
     <div id="phrase">Loading...</div>
 
-    <button class="start" id="startBtn">🎤 TAP TO SPEAK</button>
+    <button class="start" id="startBtn">TAP TO SPEAK</button>
     
     <div class="ctrl-container">
-        <button class="ctrl" id="listenBtn">🔊 Listen</button>
-        <button class="ctrl" id="backBtn">⬅ Back</button>
+        <button class="ctrl" id="listenBtn">LISTEN</button>
+        <button class="ctrl" id="backBtn">BACK</button>
     </div>
 
     <div id="result"></div>
@@ -144,7 +152,7 @@
 </div>
 
 <script>
-// --- DATA PREPARATION ---
+// --- DATA ---
 const preps = ["of", "to", "for", "from", "with", "without", "after", "before", "about", "because of", "in", "on", "at"];
 const dets = ["the", "two", "three", "four", "my", "your"];
 const noun = "children";
@@ -163,22 +171,14 @@ function playBeep(isCorrect) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const context = new AudioContext();
     if (context.state === 'suspended') context.resume();
-
     const osc = context.createOscillator();
     const gain = context.createGain();
-    osc.connect(gain);
-    gain.connect(context.destination);
-    
-    if(isCorrect) {
-        osc.frequency.setValueAtTime(600, context.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(900, context.currentTime + 0.1);
-    } else {
-        osc.frequency.setValueAtTime(200, context.currentTime);
-    }
+    osc.connect(gain); gain.connect(context.destination);
+    osc.frequency.setValueAtTime(isCorrect ? 600 : 200, context.currentTime);
+    if(isCorrect) osc.frequency.exponentialRampToValueAtTime(900, context.currentTime + 0.1);
     gain.gain.setValueAtTime(0.1, context.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.2);
-    osc.start();
-    osc.stop(context.currentTime + 0.2);
+    osc.start(); osc.stop(context.currentTime + 0.2);
 }
 
 function render() {
@@ -192,19 +192,17 @@ function speak() {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(phrases[index]);
     u.lang = "en-US";
-    u.rate = 0.9;
+    u.rate = 0.85;
     window.speechSynthesis.speak(u);
 }
 
-// --- SPEECH RECOGNITION ---
+// --- SPEECH RECOGNITION WITH FUZZY MATCHING ---
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (!SR) alert("Please use Chrome or Safari for speech features.");
 const rec = new SR();
 rec.lang = "en-US";
-rec.interimResults = false;
 
 rec.onstart = () => {
-    startBtn.innerText = "Listening...";
+    startBtn.innerText = "LISTENING...";
     startBtn.style.background = "#fb7185";
     startBtn.style.animation = "none";
 };
@@ -212,34 +210,36 @@ rec.onstart = () => {
 rec.onresult = e => {
     const spoken = e.results[0][0].transcript.toLowerCase().trim();
     const target = phrases[index].toLowerCase().trim();
-    const isCloseEnough = target.split(' ').every(word => spoken.includes(word));
 
-    if (spoken === target || isCloseEnough) {
+    // Esneklik Katmanı: Bazı yaygın hataları otomatik düzelt
+    let checkSpoken = spoken.replace("off", "of").replace("for", "four").replace("to", "two");
+    
+    // Kelime Bazlı Kontrol (Kelimelerin %70'i varsa geç)
+    const targetWords = target.split(" ");
+    const matchedWords = targetWords.filter(word => checkSpoken.includes(word));
+    const score = matchedWords.length / targetWords.length;
+
+    if (score >= 0.7) {
         correctCount++;
-        resultEl.innerHTML = '<span class="correct-text">Excellent! ✅</span>';
+        resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
         playBeep(true);
-        
-        // AUTO NEXT
         setTimeout(() => {
             if(index < phrases.length - 1) {
-                index++;
-                resultEl.innerHTML = "";
-                render();
-                speak();
+                index++; resultEl.innerHTML = ""; render(); speak();
             } else {
                 resultEl.innerHTML = "🏆 COURSE COMPLETED!";
             }
         }, 1500);
     } else {
         wrongCount++;
-        resultEl.innerHTML = '<span class="wrong-text">Try Again ❌</span>';
+        resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
         playBeep(false);
     }
     render();
 };
 
 rec.onend = () => {
-    startBtn.innerText = "🎤 TAP TO SPEAK";
+    startBtn.innerText = "TAP TO SPEAK";
     startBtn.style.background = "";
     startBtn.style.animation = "pulse 2.5s infinite";
 };

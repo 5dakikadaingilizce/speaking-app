@@ -44,18 +44,10 @@ button {
 
 .start { background:#00c6ff; color:#fff; }
 .ctrl { background:#444; color:#fff; }
+.next { background:#00ffb3; color:#000; display:none; }
 
-.correct { 
-  color:#00ffb3; 
-  font-size:22px;
-  margin-top:10px;
-}
-
-.wrong { 
-  color:#ff6b6b; 
-  font-size:22px;
-  margin-top:10px;
-}
+.correct { color:#00ffb3; font-size:22px; }
+.wrong { color:#ff6b6b; font-size:22px; }
 
 .stats {
   margin-top: 18px;
@@ -74,8 +66,8 @@ button {
 
 <button class="start" onclick="initApp()">▶ Start Session</button><br>
 <button class="ctrl" onclick="speak()">🔊 Listen</button>
-<button class="ctrl" onclick="back()">⬅ Back</button>
-<button class="ctrl" onclick="skip()">Skip ➡</button>
+<button class="ctrl" onclick="goBack()">⬅ Back</button>
+<button class="next" id="nextBtn" onclick="goNext()">Next ▶</button>
 
 <div id="result"></div>
 
@@ -96,48 +88,59 @@ const preps = ["of","to","for","from","with","without","after","before","about",
 const dets = ["the","my","your","two","three","four"];
 const noun = "children";
 
-let phrases = [];
+const phrases = [];
 preps.forEach(p=>dets.forEach(d=>phrases.push(`${p} ${d} ${noun}`)));
 
-let i = 0, ok = 0, bad = 0;
+let index = 0;
+let correctCount = 0;
+let wrongCount = 0;
 let initialized = false;
-let femaleVoice = null;
 
-// ================= UI =================
+// hangi cümle doğru söylendi
+const solved = new Array(phrases.length).fill(false);
+
+// ================= ELEMENTS =================
 const phraseEl = document.getElementById("phrase");
 const resultEl = document.getElementById("result");
+const nextBtn = document.getElementById("nextBtn");
 const okSound = document.getElementById("ok");
 const badSound = document.getElementById("bad");
 
-okSound.volume = 0.7;
-badSound.volume = 0.7;
+okSound.volume = 1;
+badSound.volume = 1;
 
+// ================= UI =================
 function render() {
-  phraseEl.textContent = phrases[i] || "🎉 Done!";
-  document.getElementById("current").textContent = i+1;
+  phraseEl.textContent = phrases[index] || "🎉 Done!";
+  document.getElementById("current").textContent = index + 1;
   document.getElementById("total").textContent = phrases.length;
-  document.getElementById("correct").textContent = ok;
-  document.getElementById("wrong").textContent = bad;
+  document.getElementById("correct").textContent = correctCount;
+  document.getElementById("wrong").textContent = wrongCount;
+
+  // Next sadece doğruysa aktif
+  nextBtn.style.display = solved[index] ? "inline-block" : "none";
 }
 render();
 
-// ================= GOOGLE FEMALE VOICE =================
-function loadVoice(){
+// ================= US VOICE =================
+let usVoice = null;
+
+function loadVoice() {
   const voices = speechSynthesis.getVoices();
-  femaleVoice =
-    voices.find(v=>v.name.includes("Google") && v.lang.includes("en")) ||
-    voices.find(v=>v.lang.includes("en") && v.name.toLowerCase().includes("female")) ||
-    voices.find(v=>v.lang.includes("en")) ||
+  usVoice =
+    voices.find(v => v.name.includes("Google US English")) ||
+    voices.find(v => v.lang === "en-US") ||
+    voices.find(v => v.lang.startsWith("en")) ||
     voices[0];
 }
 speechSynthesis.onvoiceschanged = loadVoice;
 
-function speak(){
+function speak() {
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(phrases[i]);
+  const u = new SpeechSynthesisUtterance(phrases[index]);
   u.lang = "en-US";
   u.rate = 0.9;
-  u.voice = femaleVoice;
+  u.voice = usVoice;
   speechSynthesis.speak(u);
 }
 
@@ -153,21 +156,21 @@ const rec = new SR();
 rec.lang = "en-US";
 rec.continuous = false;
 
-function normalize(t){
+function normalize(t) {
   return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
 }
 
-function similarity(a,b){
-  const aW = a.split(" ");
-  const bW = b.split(" ");
+function similarity(a,b) {
+  const aw = a.split(" ");
+  const bw = b.split(" ");
   let m = 0;
-  bW.forEach(w=>{ if(aW.includes(w)) m++; });
-  return m / bW.length;
+  bw.forEach(w => { if (aw.includes(w)) m++; });
+  return m / bw.length;
 }
 
 // ================= INIT =================
-function initApp(){
-  if(initialized) return;
+function initApp() {
+  if (initialized) return;
   loadVoice();
   unlockAudio();
   rec.start();
@@ -177,42 +180,46 @@ function initApp(){
 // ================= RESULT =================
 rec.onresult = e => {
   const spoken = normalize(e.results[0][0].transcript);
-  const target = normalize(phrases[i]);
+  const target = normalize(phrases[index]);
 
-  if(similarity(spoken,target) >= 0.75){
-    ok++;
+  if (similarity(spoken,target) >= 0.75) {
+    if (!solved[index]) correctCount++;
+    solved[index] = true;
+
     resultEl.innerHTML = `<div class="correct">✅ CORRECT</div>`;
-
     okSound.currentTime = 0;
     okSound.play();
-
-    setTimeout(()=>{
-      i++;
-      render();
-      speak();
-    },900);
-
   } else {
-    bad++;
+    wrongCount++;
     resultEl.innerHTML = `<div class="wrong">❌ TRY AGAIN</div>`;
-
     badSound.currentTime = 0;
     badSound.play();
-    if(navigator.vibrate) navigator.vibrate(120);
-
-    render();
   }
+  render();
 };
 
-// 🔁 otomatik devam
 rec.onend = () => {
-  if(initialized && i < phrases.length) rec.start();
+  if (initialized) rec.start();
 };
 
-// ================= CONTROLS =================
-function skip(){ i++; render(); speak(); }
-function back(){ if(i>0) i--; render(); speak(); }
+// ================= NAVIGATION =================
+function goNext() {
+  if (solved[index] && index < phrases.length - 1) {
+    index++;
+    resultEl.innerHTML = "";
+    render();
+    speak();
+  }
+}
 
+function goBack() {
+  if (index > 0 && solved[index - 1]) {
+    index--;
+    resultEl.innerHTML = "";
+    render();
+    speak();
+  }
+}
 </script>
 
 </body>

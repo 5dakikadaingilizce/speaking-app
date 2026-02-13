@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v2.4</title>
+    <title>5 Dakikada İngilizce - Practice v2.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -84,7 +84,7 @@
 </head>
 <body>
 
-<div class="version-tag">VERSİYON 2.4</div>
+<div class="version-tag">VERSİYON 2.5</div>
 
 <div class="app">
     <img src="logo.png" alt="Logo" class="app-logo">
@@ -162,8 +162,8 @@ function speak() {
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
-rec.continuous = false; // Konuşma biter bitmez durması için
-rec.interimResults = false; // Sadece kesin sonucu alması için
+rec.continuous = false;
+rec.interimResults = false;
 
 rec.onstart = () => { startBtn.innerText = "LISTENING..."; startBtn.style.background = "#fb7185"; startBtn.style.animation = "none"; };
 
@@ -180,11 +180,11 @@ rec.onresult = e => {
         correctCount++;
         resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
         playBeep(true);
-        // HIZLI GEÇİŞ: 500ms sonra sonraki soruya geçer
+        // BEKLEME SÜRESİ 200ms OLARAK AYARLANDI
         setTimeout(() => {
             if(index < data.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
             else { resultEl.innerHTML = "🏆 COMPLETED!"; }
-        }, 500); 
+        }, 200); 
     } else {
         resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
         playBeep(false);

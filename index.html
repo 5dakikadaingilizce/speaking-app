@@ -2,130 +2,183 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Speaking Practice</title>
+<title>Speaking Drill Stable</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f8;
-    text-align: center;
-    padding: 40px;
-  }
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  #phrase {
-    font-size: 34px;
-    margin: 30px 0;
-    font-weight: bold;
-  }
+.app {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  padding: 32px;
+  border-radius: 18px;
+  width: 90%;
+  max-width: 520px;
+  text-align: center;
+  color: white;
+}
 
-  button {
-    font-size: 20px;
-    padding: 12px 25px;
-    cursor: pointer;
-  }
+#phrase {
+  font-size: 28px;
+  margin: 24px 0;
+  font-weight: 600;
+}
 
-  #result {
-    font-size: 22px;
-    margin-top: 20px;
-  }
+button {
+  padding: 12px 18px;
+  margin: 6px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+}
 
-  .correct { color: green; }
-  .wrong { color: red; }
+.start { background:#00c6ff; color:#fff; }
+.ctrl { background:#444; color:#fff; }
 
-  #score {
-    font-size: 20px;
-    margin-top: 25px;
-  }
+.correct { color:#00ffb3; }
+.wrong { color:#ff6b6b; }
+
+.stats {
+  margin-top: 18px;
+  font-size: 14px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>🎤 Speak the phrase</h1>
+<div class="app">
+
+<h2>🎤 Speaking Drill</h2>
 
 <div id="phrase"></div>
 
-<button onclick="startListening()">🎙️ Speak</button>
+<button class="start" onclick="initApp()">▶ Start Session</button><br>
+<button class="ctrl" onclick="speak()">🔊 Listen</button>
+<button class="ctrl" onclick="back()">⬅ Back</button>
+<button class="ctrl" onclick="skip()">Skip ➡</button>
 
 <div id="result"></div>
 
-<div id="score">
-  ✅ Correct: <span id="correct">0</span> |
-  ❌ Wrong: <span id="wrong">0</span>
+<div class="stats">
+Phrase <span id="current"></span>/<span id="total"></span><br>
+✅ <span id="correct">0</span> |
+❌ <span id="wrong">0</span>
 </div>
 
-<!-- SOUND EFFECTS -->
-<audio id="successSound">
-  <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
-</audio>
+</div>
 
-<audio id="errorSound">
-  <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
-</audio>
+<audio id="ok" src="https://actions.google.com/sounds/v1/ui/positive_confirmation.ogg"></audio>
+<audio id="bad" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
 <script>
-const prepositions = [
-  "of", "to", "for", "from", "with",
-  "without", "after", "before", "about", "because of"
-];
-
-const determiners = ["the", "my", "your"];
-const numbers = ["two", "three", "four"];
+// ================= DATA =================
+const preps = ["of","to","for","from","with","without","after","before","about","because of"];
+const dets = ["the","my","your","two","three","four"];
 const noun = "children";
 
-let expected = "";
-let correctCount = 0;
-let wrongCount = 0;
+let phrases = [];
+preps.forEach(p=>dets.forEach(d=>phrases.push(`${p} ${d} ${noun}`)));
 
-function random(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+let i = 0, ok = 0, bad = 0;
+let initialized = false;
+
+// ================= UI =================
+const phraseEl = document.getElementById("phrase");
+const resultEl = document.getElementById("result");
+const okSound = document.getElementById("ok");
+const badSound = document.getElementById("bad");
+
+function render() {
+  phraseEl.textContent = phrases[i] || "🎉 Done!";
+  document.getElementById("current").textContent = i+1;
+  document.getElementById("total").textContent = phrases.length;
+  document.getElementById("correct").textContent = ok;
+  document.getElementById("wrong").textContent = bad;
+  resultEl.textContent = "";
+}
+render();
+
+// ================= AUDIO UNLOCK =================
+function unlockAudio() {
+  okSound.play().then(()=>okSound.pause()).catch(()=>{});
+  badSound.play().then(()=>badSound.pause()).catch(()=>{});
 }
 
-function generatePhrase() {
-  const prep = random(prepositions);
-  const det = Math.random() < 0.5 ? random(determiners) : random(numbers);
-  expected = `${prep} ${det} ${noun}`;
-  document.getElementById("phrase").innerText = expected;
-  document.getElementById("result").innerText = "";
+// ================= SPEECH =================
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const rec = new SR();
+rec.lang = "en-US";
+rec.continuous = false;
+
+function normalize(t){
+  return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
 }
 
-generatePhrase();
-
-// SPEECH RECOGNITION
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-recognition.lang = "en-US";
-
-function normalize(text) {
-  return text.toLowerCase().replace(/\s+/g, " ").trim();
+function similarity(a,b){
+  let m = 0;
+  a.split(" ").forEach(w=>{ if(b.includes(w)) m++; });
+  return m / b.split(" ").length;
 }
 
-function startListening() {
-  recognition.start();
+// ================= INIT =================
+function initApp(){
+  if(initialized) return;
+
+  unlockAudio();          // 🔓 ses kilidi
+  rec.start();            // 🎤 mic izni (1 kere)
+  initialized = true;
 }
 
-recognition.onresult = function(event) {
-  const spoken = normalize(event.results[0][0].transcript);
-  const target = normalize(expected);
+// ================= RESULT =================
+rec.onresult = e => {
+  const spoken = normalize(e.results[0][0].transcript);
+  const target = normalize(phrases[i]);
 
-  if (spoken === target) {
-    correctCount++;
-    document.getElementById("correct").innerText = correctCount;
-    document.getElementById("result").innerHTML =
-      `<span class="correct">✅ Correct!</span>`;
-    document.getElementById("successSound").play();
-
-    setTimeout(generatePhrase, 1200);
+  if(similarity(spoken,target) >= 0.8){
+    ok++;
+    okSound.currentTime = 0;
+    okSound.play();
+    resultEl.innerHTML = `<div class="correct">✔ Correct</div>`;
+    i++;
   } else {
-    wrongCount++;
-    document.getElementById("wrong").innerText = wrongCount;
-    document.getElementById("result").innerHTML =
-      `<span class="wrong">❌ You said: "${spoken}"</span>`;
-    document.getElementById("errorSound").play();
+    bad++;
+    badSound.currentTime = 0;
+    badSound.play();
+    if(navigator.vibrate) navigator.vibrate(150);
+    resultEl.innerHTML = `<div class="wrong">✖ Try again</div>`;
+  }
+  render();
+};
+
+// 🔁 otomatik devam (izin tekrar sormaz)
+rec.onend = () => {
+  if(initialized && i < phrases.length) {
+    rec.start();
   }
 };
+
+// ================= CONTROLS =================
+function skip(){ i++; render(); }
+function back(){ if(i>0) i--; render(); }
+
+function speak(){
+  const u = new SpeechSynthesisUtterance(phrases[i]);
+  u.lang = "en-US";
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
 </script>
 
 </body>
 </html>
-

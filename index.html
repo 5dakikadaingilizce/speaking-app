@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice (Vers.1.8)</title>
+    <title>5 Dakikada İngilizce - Practice v1.9</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -11,81 +11,159 @@
     <link rel="apple-touch-icon" href="logo.png">
 
     <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.75);
+            --primary: #38bdf8;
+            --secondary: #2dd4bf;
+            --accent: #fb7185;
+            --text-main: #f8fafc;
+        }
+
         body {
-            margin: 0; font-family: 'Segoe UI', sans-serif; background: #0f172a;
-            height: 100vh; display: flex; justify-content: center; align-items: center; color: white;
+            margin: 0; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            color: var(--text-main);
             overflow: hidden;
         }
+
         .app {
-            background: rgba(30, 41, 59, 0.9); padding: 30px; border-radius: 28px;
-            width: 90%; max-width: 450px; text-align: center; border: 1px solid #38bdf8;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 30px; 
+            border-radius: 35px;
+            width: 88%; 
+            max-width: 420px; 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
-        /* Logo Stili */
+
         .app-logo {
-            width: 80px; height: 80px; border-radius: 18px; margin-bottom: 15px;
-            border: 2px solid #38bdf8;
+            width: 85px; height: 85px; 
+            border-radius: 22px; 
+            margin-bottom: 15px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+            border: 2px solid var(--primary);
         }
-        h2 { font-size: 18px; color: #94a3b8; margin: 0; }
-        .sub-title { font-size: 20px; color: #38bdf8; font-weight: 800; margin: 5px 0 15px 0; }
+
+        h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
+        .sub-title { font-size: 18px; color: var(--primary); font-weight: 800; margin: 5px 0 20px 0; }
+
         #phrase { 
-            font-size: 28px; font-weight: 800; margin: 15px 0; color: #2dd4bf; 
-            min-height: 80px; display: flex; align-items: center; justify-content: center; 
+            font-size: 30px; 
+            font-weight: 800; 
+            margin: 20px 0; 
+            color: var(--secondary); 
+            min-height: 100px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            line-height: 1.3;
+            text-shadow: 0 0 15px rgba(45, 212, 191, 0.3);
         }
-        button { padding: 16px; margin: 5px; border: none; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
-        .start { background: #38bdf8; color: #0f172a; width: 100%; margin-bottom: 10px; }
-        .ctrl { background: #334155; color: white; width: 47%; }
-        /* Next butonu otomatik geçiş olduğu için gizli kalabilir veya manuel kullanım için durabilir */
-        .next { background: #2dd4bf; color: #0f172a; width: 100%; margin-top: 10px; display: none; }
-        #result { font-size: 20px; font-weight: bold; margin: 10px 0; height: 30px; }
-        .correct-text { color: #2dd4bf; }
-        .wrong-text { color: #fb7185; }
-        .stats { margin-top: 20px; font-size: 12px; opacity: 0.5; border-top: 1px solid #334155; padding-top: 10px; }
+
+        /* Mikrofon Butonu */
+        .start { 
+            background: linear-gradient(135deg, var(--primary), #0ea5e9);
+            color: #0f172a; 
+            width: 100%; 
+            padding: 18px;
+            border-radius: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -5px rgba(56, 189, 248, 0.4);
+            transition: 0.3s;
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); box-shadow: 0 10px 30px rgba(56, 189, 248, 0.6); }
+            100% { transform: scale(1); }
+        }
+
+        .start:active { transform: scale(0.95); }
+
+        .ctrl-container { display: flex; gap: 12px; margin: 15px 0; }
+        .ctrl { 
+            background: #334155; color: white; flex: 1; padding: 14px; 
+            border-radius: 14px; border: none; font-weight: 600; cursor: pointer;
+        }
+
+        #result { font-size: 18px; font-weight: 700; margin: 15px 0; height: 30px; }
+        .correct-text { color: var(--secondary); }
+        .wrong-text { color: var(--accent); }
+
+        .stats { 
+            margin-top: 20px; 
+            font-size: 12px; 
+            color: #94a3b8; 
+            background: rgba(15, 23, 42, 0.4);
+            padding: 15px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .stat-item { display: flex; flex-direction: column; gap: 5px; }
+        .stat-value { color: var(--primary); font-weight: 800; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <img src="logo.png" alt="Logo" class="app-logo">
+    <h2>5 Dakikada İngilizce</h2>
+    <div class="sub-title">SPEAKING PRACTICE</div>
     
-    <h2>5 Dakikada İngilizce (Vers.1.8)</h2>
-    <div class="sub-title">1. KUR SPEAKING PRACTICE</div>
-    
-    <div id="phrase">Phrases Loading...</div>
+    <div id="phrase">Loading...</div>
 
     <button class="start" id="startBtn">🎤 TAP TO SPEAK</button>
-    <button class="ctrl" id="listenBtn">🔊 Listen</button>
-    <button class="ctrl" id="backBtn">⬅ Back</button>
-    <button class="next" id="nextBtn">Next Phrase ▶</button>
+    
+    <div class="ctrl-container">
+        <button class="ctrl" id="listenBtn">🔊 Listen</button>
+        <button class="ctrl" id="backBtn">⬅ Back</button>
+    </div>
 
     <div id="result"></div>
 
     <div class="stats">
-        Order: <span id="current">1</span> / <span id="total">0</span> | ✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
+        <div class="stat-item">ORDER <span class="stat-value" id="current">1</span></div>
+        <div class="stat-item">TOTAL <span class="stat-value" id="total">0</span></div>
+        <div class="stat-item">✅ <span class="stat-value" id="correct" style="color:#2dd4bf">0</span></div>
+        <div class="stat-item">❌ <span class="stat-value" id="wrong" style="color:#fb7185">0</span></div>
     </div>
 </div>
 
 <script>
+// --- DATA PREPARATION ---
 const preps = ["of", "to", "for", "from", "with", "without", "after", "before", "about", "because of", "in", "on", "at"];
 const dets = ["the", "two", "three", "four", "my", "your"];
 const noun = "children";
-
 let phrases = [];
-preps.forEach(p => {
-    dets.forEach(d => {
-        phrases.push(`${p} ${d} ${noun}`);
-    });
-});
+preps.forEach(p => { dets.forEach(d => { phrases.push(`${p} ${d} ${noun}`); }); });
 
 let index = 0, correctCount = 0, wrongCount = 0;
 const phraseEl = document.getElementById("phrase");
 const resultEl = document.getElementById("result");
-const nextBtn = document.getElementById("nextBtn");
 const startBtn = document.getElementById("startBtn");
 
 document.getElementById("total").textContent = phrases.length;
 
+// --- AUDIO SYSTEM ---
 function playBeep(isCorrect) {
-    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const context = new AudioContext();
+    if (context.state === 'suspended') context.resume();
+
     const osc = context.createOscillator();
     const gain = context.createGain();
     osc.connect(gain);
@@ -114,16 +192,21 @@ function speak() {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(phrases[index]);
     u.lang = "en-US";
+    u.rate = 0.9;
     window.speechSynthesis.speak(u);
 }
 
+// --- SPEECH RECOGNITION ---
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) alert("Please use Chrome or Safari for speech features.");
 const rec = new SR();
 rec.lang = "en-US";
+rec.interimResults = false;
 
 rec.onstart = () => {
     startBtn.innerText = "Listening...";
     startBtn.style.background = "#fb7185";
+    startBtn.style.animation = "none";
 };
 
 rec.onresult = e => {
@@ -133,10 +216,10 @@ rec.onresult = e => {
 
     if (spoken === target || isCloseEnough) {
         correctCount++;
-        resultEl.innerHTML = '<span class="correct-text">✅ Correct!</span>';
+        resultEl.innerHTML = '<span class="correct-text">Excellent! ✅</span>';
         playBeep(true);
         
-        // OTOMATİK GEÇİŞ SİSTEMİ (1.5 Saniye Bekler)
+        // AUTO NEXT
         setTimeout(() => {
             if(index < phrases.length - 1) {
                 index++;
@@ -144,13 +227,12 @@ rec.onresult = e => {
                 render();
                 speak();
             } else {
-                resultEl.innerHTML = "🏆 Finished!";
+                resultEl.innerHTML = "🏆 COURSE COMPLETED!";
             }
         }, 1500);
-
     } else {
         wrongCount++;
-        resultEl.innerHTML = '<span class="wrong-text">❌ Try Again</span>';
+        resultEl.innerHTML = '<span class="wrong-text">Try Again ❌</span>';
         playBeep(false);
     }
     render();
@@ -158,16 +240,14 @@ rec.onresult = e => {
 
 rec.onend = () => {
     startBtn.innerText = "🎤 TAP TO SPEAK";
-    startBtn.style.background = "#38bdf8";
+    startBtn.style.background = "";
+    startBtn.style.animation = "pulse 2.5s infinite";
 };
 
 startBtn.onclick = () => { resultEl.innerHTML = ""; rec.start(); };
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("backBtn").onclick = () => {
     if(index > 0) { index--; resultEl.innerHTML = ""; render(); speak(); }
-};
-document.getElementById("nextBtn").onclick = () => {
-    if(index < phrases.length - 1) { index++; resultEl.innerHTML = ""; render(); speak(); }
 };
 
 render();

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Combination Speaking Drill</title>
+<title>Grammar-Aware Speaking Drill</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -22,7 +22,7 @@ body{
   padding:30px;
   border-radius:18px;
   width:95%;
-  max-width:650px;
+  max-width:700px;
   text-align:center;
 }
 #phrase{
@@ -46,10 +46,11 @@ button{
 .stats{margin-top:15px;font-size:14px;}
 </style>
 </head>
+
 <body>
 
 <div class="app">
-<h2>🎤 Speaking Drill</h2>
+<h2>🎤 Speaking Drill (Grammar Aware)</h2>
 
 <div id="phrase"></div>
 
@@ -71,27 +72,58 @@ Phrase <span id="current"></span>/<span id="total"></span><br>
 <audio id="badSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
 <script>
-
-// ================== DATA ==================
+// ================= PREPOSITIONS =================
 const prepositions = [
-"of","to","for","from","with","without","after",
-"before","about","because of","in","on","at"
+  "of","to","for","from","with","without",
+  "after","before","about","because of","in","on","at"
 ];
 
+// ================= DETERMINERS =================
 const determiners = [
-"the","a","2","3","4","my","your"
+  { type:"article", value:"a" },
+  { type:"article", value:"an" },
+  { type:"definite", value:"the" },
+  { type:"possessive", value:"my" },
+  { type:"possessive", value:"your" },
+  { type:"number", value:2 },
+  { type:"number", value:3 },
+  { type:"number", value:4 }
 ];
 
-const noun = "children";
+// ================= NOUNS (EXTENDABLE) =================
+const nouns = [
+  { word:"child", countable:true, plural:false },
+  { word:"children", countable:true, plural:true }
+];
 
-// ====== TÜM KOMBINASYONLARI ÜRET ======
+// ================= GRAMMAR ENGINE =================
+function isValidCombination(det, noun){
+  if(det.type==="article"){
+    if(!noun.countable) return false;
+    if(noun.plural) return false;
+    if(det.value==="an" && !/^[aeiou]/i.test(noun.word)) return false;
+    if(det.value==="a" && /^[aeiou]/i.test(noun.word)) return false;
+  }
+  if(det.type==="number"){
+    if(!noun.countable) return false;
+    if(noun.plural===false) return false;
+  }
+  return true;
+}
+
+// ================= BUILD PHRASES =================
 let phrases = [];
 prepositions.forEach(p=>{
   determiners.forEach(d=>{
-    phrases.push(`${p} ${d} ${noun}`);
+    nouns.forEach(n=>{
+      if(isValidCombination(d,n)){
+        phrases.push(`${p} ${d.value} ${n.word}`);
+      }
+    });
   });
 });
 
+// ================= STATE =================
 let index=0;
 let correctCount=0;
 let wrongCount=0;
@@ -101,40 +133,33 @@ let solved=new Array(phrases.length).fill(false);
 const phraseEl=document.getElementById("phrase");
 const resultEl=document.getElementById("result");
 const nextBtn=document.getElementById("nextBtn");
-const correctEl=document.getElementById("correct");
-const wrongEl=document.getElementById("wrong");
-const currentEl=document.getElementById("current");
-const totalEl=document.getElementById("total");
 const okSound=document.getElementById("okSound");
 const badSound=document.getElementById("badSound");
 
-totalEl.textContent=phrases.length;
+document.getElementById("total").textContent=phrases.length;
 
 function render(){
   phraseEl.textContent=phrases[index];
-  currentEl.textContent=index+1;
-  correctEl.textContent=correctCount;
-  wrongEl.textContent=wrongCount;
+  document.getElementById("current").textContent=index+1;
+  document.getElementById("correct").textContent=correctCount;
+  document.getElementById("wrong").textContent=wrongCount;
   nextBtn.style.display=solved[index]?"inline-block":"none";
 }
 render();
 
 // ================= US VOICE =================
 let usVoice=null;
-function loadVoice(){
-  const voices=speechSynthesis.getVoices();
-  usVoice=voices.find(v=>v.name.includes("Google")&&v.lang==="en-US")
-        ||voices.find(v=>v.lang==="en-US")
-        ||voices[0];
-}
-speechSynthesis.onvoiceschanged=loadVoice;
+speechSynthesis.onvoiceschanged=()=>{
+  const v=speechSynthesis.getVoices();
+  usVoice=v.find(x=>x.lang==="en-US")||v[0];
+};
 
 function speak(){
-  speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(phrases[index]);
   u.lang="en-US";
   u.rate=0.9;
   if(usVoice)u.voice=usVoice;
+  speechSynthesis.cancel();
   speechSynthesis.speak(u);
 }
 
@@ -142,7 +167,6 @@ function speak(){
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 const rec=new SR();
 rec.lang="en-US";
-rec.continuous=false;
 
 function normalize(t){
   return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
@@ -158,25 +182,20 @@ rec.onresult=e=>{
       correctCount++;
     }
     resultEl.innerHTML='<div class="correct">✅ CORRECT</div>';
-    okSound.currentTime=0;
-    okSound.play();
+    okSound.currentTime=0; okSound.play();
   }else{
     wrongCount++;
     resultEl.innerHTML='<div class="wrong">❌ TRY AGAIN</div>';
-    badSound.currentTime=0;
-    badSound.play();
+    badSound.currentTime=0; badSound.play();
   }
   render();
 };
 
 // ================= BUTTONS =================
 document.getElementById("startBtn").onclick=()=>{
-  loadVoice();
   rec.start();
 };
-
 document.getElementById("listenBtn").onclick=speak;
-
 document.getElementById("nextBtn").onclick=()=>{
   if(solved[index] && index<phrases.length-1){
     index++;
@@ -185,7 +204,6 @@ document.getElementById("nextBtn").onclick=()=>{
     speak();
   }
 };
-
 document.getElementById("backBtn").onclick=()=>{
   if(index>0 && solved[index-1]){
     index--;
@@ -194,7 +212,7 @@ document.getElementById("backBtn").onclick=()=>{
     speak();
   }
 };
-
 </script>
+
 </body>
 </html>

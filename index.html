@@ -1,56 +1,81 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sistematik İngilizce v4.0</title>
+    <title>English Practice v4.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         :root {
-            --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.9);
-            --primary: #38bdf8; --secondary: #2dd4bf;
-            --accent: #fb7185; --text-main: #f8fafc;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.9);
+            --primary: #38bdf8;
+            --secondary: #2dd4bf;
+            --accent: #fb7185;
+            --text-main: #f8fafc;
+            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316);
         }
         body {
             margin: 0; font-family: 'Inter', sans-serif; 
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
             height: 100vh; display: flex; justify-content: center; align-items: center; color: var(--text-main);
-            overflow: hidden;
         }
         .app {
-            background: var(--card-bg); backdrop-filter: blur(20px);
-            padding: 25px; border-radius: 40px; width: 85%; max-width: 400px; text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 35px; width: 90%; max-width: 420px; text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .progress-info { font-size: 11px; color: var(--primary); font-weight: bold; margin-bottom: 10px; }
-        #phrase { font-size: 26px; font-weight: 800; color: var(--secondary); margin: 15px 0; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        #translation { font-size: 18px; color: #94a3b8; margin-bottom: 20px; font-style: italic; visibility: hidden; }
-        #translation.visible { visibility: visible; }
-        .main-btn { 
+        .app-logo { width: 70px; height: 70px; margin-bottom: 5px; }
+        .sub-title { font-size: 18px; font-weight: 900; margin-bottom: 15px; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .phrase-container { min-height: 120px; display: flex; flex-direction: column; justify-content: center; margin-bottom: 10px; }
+        #phrase { font-size: 26px; font-weight: 800; color: var(--secondary); margin: 0; line-height: 1.2; }
+        #translation { font-size: 16px; color: #94a3b8; margin-top: 10px; font-style: italic; opacity: 0; transition: 0.3s; }
+        #translation.visible { opacity: 1; }
+
+        .start { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; 
-            width: 100%; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; border: none; cursor: pointer;
+            width: 100%; padding: 18px; border-radius: 18px; font-size: 18px; font-weight: 800; border: none; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); margin-top: 10px;
         }
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-s { background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; font-size: 12px; cursor: pointer; }
-        #result { margin-top: 10px; font-size: 13px; font-weight: bold; min-height: 20px; }
+        .ctrl-container { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+        .ctrl { background: rgba(51, 65, 85, 0.8); color: white; flex: 1; padding: 12px; border-radius: 12px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-translate { width: 100%; background: rgba(45, 212, 191, 0.1); color: var(--secondary); border: 1px solid var(--secondary); }
+        
+        #result { font-size: 14px; height: 30px; margin-top: 5px; font-weight: bold; }
+        
+        .stats { margin-top: 15px; display: flex; justify-content: space-between; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 15px; font-size: 10px; }
+        .stat-value { color: var(--primary); font-weight: 800; }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <div class="progress-info" id="progressText">Yükleniyor...</div>
-    <div id="phrase">BAŞLAMAK İÇİN DOKUN</div>
-    <div id="translation">Çeviri</div>
-    <button class="main-btn" id="speakBtn">KONUŞMAYI BAŞLAT</button>
-    <div class="controls">
-        <button class="btn-s" onclick="playAudio()">DİNLE (🔈)</button>
-        <button class="btn-s" onclick="toggleTrans()">ÇEVİRİ (👁️)</button>
-        <button class="btn-s" style="grid-column: span 2;" onclick="manualNext()">SIRADAKİNE GEÇ ➡️</button>
+    <img src="logo.png" alt="Logo" class="app-logo">
+    <div class="sub-title">SYSTEMATIC PRACTICE</div>
+    
+    <div class="stats" style="margin-bottom: 15px;">
+        <div>WORD: <span class="stat-value" id="wordProg">1/280</span></div>
+        <div>PHRASE: <span class="stat-value" id="phraseProg">1/66</span></div>
     </div>
+
+    <div class="phrase-container">
+        <div id="phrase">TAP START</div>
+        <div id="translation">Çeviri</div>
+    </div>
+
+    <button class="start" id="startBtn">TAP TO SPEAK</button>
+    
+    <div class="ctrl-container">
+        <button class="ctrl" id="listenBtn">LISTEN</button>
+        <button class="ctrl" id="nextBtn">NEXT ➡️</button>
+        <button class="ctrl btn-translate" id="toggleTransBtn">SHOW TRANSLATION</button>
+    </div>
+
     <div id="result"></div>
 </div>
 
 <script>
-// CSV'DEN ALINAN 280 İSİM (Tam Liste)
+// --- DATA: 280 NOUNS FROM YOUR CSV ---
 const nouns = [
     {en:"day", tr:"gün"}, {en:"monday", tr:"pazartesi"}, {en:"tuesday", tr:"salı"}, {en:"wednesday", tr:"çarşamba"},
     {en:"thursday", tr:"perşembe"}, {en:"friday", tr:"cuma"}, {en:"saturday", tr:"cumartesi"}, {en:"sunday", tr:"pazar"},
@@ -131,65 +156,65 @@ const dets = ["a/an", "the", "my", "your", "two", "three"];
 let nIdx = 0, pIdx = 0, dIdx = 0;
 let currentEN = "", currentTR = "";
 
-// Akıllı Çoğul Motoru
+// Gramer Motoru
 function getPlural(word) {
-    const irregulars = { "child":"children", "man":"men", "woman":"women", "person":"people", "mouse":"mice", "tooth":"teeth", "foot":"feet", "knife":"knives" };
-    if(irregulars[word]) return irregulars[word];
+    const irreg = { "child":"children", "man":"men", "woman":"women", "person":"people", "mouse":"mice", "tooth":"teeth", "foot":"feet", "knife":"knives" };
+    if(irreg[word]) return irreg[word];
     if(word.endsWith("y") && !/[aeiou]y$/.test(word)) return word.slice(0,-1) + "ies";
-    if(word.endsWith("s") || word.endsWith("sh") || word.endsWith("ch")) return word + "es";
     return word + "s";
 }
-
-// Sesli Harf Kontrolü (an/a için)
-function checkVowel(word) {
-    return /^[aeiou]/i.test(word) || word === "hour";
-}
+function isVowel(word) { return /^[aeiou]/i.test(word) || word === "hour"; }
 
 function generate() {
-    let n = nouns[nIdx];
-    let p = preps[pIdx];
-    let d = dets[dIdx];
+    const n = nouns[nIdx];
+    const p = preps[pIdx];
+    const d = dets[dIdx];
     
-    let finalDet = d;
-    let finalNoun = n.en;
+    let fDet = d;
+    let fNoun = n.en;
     
-    if(d === "a/an") finalDet = checkVowel(n.en) ? "an" : "a";
-    if(d === "two" || d === "three") finalNoun = getPlural(n.en);
+    if(d === "a/an") fDet = isVowel(n.en) ? "an" : "a";
+    if(d === "two" || d === "three") fNoun = getPlural(n.en);
     
-    currentEN = `${p} ${finalDet} ${finalNoun}`.replace(/\s+/g, ' ');
-    currentTR = `${n.tr} (${p} - ${d})`; 
+    currentEN = `${p} ${fDet} ${fNoun}`.replace(/\s+/g, ' ');
+    currentTR = `${n.tr} (${p} - ${d})`;
 
     document.getElementById("phrase").textContent = currentEN;
     document.getElementById("translation").textContent = currentTR;
     document.getElementById("translation").classList.remove("visible");
-    document.getElementById("progressText").textContent = `İSİM: ${nIdx+1}/${nouns.length} | EDAT: ${pIdx+1}/${preps.length} | BELİRTEÇ: ${dIdx+1}/${dets.length}`;
+    document.getElementById("wordProg").textContent = `${nIdx+1}/${nouns.length}`;
+    document.getElementById("phraseProg").textContent = `${(pIdx * dets.length) + dIdx + 1}/${preps.length * dets.length}`;
 }
 
-function manualNext() {
+function next() {
     dIdx++;
     if(dIdx >= dets.length) { dIdx = 0; pIdx++; }
     if(pIdx >= preps.length) { pIdx = 0; nIdx++; }
-    if(nIdx >= nouns.length) { nIdx = 0; alert("Liste Başa Döndü!"); }
+    if(nIdx >= nouns.length) nIdx = 0;
     generate();
 }
 
+// Ses Kontrol
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR(); rec.lang = "en-US";
-rec.onresult = e => {
-    let spoken = e.results[0][0].transcript.toLowerCase().trim();
-    if(spoken === currentEN.toLowerCase()) {
-        document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>✅ HARİKA!</span>";
-        setTimeout(manualNext, 1200);
-    } else {
-        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>❌ Duyulan: "${spoken}"</span>`;
-    }
-};
-
-document.getElementById("speakBtn").onclick = () => rec.start();
-function playAudio() {
-    let u = new SpeechSynthesisUtterance(currentEN); u.lang = "en-US"; window.speechSynthesis.speak(u);
+if(SR) {
+    const rec = new SR(); rec.lang = "en-US";
+    rec.onresult = e => {
+        const spoken = e.results[0][0].transcript.toLowerCase().trim();
+        if(spoken === currentEN.toLowerCase()) {
+            document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>✅ EXCELLENT!</span>";
+            setTimeout(next, 1000);
+        } else {
+            document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>❌ Heard: "${spoken}"</span>`;
+        }
+    };
+    document.getElementById("startBtn").onclick = () => rec.start();
 }
-function toggleTrans() { document.getElementById("translation").classList.toggle("visible"); }
+
+document.getElementById("nextBtn").onclick = next;
+document.getElementById("listenBtn").onclick = () => {
+    const u = new SpeechSynthesisUtterance(currentEN); u.lang = "en-US"; window.speechSynthesis.speak(u);
+};
+document.getElementById("toggleTransBtn").onclick = () => document.getElementById("translation").classList.toggle("visible");
 
 generate();
 </script>

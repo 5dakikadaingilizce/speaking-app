@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Speaking Practice</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    text-align: center;
+    padding: 40px;
+  }
+
+  #phrase {
+    font-size: 34px;
+    margin: 30px 0;
+    font-weight: bold;
+  }
+
+  button {
+    font-size: 20px;
+    padding: 12px 25px;
+    cursor: pointer;
+  }
+
+  #result {
+    font-size: 22px;
+    margin-top: 20px;
+  }
+
+  .correct { color: green; }
+  .wrong { color: red; }
+
+  #score {
+    font-size: 20px;
+    margin-top: 25px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🎤 Speak the phrase</h1>
+
+<div id="phrase"></div>
+
+<button onclick="startListening()">🎙️ Speak</button>
+
+<div id="result"></div>
+
+<div id="score">
+  ✅ Correct: <span id="correct">0</span> |
+  ❌ Wrong: <span id="wrong">0</span>
+</div>
+
+<!-- SOUND EFFECTS -->
+<audio id="successSound">
+  <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
+</audio>
+
+<audio id="errorSound">
+  <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
+
+<script>
+const prepositions = [
+  "of", "to", "for", "from", "with",
+  "without", "after", "before", "about", "because of"
+];
+
+const determiners = ["the", "my", "your"];
+const numbers = ["two", "three", "four"];
+const noun = "children";
+
+let expected = "";
+let correctCount = 0;
+let wrongCount = 0;
+
+function random(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generatePhrase() {
+  const prep = random(prepositions);
+  const det = Math.random() < 0.5 ? random(determiners) : random(numbers);
+  expected = `${prep} ${det} ${noun}`;
+  document.getElementById("phrase").innerText = expected;
+  document.getElementById("result").innerText = "";
+}
+
+generatePhrase();
+
+// SPEECH RECOGNITION
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = "en-US";
+
+function normalize(text) {
+  return text.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function startListening() {
+  recognition.start();
+}
+
+recognition.onresult = function(event) {
+  const spoken = normalize(event.results[0][0].transcript);
+  const target = normalize(expected);
+
+  if (spoken === target) {
+    correctCount++;
+    document.getElementById("correct").innerText = correctCount;
+    document.getElementById("result").innerHTML =
+      `<span class="correct">✅ Correct!</span>`;
+    document.getElementById("successSound").play();
+
+    setTimeout(generatePhrase, 1200);
+  } else {
+    wrongCount++;
+    document.getElementById("wrong").innerText = wrongCount;
+    document.getElementById("result").innerHTML =
+      `<span class="wrong">❌ You said: "${spoken}"</span>`;
+    document.getElementById("errorSound").play();
+  }
+};
+</script>
+
+</body>
+</html>

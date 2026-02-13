@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Grammar-Aware Speaking Drill</title>
+<title>Grammar-Aware Speaking Drill (Fixed)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
   margin:0;
-  font-family:system-ui;
-  background:linear-gradient(135deg,#141e30,#243b55);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
   height:100vh;
   display:flex;
   justify-content:center;
@@ -17,201 +17,218 @@ body{
   color:white;
 }
 .app{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  padding:30px;
-  border-radius:18px;
-  width:95%;
-  max-width:700px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  padding:40px;
+  border-radius:24px;
+  width:90%;
+  max-width:600px;
   text-align:center;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 #phrase{
-  font-size:28px;
-  font-weight:600;
-  margin:25px 0;
+  font-size:32px;
+  font-weight:700;
+  margin:30px 0;
+  color: #38bdf8;
+  min-height: 40px;
 }
 button{
-  padding:12px 18px;
-  margin:6px;
+  padding:14px 24px;
+  margin:8px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  font-size:14px;
+  font-size:16px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
-.start{background:#00c6ff;color:white;}
-.ctrl{background:#444;color:white;}
-.next{background:#00ffb3;color:black;display:none;}
-.correct{color:#00ffb3;font-size:22px;}
-.wrong{color:#ff6b6b;font-size:22px;}
-.stats{margin-top:15px;font-size:14px;}
+.start{background:#0ea5e9;color:white;}
+.start:active{transform: scale(0.95);}
+.ctrl{background:#334155;color:white;}
+.next{background:#10b981;color:white; display:none;}
+.correct{color:#10b981; font-size:24px; font-weight: bold; margin-top: 10px;}
+.wrong{color:#f43f5e; font-size:24px; font-weight: bold; margin-top: 10px;}
+.stats{margin-top:25px; font-size:14px; color: #94a3b8; border-top: 1px solid #334155; padding-top: 15px;}
 </style>
 </head>
 
 <body>
 
 <div class="app">
-<h2>🎤 Speaking Drill (Grammar Aware)</h2>
+<h2>🎤 Speaking Drill</h2>
 
-<div id="phrase"></div>
+<div id="phrase">Yükleniyor...</div>
 
-<button class="start" id="startBtn">▶ Start</button><br>
-<button class="ctrl" id="listenBtn">🔊 Listen</button>
+<button class="start" id="startBtn">🎤 TAP TO SPEAK</button><br>
+<button class="ctrl" id="listenBtn">🔊 Listen Word</button>
 <button class="ctrl" id="backBtn">⬅ Back</button>
-<button class="next" id="nextBtn">Next ▶</button>
+<button class="next" id="nextBtn">Next Phrase ▶</button>
 
 <div id="result"></div>
 
 <div class="stats">
-Phrase <span id="current"></span>/<span id="total"></span><br>
-✅ <span id="correct">0</span> |
-❌ <span id="wrong">0</span>
+Phrase <span id="current">1</span>/<span id="total">0</span><br>
+✅ <span id="correct">0</span> | ❌ <span id="wrong">0</span>
 </div>
 </div>
-
-<audio id="okSound" src="https://actions.google.com/sounds/v1/ui/positive_confirmation.ogg"></audio>
-<audio id="badSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 
 <script>
-// ================= PREPOSITIONS =================
-const prepositions = [
-  "of","to","for","from","with","without",
-  "after","before","about","because of","in","on","at"
-];
+// ================= GRAMMAR CONFIG =================
+const prepositions = ["of","to","for","from","with","in","on","at"];
 
-// ================= DETERMINERS =================
 const determiners = [
   { type:"article", value:"a" },
   { type:"article", value:"an" },
-  { type:"definite", value:"the" },
+  { type:"number", value:"two" },
+  { type:"number", value:"three" },
   { type:"possessive", value:"my" },
-  { type:"possessive", value:"your" },
-  { type:"number", value:2 },
-  { type:"number", value:3 },
-  { type:"number", value:4 }
+  { type:"possessive", value:"your" }
 ];
 
-// ================= NOUNS (EXTENDABLE) =================
 const nouns = [
-  { word:"child", countable:true, plural:false },
-  { word:"children", countable:true, plural:true }
+  { word:"child", plural:false },
+  { word:"children", plural:true },
+  { word:"apple", plural:false, startsWithVowel: true },
+  { word:"apples", plural:true, startsWithVowel: true },
+  { word:"car", plural:false },
+  { word:"cars", plural:true }
 ];
 
-// ================= GRAMMAR ENGINE =================
-function isValidCombination(det, noun){
-  if(det.type==="article"){
-    if(!noun.countable) return false;
-    if(noun.plural) return false;
-    if(det.value==="an" && !/^[aeiou]/i.test(noun.word)) return false;
-    if(det.value==="a" && /^[aeiou]/i.test(noun.word)) return false;
-  }
-  if(det.type==="number"){
-    if(!noun.countable) return false;
-    if(noun.plural===false) return false;
-  }
+// ================= GRAMMAR ENGINE (FIXED) =================
+function isValid(det, noun) {
+  // 1. Çoğul isimlerle "a/an" asla gelmez
+  if(det.type === "article" && noun.plural) return false;
+  
+  // 2. "An" sadece sesli harfle başlayan tekil isimle gelir
+  if(det.value === "an" && !noun.startsWithVowel) return false;
+  
+  // 3. "A" sesli harfle başlayanla gelmez
+  if(det.value === "a" && noun.startsWithVowel) return false;
+
+  // 4. Sayılar (two, three) sadece çoğul isimlerle gelir
+  if(det.type === "number" && !noun.plural) return false;
+
   return true;
 }
 
 // ================= BUILD PHRASES =================
 let phrases = [];
-prepositions.forEach(p=>{
-  determiners.forEach(d=>{
-    nouns.forEach(n=>{
-      if(isValidCombination(d,n)){
+prepositions.forEach(p => {
+  determiners.forEach(d => {
+    nouns.forEach(n => {
+      if(isValid(d, n)) {
         phrases.push(`${p} ${d.value} ${n.word}`);
       }
     });
   });
 });
 
-// ================= STATE =================
-let index=0;
-let correctCount=0;
-let wrongCount=0;
-let solved=new Array(phrases.length).fill(false);
+// ================= STATE & LOGIC =================
+let index = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let solved = new Array(phrases.length).fill(false);
 
-// ================= ELEMENTS =================
-const phraseEl=document.getElementById("phrase");
-const resultEl=document.getElementById("result");
-const nextBtn=document.getElementById("nextBtn");
-const okSound=document.getElementById("okSound");
-const badSound=document.getElementById("badSound");
+const phraseEl = document.getElementById("phrase");
+const resultEl = document.getElementById("result");
+const nextBtn = document.getElementById("nextBtn");
 
-document.getElementById("total").textContent=phrases.length;
+document.getElementById("total").textContent = phrases.length;
 
-function render(){
-  phraseEl.textContent=phrases[index];
-  document.getElementById("current").textContent=index+1;
-  document.getElementById("correct").textContent=correctCount;
-  document.getElementById("wrong").textContent=wrongCount;
-  nextBtn.style.display=solved[index]?"inline-block":"none";
+function render() {
+  phraseEl.textContent = phrases[index];
+  document.getElementById("current").textContent = index + 1;
+  document.getElementById("correct").textContent = correctCount;
+  document.getElementById("wrong").textContent = wrongCount;
+  nextBtn.style.display = solved[index] ? "inline-block" : "none";
 }
-render();
 
-// ================= US VOICE =================
-let usVoice=null;
-speechSynthesis.onvoiceschanged=()=>{
-  const v=speechSynthesis.getVoices();
-  usVoice=v.find(x=>x.lang==="en-US")||v[0];
+// ================= SOUND EFFECTS (SYSTEM GENERATED) =================
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  if(type === 'ok') {
+    osc.frequency.setValueAtTime(500, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1000, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+  } else {
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+  }
+  osc.start();
+  osc.stop(ctx.currentTime + 0.3);
+}
+
+// ================= SPEECH (LISTEN) =================
+function speak() {
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(phrases[index]);
+  u.lang = "en-US";
+  u.rate = 0.8;
+  window.speechSynthesis.speak(u);
+}
+
+// ================= RECOGNITION (FIXED) =================
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const rec = new SR();
+rec.lang = "en-US";
+rec.interimResults = false;
+
+rec.onstart = () => {
+    document.getElementById("startBtn").innerText = "Listening...";
+    document.getElementById("startBtn").style.background = "#ef4444";
 };
 
-function speak(){
-  const u=new SpeechSynthesisUtterance(phrases[index]);
-  u.lang="en-US";
-  u.rate=0.9;
-  if(usVoice)u.voice=usVoice;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
-}
+rec.onresult = e => {
+  const spoken = e.results[0][0].transcript.toLowerCase().replace(/[^\w\s]/g,"").trim();
+  const target = phrases[index].toLowerCase().trim();
 
-// ================= SPEECH RECOGNITION =================
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const rec=new SR();
-rec.lang="en-US";
-
-function normalize(t){
-  return t.toLowerCase().replace(/[^\w\s]/g,"").trim();
-}
-
-rec.onresult=e=>{
-  const spoken=normalize(e.results[0][0].transcript);
-  const target=normalize(phrases[index]);
-
-  if(spoken===target){
-    if(!solved[index]){
-      solved[index]=true;
+  if(spoken === target) {
+    if(!solved[index]) {
+      solved[index] = true;
       correctCount++;
     }
-    resultEl.innerHTML='<div class="correct">✅ CORRECT</div>';
-    okSound.currentTime=0; okSound.play();
-  }else{
+    resultEl.innerHTML = '<div class="correct">✅ PERFECT!</div>';
+    playSound('ok');
+  } else {
     wrongCount++;
-    resultEl.innerHTML='<div class="wrong">❌ TRY AGAIN</div>';
-    badSound.currentTime=0; badSound.play();
+    resultEl.innerHTML = `<div class="wrong">❌ You said: "${spoken}"</div>`;
+    playSound('bad');
   }
   render();
 };
 
-// ================= BUTTONS =================
-document.getElementById("startBtn").onclick=()=>{
-  rec.start();
+rec.onend = () => {
+    document.getElementById("startBtn").innerText = "🎤 TAP TO SPEAK";
+    document.getElementById("startBtn").style.background = "#0ea5e9";
 };
-document.getElementById("listenBtn").onclick=speak;
-document.getElementById("nextBtn").onclick=()=>{
-  if(solved[index] && index<phrases.length-1){
+
+// ================= NAVIGATION =================
+document.getElementById("startBtn").onclick = () => rec.start();
+document.getElementById("listenBtn").onclick = speak;
+document.getElementById("nextBtn").onclick = () => {
+  if(index < phrases.length - 1) {
     index++;
-    resultEl.innerHTML="";
+    resultEl.innerHTML = "";
     render();
-    speak();
   }
 };
-document.getElementById("backBtn").onclick=()=>{
-  if(index>0 && solved[index-1]){
+document.getElementById("backBtn").onclick = () => {
+  if(index > 0) {
     index--;
-    resultEl.innerHTML="";
+    resultEl.innerHTML = "";
     render();
-    speak();
   }
 };
+
+render();
 </script>
 
 </body>

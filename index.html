@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v2.0</title>
+    <title>5 Dakikada İngilizce - Practice v2.1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,12 +13,12 @@
     <style>
         :root {
             --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.85);
             --primary: #38bdf8;
             --secondary: #2dd4bf;
             --accent: #fb7185;
             --text-main: #f8fafc;
-            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316); /* Kırmızı-Turuncu geçiş */
+            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316);
         }
 
         body {
@@ -31,6 +31,22 @@
             align-items: center; 
             color: var(--text-main);
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Versiyon Numarası Stili */
+        .version-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .app {
@@ -46,24 +62,21 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         }
 
-        /* Çerçevesiz Logo */
         .app-logo {
-            width: 100px; height: 100px; 
+            width: 90px; height: 90px; 
             margin-bottom: 15px;
             object-fit: contain;
         }
 
         h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #94a3b8; margin: 0; }
         
-        /* Renkli Speaking Practice Yazısı */
         .sub-title { 
-            font-size: 20px; 
+            font-size: 19px; 
             font-weight: 900; 
-            margin: 8px 0 20px 0; 
+            margin: 5px 0 20px 0; 
             background: var(--logo-grad);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
         }
 
         #phrase { 
@@ -100,7 +113,7 @@
 
         .ctrl-container { display: flex; gap: 12px; margin: 15px 0; }
         .ctrl { 
-            background: rgba(51, 65, 85, 0.6); 
+            background: rgba(51, 65, 85, 0.7); 
             color: white; flex: 1; padding: 16px; 
             border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);
             font-weight: 600; cursor: pointer;
@@ -126,6 +139,8 @@
     </style>
 </head>
 <body>
+
+<div class="version-tag">VERSİYON 2.1</div>
 
 <div class="app">
     <img src="logo.png" alt="Logo" class="app-logo">
@@ -166,19 +181,28 @@ const startBtn = document.getElementById("startBtn");
 
 document.getElementById("total").textContent = phrases.length;
 
-// --- AUDIO SYSTEM ---
+// --- GÜÇLENDİRİLMİŞ SES SİSTEMİ ---
 function playBeep(isCorrect) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const context = new AudioContext();
     if (context.state === 'suspended') context.resume();
+    
     const osc = context.createOscillator();
     const gain = context.createGain();
-    osc.connect(gain); gain.connect(context.destination);
-    osc.frequency.setValueAtTime(isCorrect ? 600 : 200, context.currentTime);
-    if(isCorrect) osc.frequency.exponentialRampToValueAtTime(900, context.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.1, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.2);
-    osc.start(); osc.stop(context.currentTime + 0.2);
+    
+    osc.type = 'triangle'; // Daha gür ve tok bir ses için
+    osc.connect(gain); 
+    gain.connect(context.destination);
+    
+    osc.frequency.setValueAtTime(isCorrect ? 800 : 150, context.currentTime);
+    if(isCorrect) osc.frequency.exponentialRampToValueAtTime(1200, context.currentTime + 0.15);
+    
+    // Ses seviyesini (gain) maksimuma çektik (0.5 güvenli maksimumdur)
+    gain.gain.setValueAtTime(0.5, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.3);
+    
+    osc.start(); 
+    osc.stop(context.currentTime + 0.3);
 }
 
 function render() {
@@ -196,7 +220,7 @@ function speak() {
     window.speechSynthesis.speak(u);
 }
 
-// --- SPEECH RECOGNITION WITH FUZZY MATCHING ---
+// --- SPEECH RECOGNITION ---
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
@@ -211,10 +235,7 @@ rec.onresult = e => {
     const spoken = e.results[0][0].transcript.toLowerCase().trim();
     const target = phrases[index].toLowerCase().trim();
 
-    // Esneklik Katmanı: Bazı yaygın hataları otomatik düzelt
     let checkSpoken = spoken.replace("off", "of").replace("for", "four").replace("to", "two");
-    
-    // Kelime Bazlı Kontrol (Kelimelerin %70'i varsa geç)
     const targetWords = target.split(" ");
     const matchedWords = targetWords.filter(word => checkSpoken.includes(word));
     const score = matchedWords.length / targetWords.length;

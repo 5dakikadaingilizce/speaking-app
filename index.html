@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.1.9</title>
+    <title>5 Dakikada İngilizce - V.2.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-touch-image" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
     <style>
         :root {
@@ -32,6 +33,12 @@
             padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
         }
 
+        /* Material Icon Styling */
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
         #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 30; }
         .main-title-white { font-size: 22px; font-weight: 900; color: white; margin-bottom: 20px; }
         
@@ -44,9 +51,13 @@
 
         #app-screen { display: none; width: 88%; max-width: 420px; text-align: center; position: relative; }
         
-        /* Navigasyon Alanı */
+        /* Navigasyon Alanı Revize */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
-        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 45px; height: 45px; font-size: 20px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; }
+        .nav-btn { 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; height: 45px; padding: 0 15px; font-size: 13px; font-weight: bold;
+            cursor: pointer; color: white; display: flex; align-items: center; gap: 8px;
+        }
 
         .app-box {
             background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -54,7 +65,7 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative;
         }
 
-        .app-logo { width: 70px; height: 70px; margin-bottom: 10px; } /* Eski boyuta çekildi */
+        .app-logo { width: 70px; height: 70px; margin-bottom: 10px; }
         .sub-title-white { font-size: 14px; color: white; font-weight: bold; margin-bottom: 5px; }
         
         .lesson-title-grad { 
@@ -80,9 +91,12 @@
         #result { font-size: 15px; font-weight: 700; height: 40px; margin: 10px 0; }
         .heard-text { display: block; font-size: 11px; color: #64748b; font-weight: normal; }
         
-        .stats { margin-top: 10px; font-size: 9px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 20px; display: flex; justify-content: space-between; gap: 4px; }
+        /* Stats Panel Revize (İsimler Solda, İkonlar Sağda) */
+        .stats { margin-top: 10px; font-size: 8px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 20px; display: flex; justify-content: space-between; gap: 4px; }
         .stat-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .stat-val { color: var(--primary); font-weight: 800; font-size: 13px; margin-top: 2px; }
+        .stat-label-row { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .stat-label-row .material-symbols-rounded { font-size: 14px; }
+        .stat-val { color: var(--primary); font-weight: 800; font-size: 13px; }
         
         .restart-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 35px; flex-direction: column; justify-content: center; align-items: center; z-index: 50; }
         .restart-overlay.active { display: flex; }
@@ -90,7 +104,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.1.9</div>
+<div class="v-tag">V.2.0</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 5px;">
@@ -110,8 +124,12 @@
 
 <div id="app-screen">
     <div class="top-bar">
-        <button class="nav-btn" onclick="goHome()">🏠</button>
-        <button class="nav-btn" onclick="resetToStart()">🔄</button>
+        <button class="nav-btn" onclick="goHome()">
+            <span class="material-symbols-rounded">home</span> HOME
+        </button>
+        <button class="nav-btn" onclick="resetToStart()">
+            <span class="material-symbols-rounded">refresh</span> RESTART
+        </button>
     </div>
     
     <div class="app-box">
@@ -120,7 +138,8 @@
             <button class="start" onclick="resetToStart()">RESTART</button>
         </div>
 
-        <img src="logo.png" class="app-logo"> <div class="sub-title-white">5 Dakikada İngilizce</div>
+        <img src="logo.png" class="app-logo">
+        <div class="sub-title-white">5 Dakikada İngilizce</div>
         <div id="lessonTitle" class="lesson-title-grad">#Lesson 1</div>
         <div id="lessonSub" style="color:#94a3b8; font-size: 12px; margin-bottom:15px;">Temel 300 İsim</div>
         
@@ -142,17 +161,30 @@
         </div>
 
         <div id="result"></div>
+
         <div class="stats">
-            <div class="stat-item">ORDER <span id="current" class="stat-val">1</span></div>
-            <div class="stat-item">CORRECT ✅ <span id="correct" class="stat-val" style="color:var(--secondary)">0</span></div>
-            <div class="stat-item">PASS ⏭️ <span id="passedCount" class="stat-val" style="color:var(--accent)">0</span></div>
-            <div class="stat-item">REMAINING ⏳ <span id="remaining" class="stat-val" style="color:#f97316">0</span></div>
+            <div class="stat-item">
+                <div class="stat-label-row">ORDER <span class="material-symbols-rounded">assistant_navigation</span></div>
+                <span id="current" class="stat-val">1</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label-row">CORRECT <span class="material-symbols-rounded" style="color:var(--secondary)">task_alt</span></div>
+                <span id="correct" class="stat-val" style="color:var(--secondary)">0</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label-row">PASS <span class="material-symbols-rounded" style="color:var(--accent)">keyboard_double_arrow_right</span></div>
+                <span id="passedCount" class="stat-val" style="color:var(--accent)">0</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label-row">REMAINING <span class="material-symbols-rounded" style="color:#f97316">hourglass_bottom</span></div>
+                <span id="remaining" class="stat-val" style="color:#f97316">0</span>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-// Kelime Listesi (Mevcut)
+// Kelime listesi ve mantık kodları V.1.9 ile birebir aynı tutuldu.
 const nouns = [
     {tr:"Gün", en:"Day"}, {tr:"Pazartesi", en:"Monday"}, {tr:"Salı", en:"Tuesday"}, {tr:"Çarşamba", en:"Wednesday"}, {tr:"Perşembe", en:"Thursday"}, {tr:"Cuma", en:"Friday"}, {tr:"Cumartesi", en:"Saturday"}, {tr:"Pazar", en:"Sunday"}, {tr:"Tatil", en:"Holiday"}, {tr:"Doğum günü", en:"Birthday"}, {tr:"Dün", en:"Yesterday"}, {tr:"Bugün", en:"Today"}, {tr:"Yarın", en:"Tomorrow"}, {tr:"Ay ( Ocak, Şubat..)", en:"Month"}, {tr:"Ocak", en:"January"}, {tr:"Şubat", en:"February"}, {tr:"Mart", en:"March"}, {tr:"Nisan", en:"April"}, {tr:"Mayıs", en:"May"}, {tr:"Haziran", en:"June"}, {tr:"Temmuz", en:"July"}, {tr:"Ağustos", en:"August"}, {tr:"Eylül", en:"September"}, {tr:"Ekim", en:"October"}, {tr:"Kasım", en:"November"}, {tr:"Aralık", en:"December"}, {tr:"Mevsim", en:"Season"}, {tr:"İlkbahar", en:"Spring"}, {tr:"Yaz", en:"Summer"}, {tr:"Sonbahar", en:"Autumn"}, {tr:"Kış", en:"Winter"}, {tr:"Zaman", en:"Time"}, {tr:"Saniye", en:"Second"}, {tr:"Dakika", en:"Minute"}, {tr:"Saat", en:"Hour"}, {tr:"Hafta", en:"Week"}, {tr:"Yıl", en:"Year"}, {tr:"Sabah", en:"Morning"}, {tr:"Öğle", en:"Noon"}, {tr:"Öğleden sonra", en:"Afternoon"}, {tr:"Akşam", en:"Evening"}, {tr:"Gece", en:"Night"}, {tr:"Meslek", en:"Job"}, {tr:"Öğretmen", en:"Teacher"}, {tr:"Garson", en:"Waiter"}, {tr:"Öğrenci", en:"Student"}, {tr:"Müdür", en:"Manager"}, {tr:"Asker", en:"Soldier"}, {tr:"Polis", en:"Cop"}, {tr:"Hemşire", en:"Nurse"}, {tr:"Doktor", en:"Doctor"}, {tr:"Veteriner", en:"Vet"}, {tr:"Avukat", en:"Lawyer"}, {tr:"Aşçı", en:"Cook"}, {tr:"İşçi", en:"Worker"}, {tr:"İş", en:"Work"}, {tr:"Köy", en:"Village"}, {tr:"Kasaba", en:"Town"}, {tr:"Şehir", en:"City"}, {tr:"Ülke", en:"Country"}, {tr:"Türkiye", en:"Turkey"}, {tr:"Türk", en:"Turkish"}, {tr:"Amerika", en:"America"}, {tr:"Amerikan", en:"American"}, {tr:"Almanya", en:"Germany"}, {tr:"Alman", en:"German"}, {tr:"Fransa", en:"France"}, {tr:"Fransız", en:"French"}, {tr:"İtalya", en:"Italy"}, {tr:"İtalyan", en:"Italian"}, {tr:"İngiltere", en:"England"}, {tr:"İngiliz", en:"English"}, {tr:"Rusya", en:"Russia"}, {tr:"Rus", en:"Russian"}, {tr:"Çin", en:"China"}, {tr:"Çinli", en:"Chinese"}, {tr:"Nehir", en:"River"}, {tr:"Deniz", en:"Sea"}, {tr:"Göl", en:"Lake"}, {tr:"Dağ", en:"Mountain"}, {tr:"Gökyüzü", en:"Sky"}, {tr:"Yıldız", en:"Star"}, {tr:"Ay (gök cismi)", en:"Moon"}, {tr:"Dünya", en:"World"}, {tr:"Yerküre", en:"Earth"}, {tr:"Güneş", en:"Sun"}, {tr:"Hava durumu", en:"Weather"}, {tr:"Yağmur", en:"Rain"}, {tr:"Rüzgar", en:"Wind"}, {tr:"Kar", en:"Snow"}, {tr:"Bulut", en:"Cloud"}, {tr:"Sis", en:"Fog"}, {tr:"Fırtına", en:"Storm"}, {tr:"Ağaç", en:"Tree"}, {tr:"Orman", en:"Forest"}, {tr:"Bahçe", en:"Garden"}, {tr:"Çiçek", en:"Flower"}, {tr:"Çimen", en:"Grass"}, {tr:"Yer", en:"Place"}, {tr:"Burada", en:"Here"}, {tr:"Orada", en:"There"}, {tr:"Ev", en:"House"}, {tr:"Okul", en:"School"}, {tr:"Banka", en:"Bank"}, {tr:"Hastane", en:"Hospital"}, {tr:"Dükkan", en:"Shop"}, {tr:"Kafe", en:"Cafe"}, {tr:"Restoran", en:"Restaurant"}, {tr:"Ofis", en:"Office"}, {tr:"Yatak odası", en:"Bedroom"}, {tr:"Mutfak", en:"Kitchen"}, {tr:"Oturma odası", en:"Living room"}, {tr:"Banyo", en:"Bathroom"}, {tr:"Misafir odası", en:"Guest room"}, {tr:"Oda", en:"Room"}, {tr:"Kapı", en:"Door"}, {tr:"Pencere", en:"Window"}, {tr:"Zemin", en:"Floor"}, {tr:"Tekli Koltuk", en:"Armchair"}, {tr:"Sandalye", en:"Chair"}, {tr:"Kanepe", en:"Couch"}, {tr:"Yatak", en:"Bed"}, {tr:"Masa", en:"Table"}, {tr:"Çalışma masası", en:"Desk"}, {tr:"Kitap", en:"Book"}, {tr:"Defter", en:"Notebook"}, {tr:"Kalem", en:"Pencil"}, {tr:"Bilgisayar", en:"Computer"}, {tr:"Telefon", en:"Phone"}, {tr:"Televizyon", en:"TV"}, {tr:"Buzdolabı", en:"Fridge"}, {tr:"Ocak", en:"Stove"}, {tr:"Fırın", en:"Oven"}, {tr:"Kaşık", en:"Spoon"}, {tr:"Çatal", en:"Fork"}, {tr:"Bıçak", en:"Knife"}, {tr:"Tabak", en:"Plate"}, {tr:"Fincan", en:"Cup"}, {tr:"Bardak", en:"Glass"}, {tr:"Şişe", en:"Bottle"}, {tr:"Bulaşıklar", en:"Dishes"}, {tr:"Bulaşık makinesi", en:"Dishwasher"}, {tr:"Çamaır", en:"Laundry"}, {tr:"Çamaşır makinesi", en:"Laundry machine"}, {tr:"Hayat / Yaşam", en:"Life"}, {tr:"Aşk / Sevgi", en:"Love"}, {tr:"Şans", en:"Luck"}, {tr:"Renk", en:"Color"}, {tr:"Şey", en:"Thing"}, {tr:"Top", en:"Ball"}, {tr:"Oyuncak", en:"Toy"}, {tr:"Hikaye", en:"Story"}, {tr:"Sayı / Numara", en:"Number"}, {tr:"Şarkı", en:"Song"}, {tr:"Soru", en:"Question"}, {tr:"Cevap / Yanıt", en:"Answer"}, {tr:"Sorun / Dert", en:"Problem"}, {tr:"Rapor / Karne", en:"Report"}, {tr:"Toplantı", en:"Meeting"}, {tr:"Para", en:"Money"}, {tr:"Uygulama", en:"App"}, {tr:"Fotoğraf", en:"Photo"}, {tr:"Sosyal medya", en:"Social media"}, {tr:"Resim", en:"Picture"}, {tr:"Araba", en:"Car"}, {tr:"Otobüs", en:"Bus"}, {tr:"Tren", en:"Train"}, {tr:"Gemi", en:"Ship"}, {tr:"Tekne", en:"Boat"}, {tr:"Uçak", en:"Plane"}, {tr:"Bisiklet", en:"Bike"}, {tr:"Motosiklet", en:"Motorbike"}, {tr:"Yol", en:"Road"}, {tr:"Sokak", en:"Street"}, {tr:"Köprü", en:"Bridge"}, {tr:"Tünel", en:"Tunnel"}, {tr:"Otobüs durağı", en:"Bus stop"}, {tr:"İstasyon", en:"Station"}, {tr:"Havalimanı", en:"Airport"}, {tr:"Metro", en:"Subway"}, {tr:"Kahvaltı", en:"Breakfast"}, {tr:"Öğle yemeği", en:"Lunch"}, {tr:"Akşam yemeği", en:"Dinner"}, {tr:"İçecek", en:"Drink"}, {tr:"Çay", en:"Tea"}, {tr:"Kahve", en:"Coffee"}, {tr:"Su", en:"Water"}, {tr:"Kola", en:"Coke"}, {tr:"Portakal suyu", en:"Orange juice"}, {tr:"Süt", en:"Milk"}, {tr:"Yemek/ Besin / Gıda", en:"Food"}, {tr:"Et", en:"Meat"}, {tr:"Peynir", en:"Cheese"}, {tr:"Yağ", en:"Oil"}, {tr:"Tuz", en:"Salt"}, {tr:"Şeker", en:"Sugar"}, {tr:"Ekmek", en:"Bread"}, {tr:"Tereyağı", en:"Butter"}, {tr:"Bal", en:"Honey"}, {tr:"Reçel", en:"Jam"}, {tr:"Hamburger", en:"Hamburger"}, {tr:"Pasta", en:"Cake"}, {tr:"Tavuk", en:"Chicken"}, {tr:"Tatlı", en:"Dessert"}, {tr:"Yumurta", en:"Egg"}, {tr:"Zeytin", en:"Olive"}, {tr:"Makarna", en:"Pasta"}, {tr:"Pizza", en:"Pizza"}, {tr:"Salata", en:"Salad"}, {tr:"Meyveler", en:"Fruits"}, {tr:"Çilek", en:"Strawberry"}, {tr:"Elma", en:"Apple"}, {tr:"Muz", en:"Banana"}, {tr:"Portakal", en:"Orange"}, {tr:"Kiraz", en:"Cherry"}, {tr:"Sebzeler", en:"Vegetables"}, {tr:"Domates", en:"Tomato"}, {tr:"Salatalık", en:"Cucumber"}, {tr:"Biber", en:"Pepper"}, {tr:"Patates", en:"Potato"}, {tr:"Hayvan", en:"Animal"}, {tr:"Kedi", en:"Cat"}, {tr:"Köpek", en:"Dog"}, {tr:"Kuş", en:"Bird"}, {tr:"Balık", en:"Fish"}, {tr:"At", en:"Horse"}, {tr:"Sinek", en:"Fly"}, {tr:"Fare", en:"Mouse"}, {tr:"Yılan", en:"Snake"}, {tr:"Maymun", en:"Monkey"}, {tr:"Fil", en:"Elephant"}, {tr:"Kişi / Birey", en:"Person"}, {tr:"Adam", en:"Man"}, {tr:"Kadın", en:"Woman"}, {tr:"Çocuk", en:"Child"}, {tr:"Erkek çocuk", en:"Boy"}, {tr:"Kız çocuk", en:"Girl"}, {tr:"Bebek", en:"Baby"}, {tr:"Genç / Ergen", en:"Teenager"}, {tr:"Akrabalar", en:"Relatives"}, {tr:"Aile", en:"Family"}, {tr:"Ebeveynler", en:"Parents"}, {tr:"Baba", en:"Father"}, {tr:"Anne", en:"Mother"}, {tr:"Dede", en:"Grandfather"}, {tr:"Büyükanne", en:"Grandmother"}, {tr:"Erkek torun", en:"Grandson"}, {tr:"Kız torun", en:"Granddaughter"}, {tr:"Erkek evlat", en:"Son"}, {tr:"Kız evlat", en:"Daughter"}, {tr:"Erkek kardeş", en:"Brother"}, {tr:"Kız kardeş", en:"Sister"}, {tr:"Teyze/hala", en:"Aunt"}, {tr:"Amca/dayı", en:"Uncle"}, {tr:"Kuzen", en:"Cousin"}, {tr:"Giysiler", en:"Clothes"}, {tr:"Palto / Mont / Kaban", en:"Coat"}, {tr:"Elbise", en:"Dress"}, {tr:"Şapka", en:"Hat"}, {tr:"Ceket", en:"Jacket"}, {tr:"Kot pantolon", en:"Jeans"}, {tr:"Gömlek", en:"Shirt"}, {tr:"Ayakkabı(lar)", en:"Shoes"}, {tr:"Şort", en:"Shorts"}, {tr:"Çorap(lar)", en:"Socks"}, {tr:"Kazak", en:"Sweater"}, {tr:"Pantolon", en:"Trousers"}, {tr:"Saat (kol saati)", en:"Watch"}, {tr:"Tişört", en:"T-shirt"}, {tr:"Vücut", en:"Body"}, {tr:"Baş ( İnsan kafası)", en:"Head"}, {tr:"Yüz (insan yüzü)", en:"Face"}, {tr:"Göz", en:"Eye"}, {tr:"Saç", en:"Hair"}, {tr:"Kulak", en:"Ear"}, {tr:"Burun", en:"Nose"}, {tr:"Ağız", en:"Mouth"}, {tr:"Diş", en:"Tooth"}, {tr:"Dil", en:"Tongue"}, {tr:"Kol", en:"Arm"}, {tr:"Bacak", en:"Leg"}, {tr:"El", en:"Hand"}, {tr:"Parmak ( el )", en:"Finger"}, {tr:"Ayak", en:"Foot"}, {tr:"Ayak parmağı", en:"Toe"}
 ];
@@ -252,10 +284,7 @@ function render() {
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
     document.getElementById("phrase-en").classList.toggle("visible", showEn);
-    
-    // Buton metnini güncelle
     document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
-    
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
     document.getElementById("passedCount").textContent = passedCount;

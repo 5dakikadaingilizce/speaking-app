@@ -2,15 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.1.4</title>
-    
+    <title>5 Dakikada İngilizce - V.1.5</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="logo.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="logo.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="logo.png">
 
     <style>
         :root {
@@ -27,35 +23,19 @@
             margin: 0; font-family: 'Inter', sans-serif; 
             background: radial-gradient(circle at top right, #1e293b, #0f172a);
             height: 100vh; display: flex; justify-content: center; align-items: center; 
-            color: var(--text-main); overflow: hidden; position: relative;
+            color: var(--text-main); overflow: hidden;
         }
 
-        /* Giriş Sayfası Stilleri */
-        #entry-page {
-            display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 30;
-        }
-
+        #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; z-index: 30; }
         .lesson-card {
             background: var(--card-bg); padding: 20px; border-radius: 20px; width: 80%; max-width: 300px;
             margin: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s;
-            text-align: left; position: relative; overflow: hidden;
         }
-        .lesson-card:active { transform: scale(0.95); background: var(--primary); }
-        .lesson-card h3 { margin: 0; color: var(--primary); font-size: 18px; }
-        .lesson-card p { margin: 5px 0 0; font-size: 12px; color: #94a3b8; }
+        .lesson-card h3 { margin: 0; color: var(--primary); }
 
-        /* Uygulama Ana Ekranı */
-        #app-screen { display: none; width: 88%; max-width: 420px; text-align: center; }
-
-        .version-tag {
-            position: absolute; top: 20px; right: 20px; font-size: 10px; font-weight: bold;
-            color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .home-btn {
-            position: absolute; top: 20px; left: 20px; font-size: 20px; background: none; border: none; color: white; cursor: pointer; opacity: 0.6;
-        }
+        #app-screen { display: none; width: 88%; max-width: 420px; text-align: center; position: relative; }
+        .version-tag { position: absolute; top: -40px; right: 0; font-size: 10px; color: rgba(255,255,255,0.3); }
+        .home-btn { position: absolute; top: -45px; left: 0; font-size: 24px; background: none; border: none; cursor: pointer; }
 
         .app-box {
             background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
@@ -63,75 +43,66 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative;
         }
 
-        .app-logo { width: 80px; height: 80px; margin-bottom: 10px; object-fit: contain; }
-        .sub-title { font-size: 22px; font-weight: 900; margin-bottom: 15px; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .app-logo { width: 70px; height: 70px; margin-bottom: 10px; }
+        .sub-title { font-size: 20px; font-weight: 900; margin-bottom: 15px; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .phrase-container { min-height: 120px; display: flex; flex-direction: column; justify-content: center; margin: 10px 0; }
-        #phrase-tr { font-size: 26px; font-weight: 800; color: var(--secondary); line-height: 1.2; }
-        #phrase-en { font-size: 18px; color: #94a3b8; margin-top: 15px; font-style: italic; opacity: 0; transition: 0.3s; }
+        .phrase-container { min-height: 110px; display: flex; flex-direction: column; justify-content: center; }
+        #phrase-tr { font-size: 26px; font-weight: 800; color: var(--secondary); }
+        #phrase-en { font-size: 18px; color: #94a3b8; margin-top: 10px; font-style: italic; opacity: 0; transition: 0.3s; }
         #phrase-en.visible { opacity: 1; }
 
         .start { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; width: 100%; padding: 18px; 
-            border-radius: 20px; font-size: 18px; font-weight: 800; border: none; cursor: pointer; animation: pulse 2.5s infinite;
+            border-radius: 20px; font-size: 18px; font-weight: 800; border: none; cursor: pointer;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        .recording { background: #fb7185 !important; animation: none !important; }
 
         .ctrl-container { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
-        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 12px; cursor: pointer; }
-        .btn-toggle { width: 100%; background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid var(--primary); margin-bottom: 5px; }
-        .btn-pass { background: rgba(251, 113, 133, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 12px; }
+        .btn-toggle { width: 100%; background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid var(--primary); }
         .nav-group { display: flex; width: 100%; gap: 8px; }
 
-        #result { font-size: 15px; font-weight: 700; height: 35px; margin: 10px 0; }
+        #result { font-size: 14px; font-weight: 700; height: 30px; margin: 10px 0; }
         .stats { margin-top: 10px; font-size: 11px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 12px; border-radius: 20px; display: flex; justify-content: space-between; }
-        .stat-value { color: var(--primary); font-weight: 800; font-size: 14px; }
-
-        .restart-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 35px; flex-direction: column; justify-content: center; align-items: center; z-index: 40; }
+        
+        .restart-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 35px; flex-direction: column; justify-content: center; align-items: center; z-index: 50; }
         .restart-overlay.active { display: flex; }
     </style>
 </head>
 <body>
 
-<div class="version-tag">V.1.4</div>
-
 <div id="entry-page">
-    <img src="logo.png" style="width: 100px; margin-bottom: 20px;">
-    <h1 style="font-size: 24px; margin-bottom: 30px; background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Select Lesson</h1>
-    
+    <img src="logo.png" style="width: 80px; margin-bottom: 20px;">
+    <h1 style="color:white; margin-bottom: 30px;">Select Lesson</h1>
     <div class="lesson-card" onclick="startLesson(1)">
         <h3>Lesson 1</h3>
-        <p>300 Most Used Nouns</p>
-    </div>
-
-    <div class="lesson-card" style="opacity: 0.5; cursor: default;">
-        <h3>Lesson 2</h3>
-        <p>Coming Soon...</p>
+        <p style="color:#94a3b8; font-size:12px; margin:5px 0 0;">300 Basic Nouns</p>
     </div>
 </div>
 
 <div id="app-screen">
+    <div class="version-tag">V.1.5</div>
     <button class="home-btn" onclick="goHome()">🏠</button>
+    
     <div class="app-box">
         <div id="restartOverlay" class="restart-overlay">
-            <h2 style="color:white; font-size: 24px; margin-bottom: 20px;">Lesson Completed! 🏆</h2>
-            <button class="start" onclick="restartLesson()" style="width: 80%;">RESTART LESSON</button>
-            <button class="ctrl" onclick="goHome()" style="margin-top:15px; background:transparent; border:1px solid white;">SELECT ANOTHER LESSON</button>
+            <h2 style="color:white;">Completed! 🏆</h2>
+            <button class="start" onclick="restartLesson()">RESTART</button>
         </div>
 
-        <img src="logo.png" alt="Logo" class="app-logo">
+        <img src="logo.png" class="app-logo">
         <div class="sub-title" id="lessonTitle">#Lesson 1</div>
         
         <div class="phrase-container">
-            <div id="phrase-tr">YÜKLENİYOR...</div>
-            <div id="phrase-en">ENGLISH PHRASE</div>
+            <div id="phrase-tr">...</div>
+            <div id="phrase-en">...</div>
         </div>
 
         <button class="start" id="startBtn">TAP TO SPEAK</button>
         
         <div class="ctrl-container">
             <button class="ctrl btn-toggle" id="toggleBtn">SHOW ENGLISH</button>
-            <button class="ctrl btn-pass" id="passBtn">PASS</button>
+            <button class="ctrl" id="passBtn" style="background:rgba(251,113,133,0.1); color:var(--accent);">PASS</button>
             <button class="ctrl" id="listenBtn">LISTEN</button>
             <div class="nav-group">
                 <button class="ctrl" id="backBtn">← BACK</button>
@@ -140,36 +111,87 @@
         </div>
 
         <div id="result"></div>
-
         <div class="stats">
-            <div class="stat-item">ORDER <span class="stat-value" id="current">1</span></div>
-            <div class="stat-item">✅ <span class="stat-value" id="correct" style="color:#2dd4bf">0</span></div>
-            <div class="stat-item">⏭️ <span class="stat-value" id="passedCount" style="color:#fb7185">0</span></div>
-            <div class="stat-item">⏳ <span class="stat-value" id="remaining">0</span></div>
+            <div>ORDER <span id="current" style="color:var(--primary)">1</span></div>
+            <div>✅ <span id="correct" style="color:var(--secondary)">0</span></div>
+            <div>⏭️ <span id="passedCount" style="color:var(--accent)">0</span></div>
+            <div>⏳ <span id="remaining">0</span></div>
         </div>
     </div>
 </div>
 
 <script>
-// --- VERİ LİSTESİ ---
-const lessons = {
-    1: {
-        title: "#Lesson 1 - Nouns",
-        data: [
-            {tr:"Gün", en:"Day"}, {tr:"Pazartesi", en:"Monday"}, {tr:"Salı", en:"Tuesday"}, {tr:"Çarşamba", en:"Wednesday"}, {tr:"Perşembe", en:"Thursday"}, {tr:"Cuma", en:"Friday"}, {tr:"Cumartesi", en:"Saturday"}, {tr:"Pazar", en:"Sunday"}, {tr:"Tatil", en:"Holiday"}, {tr:"Doğum günü", en:"Birthday"}, {tr:"Dün", en:"Yesterday"}, {tr:"Bugün", en:"Today"}, {tr:"Yarın", en:"Tomorrow"}, {tr:"Ay ( Ocak, Şubat..)", en:"Month"}, {tr:"Ocak", en:"January"}, {tr:"Şubat", en:"February"}, {tr:"Mart", en:"March"}, {tr:"Nisan", en:"April"}, {tr:"Mayıs", en:"May"}, {tr:"Haziran", en:"June"}, {tr:"Temmuz", en:"July"}, {tr:"Ağustos", en:"August"}, {tr:"Eylül", en:"September"}, {tr:"Ekim", en:"October"}, {tr:"Kasım", en:"November"}, {tr:"Aralık", en:"December"}, {tr:"Mevsim", en:"Season"}, {tr:"İlkbahar", en:"Spring"}, {tr:"Yaz", en:"Summer"}, {tr:"Sonbahar", en:"Autumn"}, {tr:"Kış", en:"Winter"}, {tr:"Zaman", en:"Time"}, {tr:"Saniye", en:"Second"}, {tr:"Dakika", en:"Minute"}, {tr:"Saat", en:"Hour"}, {tr:"Hafta", en:"Week"}, {tr:"Yıl", en:"Year"}, {tr:"Sabah", en:"Morning"}, {tr:"Öğle", en:"Noon"}, {tr:"Öğleden sonra", en:"Afternoon"}, {tr:"Akşam", en:"Evening"}, {tr:"Gece", en:"Night"}, {tr:"Meslek", en:"Job"}, {tr:"Öğretmen", en:"Teacher"}, {tr:"Garson", en:"Waiter"}, {tr:"Öğrenci", en:"Student"}, {tr:"Müdür", en:"Manager"}, {tr:"Asker", en:"Soldier"}, {tr:"Polis", en:"Cop"}, {tr:"Hemşire", en:"Nurse"}, {tr:"Doktor", en:"Doctor"}, {tr:"Veteriner", en:"Vet"}, {tr:"Avukat", en:"Lawyer"}, {tr:"Aşçı", en:"Cook"}, {tr:"İşçi", en:"Worker"}, {tr:"İş", en:"Work"}, {tr:"Köy", en:"Village"}, {tr:"Kasaba", en:"Town"}, {tr:"Şehir", en:"City"}, {tr:"Ülke", en:"Country"}, {tr:"Türkiye", en:"Turkey"}, {tr:"Türk", en:"Turkish"}, {tr:"Amerika", en:"America"}, {tr:"Amerikan", en:"American"}, {tr:"Almanya", en:"Germany"}, {tr:"Alman", en:"German"}, {tr:"Fransa", en:"France"}, {tr:"Fransız", en:"French"}, {tr:"İtalya", en:"Italy"}, {tr:"İtalyan", en:"Italian"}, {tr:"İngiltere", en:"England"}, {tr:"İngiliz", en:"English"}, {tr:"Rusya", en:"Russia"}, {tr:"Rus", en:"Russian"}, {tr:"Çin", en:"China"}, {tr:"Çinli", en:"Chinese"}, {tr:"Nehir", en:"River"}, {tr:"Deniz", en:"Sea"}, {tr:"Göl", en:"Lake"}, {tr:"Dağ", en:"Mountain"}, {tr:"Gökyüzü", en:"Sky"}, {tr:"Yıldız", en:"Star"}, {tr:"Ay (gök cismi)", en:"Moon"}, {tr:"Dünya", en:"World"}, {tr:"Yerküre", en:"Earth"}, {tr:"Güneş", en:"Sun"}, {tr:"Hava durumu", en:"Weather"}, {tr:"Yağmur", en:"Rain"}, {tr:"Rüzgar", en:"Wind"}, {tr:"Kar", en:"Snow"}, {tr:"Bulut", en:"Cloud"}, {tr:"Sis", en:"Fog"}, {tr:"Fırtına", en:"Storm"}, {tr:"Ağaç", en:"Tree"}, {tr:"Orman", en:"Forest"}, {tr:"Bahçe", en:"Garden"}, {tr:"Çiçek", en:"Flower"}, {tr:"Çimen", en:"Grass"}, {tr:"Yer", en:"Place"}, {tr:"Burada", en:"Here"}, {tr:"Orada", en:"There"}, {tr:"Ev", en:"House"}, {tr:"Okul", en:"School"}, {tr:"Banka", en:"Bank"}, {tr:"Hastane", en:"Hospital"}, {tr:"Dükkan", en:"Shop"}, {tr:"Kafe", en:"Cafe"}, {tr:"Restoran", en:"Restaurant"}, {tr:"Ofis", en:"Office"}, {tr:"Yatak odası", en:"Bedroom"}, {tr:"Mutfak", en:"Kitchen"}, {tr:"Oturma odası", en:"Living room"}, {tr:"Banyo", en:"Bathroom"}, {tr:"Misafir odası", en:"Guest room"}, {tr:"Oda", en:"Room"}, {tr:"Kapı", en:"Door"}, {tr:"Pencere", en:"Window"}, {tr:"Zemin", en:"Floor"}, {tr:"Tekli Koltuk", en:"Armchair"}, {tr:"Sandalye", en:"Chair"}, {tr:"Kanepe", en:"Couch"}, {tr:"Yatak", en:"Bed"}, {tr:"Masa", en:"Table"}, {tr:"Çalışma masası", en:"Desk"}, {tr:"Kitap", en:"Book"}, {tr:"Defter", en:"Notebook"}, {tr:"Kalem", en:"Pencil"}, {tr:"Bilgisayar", en:"Computer"}, {tr:"Telefon", en:"Phone"}, {tr:"Televizyon", en:"TV"}, {tr:"Buzdolabı", en:"Fridge"}, {tr:"Ocak", en:"Stove"}, {tr:"Fırın", en:"Oven"}, {tr:"Kaşık", en:"Spoon"}, {tr:"Çatal", en:"Fork"}, {tr:"Bıçak", en:"Knife"}, {tr:"Tabak", en:"Plate"}, {tr:"Fincan", en:"Cup"}, {tr:"Bardak", en:"Glass"}, {tr:"Şişe", en:"Bottle"}, {tr:"Bulaşıklar", en:"Dishes"}, {tr:"Bulaşık makinesi", en:"Dishwasher"}, {tr:"Çamaşır", en:"Laundry"}, {tr:"Çamaşır makinesi", en:"Laundry machine"}, {tr:"Hayat / Yaşam", en:"Life"}, {tr:"Aşk / Sevgi", en:"Love"}, {tr:"Şans", en:"Luck"}, {tr:"Renk", en:"Color"}, {tr:"Şey", en:"Thing"}, {tr:"Top", en:"Ball"}, {tr:"Oyuncak", en:"Toy"}, {tr:"Hikaye", en:"Story"}, {tr:"Sayı / Numara", en:"Number"}, {tr:"Şarkı", en:"Song"}, {tr:"Soru", en:"Question"}, {tr:"Cevap / Yanıt", en:"Answer"}, {tr:"Sorun / Dert", en:"Problem"}, {tr:"Rapor / Karne", en:"Report"}, {tr:"Toplantı", en:"Meeting"}, {tr:"Para", en:"Money"}, {tr:"Uygulama", en:"App"}, {tr:"Fotoğraf", en:"Photo"}, {tr:"Sosyal medya", en:"Social media"}, {tr:"Resim", en:"Picture"}, {tr:"Araba", en:"Car"}, {tr:"Otobüs", en:"Bus"}, {tr:"Tren", en:"Train"}, {tr:"Gemi", en:"Ship"}, {tr:"Tekne", en:"Boat"}, {tr:"Uçak", en:"Plane"}, {tr:"Bisiklet", en:"Bike"}, {tr:"Motosiklet", en:"Motorbike"}, {tr:"Yol", en:"Road"}, {tr:"Sokak", en:"Street"}, {tr:"Köprü", en:"Bridge"}, {tr:"Tünel", en:"Tunnel"}, {tr:"Otobüs durağı", en:"Bus stop"}, {tr:"İstasyon", en:"Station"}, {tr:"Havalimanı", en:"Airport"}, {tr:"Metro", en:"Subway"}, {tr:"Kahvaltı", en:"Breakfast"}, {tr:"Öğle yemeği", en:"Lunch"}, {tr:"Akşam yemeği", en:"Dinner"}, {tr:"İçecek", en:"Drink"}, {tr:"Çay", en:"Tea"}, {tr:"Kahve", en:"Coffee"}, {tr:"Su", en:"Water"}, {tr:"Kola", en:"Coke"}, {tr:"Portakal suyu", en:"Orange juice"}, {tr:"Süt", en:"Milk"}, {tr:"Yemek/ Besin / Gıda", en:"Food"}, {tr:"Et", en:"Meat"}, {tr:"Peynir", en:"Cheese"}, {tr:"Yağ", en:"Oil"}, {tr:"Tuz", en:"Salt"}, {tr:"Şeker", en:"Sugar"}, {tr:"Ekmek", en:"Bread"}, {tr:"Tereyağı", en:"Butter"}, {tr:"Bal", en:"Honey"}, {tr:"Reçel", en:"Jam"}, {tr:"Hamburger", en:"Hamburger"}, {tr:"Pasta", en:"Cake"}, {tr:"Tavuk", en:"Chicken"}, {tr:"Tatlı", en:"Dessert"}, {tr:"Yumurta", en:"Egg"}, {tr:"Zeytin", en:"Olive"}, {tr:"Makarna", en:"Pasta"}, {tr:"Pizza", en:"Pizza"}, {tr:"Salata", en:"Salad"}, {tr:"Meyveler", en:"Fruits"}, {tr:"Çilek", en:"Strawberry"}, {tr:"Elma", en:"Apple"}, {tr:"Muz", en:"Banana"}, {tr:"Portakal", en:"Orange"}, {tr:"Kiraz", en:"Cherry"}, {tr:"Sebzeler", en:"Vegetables"}, {tr:"Domates", en:"Tomato"}, {tr:"Salatalık", en:"Cucumber"}, {tr:"Biber", en:"Pepper"}, {tr:"Patates", en:"Potato"}, {tr:"Hayvan", en:"Animal"}, {tr:"Kedi", en:"Cat"}, {tr:"Köpek", en:"Dog"}, {tr:"Kuş", en:"Bird"}, {tr:"Balık", en:"Fish"}, {tr:"At", en:"Horse"}, {tr:"Sinek", en:"Fly"}, {tr:"Fare", en:"Mouse"}, {tr:"Yılan", en:"Snake"}, {tr:"Maymun", en:"Monkey"}, {tr:"Fil", en:"Elephant"}, {tr:"Kişi / Birey", en:"Person"}, {tr:"Adam", en:"Man"}, {tr:"Kadın", en:"Woman"}, {tr:"Çocuk", en:"Child"}, {tr:"Erkek çocuk", en:"Boy"}, {tr:"Kız çocuk", en:"Girl"}, {tr:"Bebek", en:"Baby"}, {tr:"Genç / Ergen", en:"Teenager"}, {tr:"Akrabalar", en:"Relatives"}, {tr:"Aile", en:"Family"}, {tr:"Ebeveynler", en:"Parents"}, {tr:"Baba", en:"Father"}, {tr:"Anne", en:"Mother"}, {tr:"Dede", en:"Grandfather"}, {tr:"Büyükanne", en:"Grandmother"}, {tr:"Erkek torun", en:"Grandson"}, {tr:"Kız torun", en:"Granddaughter"}, {tr:"Erkek evlat", en:"Son"}, {tr:"Kız evlat", en:"Daughter"}, {tr:"Erkek kardeş", en:"Brother"}, {tr:"Kız kardeş", en:"Sister"}, {tr:"Teyze/hala", en:"Aunt"}, {tr:"Amca/dayı", en:"Uncle"}, {tr:"Kuzen", en:"Cousin"}, {tr:"Giysiler", en:"Clothes"}, {tr:"Palto / Mont / Kaban", en:"Coat"}, {tr:"Elbise", en:"Dress"}, {tr:"Şapka", en:"Hat"}, {tr:"Ceket", en:"Jacket"}, {tr:"Kot pantolon", en:"Jeans"}, {tr:"Gömlek", en:"Shirt"}, {tr:"Ayakkabı(lar)", en:"Shoes"}, {tr:"Şort", en:"Shorts"}, {tr:"Çorap(lar)", en:"Socks"}, {tr:"Kazak", en:"Sweater"}, {tr:"Pantolon", en:"Trousers"}, {tr:"Saat (kol saati)", en:"Watch"}, {tr:"Tişört", en:"T-shirt"}, {tr:"Vücut", en:"Body"}, {tr:"Baş ( İnsan kafası)", en:"Head"}, {tr:"Yüz (insan yüzü)", en:"Face"}, {tr:"Göz", en:"Eye"}, {tr:"Saç", en:"Hair"}, {tr:"Kulak", en:"Ear"}, {tr:"Burun", en:"Nose"}, {tr:"Ağız", en:"Mouth"}, {tr:"Diş", en:"Tooth"}, {tr:"Dil", en:"Tongue"}, {tr:"Kol", en:"Arm"}, {tr:"Bacak", en:"Leg"}, {tr:"El", en:"Hand"}, {tr:"Parmak ( el )", en:"Finger"}, {tr:"Ayak", en:"Foot"}, {tr:"Ayak parmağı", en:"Toe"}
-        ]
-    }
-};
+// --- KELİME LİSTESİ ---
+const nouns = [
+    {tr:"Gün", en:"Day"}, {tr:"Pazartesi", en:"Monday"}, {tr:"Salı", en:"Tuesday"}, {tr:"Çarşamba", en:"Wednesday"}, {tr:"Perşembe", en:"Thursday"}, {tr:"Cuma", en:"Friday"}, {tr:"Cumartesi", en:"Saturday"}, {tr:"Pazar", en:"Sunday"}, {tr:"Tatil", en:"Holiday"}, {tr:"Doğum günü", en:"Birthday"}, {tr:"Dün", en:"Yesterday"}, {tr:"Bugün", en:"Today"}, {tr:"Yarın", en:"Tomorrow"}, {tr:"Ay (Ocak...)", en:"Month"}, {tr:"Ocak", en:"January"}, {tr:"Şubat", en:"February"}, {tr:"Mart", en:"March"}, {tr:"Nisan", en:"April"}, {tr:"Mayıs", en:"May"}, {tr:"Haziran", en:"June"}, {tr:"Temmuz", en:"July"}, {tr:"Ağustos", en:"August"}, {tr:"Eylül", en:"September"}, {tr:"Ekim", en:"October"}, {tr:"Kasım", en:"November"}, {tr:"Aralık", en:"December"}, {tr:"Mevsim", en:"Season"}, {tr:"İlkbahar", en:"Spring"}, {tr:"Yaz", en:"Summer"}, {tr:"Sonbahar", en:"Autumn"}, {tr:"Kış", en:"Winter"}, {tr:"Zaman", en:"Time"}, {tr:"Saniye", en:"Second"}, {tr:"Dakika", en:"Minute"}, {tr:"Saat", en:"Hour"}, {tr:"Hafta", en:"Week"}, {tr:"Yıl", en:"Year"}, {tr:"Sabah", en:"Morning"}, {tr:"Öğle", en:"Noon"}, {tr:"Akşam", en:"Evening"}, {tr:"Gece", en:"Night"}, {tr:"Meslek", en:"Job"}, {tr:"Öğretmen", en:"Teacher"}, {tr:"Garson", en:"Waiter"}, {tr:"Öğrenci", en:"Student"}, {tr:"Müdür", en:"Manager"}, {tr:"Asker", en:"Soldier"}, {tr:"Polis", en:"Cop"}, {tr:"Hemşire", en:"Nurse"}, {tr:"Doktor", en:"Doctor"}, {tr:"Avukat", en:"Lawyer"}, {tr:"Aşçı", en:"Cook"}, {tr:"İşçi", en:"Worker"}, {tr:"İş", en:"Work"}, {tr:"Köy", en:"Village"}, {tr:"Kasaba", en:"Town"}, {tr:"Şehir", en:"City"}, {tr:"Ülke", en:"Country"}, {tr:"Türkiye", en:"Turkey"}, {tr:"Türk", en:"Turkish"}, {tr:"Amerika", en:"America"}, {tr:"Amerikan", en:"American"}, {tr:"Nehir", en:"River"}, {tr:"Deniz", en:"Sea"}, {tr:"Dağ", en:"Mountain"}, {tr:"Gökyüzü", en:"Sky"}, {tr:"Yıldız", en:"Star"}, {tr:"Dünya", en:"World"}, {tr:"Güneş", en:"Sun"}, {tr:"Yağmur", en:"Rain"}, {tr:"Rüzgar", en:"Wind"}, {tr:"Kar", en:"Snow"}, {tr:"Bulut", en:"Cloud"}, {tr:"Ağaç", en:"Tree"}, {tr:"Bahçe", en:"Garden"}, {tr:"Çiçek", en:"Flower"}, {tr:"Ev", en:"House"}, {tr:"Okul", en:"School"}, {tr:"Banka", en:"Bank"}, {tr:"Hastane", en:"Hospital"}, {tr:"Ofis", en:"Office"}, {tr:"Oda", en:"Room"}, {tr:"Kapı", en:"Door"}, {tr:"Pencere", en:"Window"}, {tr:"Masa", en:"Table"}, {tr:"Sandalye", en:"Chair"}, {tr:"Kitap", en:"Book"}, {tr:"Defter", en:"Notebook"}, {tr:"Kalem", en:"Pencil"}, {tr:"Bilgisayar", en:"Computer"}, {tr:"Telefon", en:"Phone"}, {tr:"Para", en:"Money"}, {tr:"Uçak", en:"Plane"}, {tr:"Araba", en:"Car"}, {tr:"Yol", en:"Road"}, {tr:"Kahvaltı", en:"Breakfast"}, {tr:"Öğle Yemeği", en:"Lunch"}, {tr:"Akşam Yemeği", en:"Dinner"}, {tr:"Su", en:"Water"}, {tr:"Ekmek", en:"Bread"}, {tr:"Meyve", en:"Fruit"}, {tr:"Sebze", en:"Vegetable"}, {tr:"Hayvan", en:"Animal"}, {tr:"Kedi", en:"Cat"}, {tr:"Köpek", en:"Dog"}
+];
 
-let currentLessonId = 1;
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false;
 let currentList = [];
 
+// --- SES VE BİP FONKSİYONLARI ---
+function playBeep(isCorrect) {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.connect(g); g.connect(ctx.destination);
+    osc.frequency.value = isCorrect ? 800 : 150;
+    g.gain.setValueAtTime(0.3, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    osc.start(); osc.stop(ctx.currentTime + 0.3);
+}
+
+function speak() {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(currentList[index].en);
+    u.lang = "en-US"; u.rate = 0.8;
+    const voices = window.speechSynthesis.getVoices();
+    // Google veya Microsoft'un US English kadın sesini bul
+    const v = voices.find(x => x.name.includes("Google") && x.lang === "en-US") || 
+              voices.find(x => x.name.includes("Female") && x.lang === "en-US") || voices[0];
+    if(v) u.voice = v;
+    window.speechSynthesis.speak(u);
+}
+
+// --- MİKROFON AYARLARI ---
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec;
+if(SR) {
+    rec = new SR();
+    rec.lang = "en-US";
+    rec.continuous = false;
+    
+    rec.onstart = () => { 
+        isListening = true; 
+        document.getElementById("startBtn").innerText = "LISTENING...";
+        document.getElementById("startBtn").classList.add("recording");
+    };
+    
+    rec.onresult = e => {
+        const spoken = e.results[0][0].transcript.toLowerCase().trim();
+        const target = currentList[index].en.toLowerCase().trim();
+        if(spoken === target || spoken.includes(target)) {
+            correctCount++;
+            playBeep(true);
+            document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>CORRECT!</span>";
+            setTimeout(nextWord, 600);
+        } else {
+            playBeep(false);
+            document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>HEARD: ${spoken}</span>`;
+        }
+    };
+    
+    rec.onend = () => {
+        isListening = false;
+        document.getElementById("startBtn").innerText = "TAP TO SPEAK";
+        document.getElementById("startBtn").classList.remove("recording");
+    };
+}
+
+// --- NAVİGASYON ---
 function startLesson(id) {
-    currentLessonId = id;
-    currentList = [...lessons[id].data];
+    currentList = [...nouns];
     index = 0; correctCount = 0; passedCount = 0;
-    document.getElementById("lessonTitle").textContent = lessons[id].title;
     document.getElementById("entry-page").style.display = "none";
     document.getElementById("app-screen").style.display = "block";
     render();
@@ -178,65 +200,51 @@ function startLesson(id) {
 function goHome() {
     document.getElementById("app-screen").style.display = "none";
     document.getElementById("entry-page").style.display = "flex";
-    restartOverlay.classList.remove("active");
-}
-
-// --- SESLENDİRME ---
-function speak() {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(currentList[index].en);
-    u.lang = "en-US"; u.rate = 0.8; u.pitch = 1.1;
-    const voices = window.speechSynthesis.getVoices();
-    const voice = voices.find(v => (v.name.includes("Female") || v.name.includes("Google")) && v.lang.startsWith("en-US")) || voices[0];
-    if (voice) u.voice = voice;
-    window.speechSynthesis.speak(u);
 }
 
 function render() {
-    if (index >= currentList.length) {
+    if(index >= currentList.length) {
         document.getElementById("restartOverlay").classList.add("active");
         return;
     }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
     document.getElementById("phrase-en").classList.toggle("visible", showEn);
-    document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
     document.getElementById("passedCount").textContent = passedCount;
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
 }
 
-function restartLesson() {
-    document.getElementById("restartOverlay").classList.remove("active");
-    startLesson(currentLessonId);
+function nextWord() {
+    if(index < currentList.length - 1) {
+        index++; showEn = false; render();
+        document.getElementById("result").innerHTML = "";
+    } else {
+        document.getElementById("restartOverlay").classList.add("active");
+    }
 }
 
-// --- KONTROLLER ---
+function restartLesson() {
+    index = 0; correctCount = 0; passedCount = 0;
+    currentList = [...nouns];
+    document.getElementById("restartOverlay").classList.remove("active");
+    render();
+}
+
+// --- CLICK HANDLERS ---
+document.getElementById("startBtn").onclick = () => { if(!isListening) rec.start(); };
+document.getElementById("listenBtn").onclick = speak;
 document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
+document.getElementById("nextBtn").onclick = nextWord;
+document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
 document.getElementById("passBtn").onclick = () => {
     passedCount++;
     currentList.push(currentList[index]);
-    index++; showEn = false; render();
+    nextWord();
 };
 
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR();
-rec.lang = "en-US";
-rec.onresult = e => {
-    const spoken = e.results[0][0].transcript.toLowerCase().trim();
-    const target = currentList[index].en.toLowerCase().trim();
-    if (spoken.includes(target)) {
-        correctCount++;
-        index++; showEn = false; render();
-    }
-};
-
-document.getElementById("startBtn").onclick = () => { try { rec.start(); } catch(e) {} };
-document.getElementById("listenBtn").onclick = speak;
-document.getElementById("nextBtn").onclick = () => { index++; showEn = false; render(); };
-document.getElementById("backBtn").onclick = () => { if(index > 0) index--; showEn = false; render(); };
-
+window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 </script>
 </body>
 </html>

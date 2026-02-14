@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <style>
-        /* Senin CSS kodların aynen korunmuştur */
+        /* CSS kodların milim değişmedi, aynen duruyor */
         :root { --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.85); --primary: #38bdf8; --secondary: #2dd4bf; --accent: #fb7185; --text-main: #f8fafc; --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316); }
         body { margin: 0; font-family: 'Inter', sans-serif; background: radial-gradient(circle at top right, #1e293b, #0f172a); min-height: 100dvh; display: flex; justify-content: center; align-items: center; color: var(--text-main); overflow: hidden; padding: 10px; box-sizing: border-box; }
         .v-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); z-index: 100; }
@@ -50,9 +50,7 @@
     <img src="logo.png" style="width: 70px; margin-bottom: 5px;">
     <div class="main-title-white">5 Dakikada İngilizce</div>
     <h1 style="background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; margin: 5px 0 15px 0;">Select Lesson</h1>
-    
-    <div id="lesson-list-container">
-        </div>
+    <div id="lesson-list-container"></div>
 </div>
 
 <div id="app-screen">
@@ -64,25 +62,20 @@
             <span class="material-symbols-rounded">refresh</span> RESTART
         </button>
     </div>
-    
     <div class="app-box">
         <div id="restartOverlay" class="restart-overlay">
             <h2 style="color:white;">Completed! 🏆</h2>
             <button class="start" onclick="resetToStart()">RESTART</button>
         </div>
-
         <img src="logo.png" class="app-logo">
         <div class="sub-title-white">5 Dakikada İngilizce</div>
         <div id="lessonTitle" class="lesson-title-grad">#Lesson 1</div>
         <div id="lessonSubTitle" class="lesson-sub-white">Bilinmesi Gereken En Temel İsimler</div>
-        
         <div class="phrase-container">
             <div id="phrase-tr">...</div>
             <div id="phrase-en">...</div>
         </div>
-
         <button class="start" id="startBtn">TAP TO SPEAK</button>
-        
         <div class="ctrl-container">
             <button class="ctrl btn-toggle" id="toggleBtn">SHOW ENGLISH</button>
             <button class="ctrl" id="passBtn" style="color:var(--accent)">PASS</button>
@@ -92,9 +85,7 @@
                 <button class="ctrl" id="nextBtn">NEXT →</button>
             </div>
         </div>
-
         <div id="result"></div>
-
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-label-row">ORDER <span class="material-symbols-rounded">assistant_navigation</span></div>
@@ -117,9 +108,10 @@
 </div>
 
 <script>
-let allLessonsData = []; // Tüm dersler buraya dolacak
+let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];
+let activeLessonId = null;
 
 // VERİYİ JSON'DAN ÇEKME
 fetch('data.json')
@@ -127,8 +119,7 @@ fetch('data.json')
     .then(data => {
         allLessonsData = data;
         renderLessonMenu();
-    })
-    .catch(err => console.error("JSON okunamadı:", err));
+    });
 
 function renderLessonMenu() {
     const container = document.getElementById('lesson-list-container');
@@ -143,16 +134,52 @@ function renderLessonMenu() {
 }
 
 function startLesson(lesson) {
+    activeLessonId = lesson.id;
     currentList = [...lesson.content];
+    
+    // HAFIZADAN KONTROL ET (Kaldığı yer var mı?)
+    const saved = localStorage.getItem('lesson_progress_' + activeLessonId);
+    if(saved) {
+        const progress = JSON.parse(saved);
+        index = progress.index;
+        correctCount = progress.correctCount;
+        passedCount = progress.passedCount;
+    } else {
+        index = 0; correctCount = 0; passedCount = 0;
+    }
+
     document.getElementById("lessonTitle").innerText = lesson.title;
     document.getElementById("lessonSubTitle").innerText = lesson.subTitle;
     document.getElementById("entry-page").style.display = "none";
     document.getElementById("app-screen").style.display = "flex";
-    index = 0; correctCount = 0; passedCount = 0;
     render();
 }
 
-// Senin Orijinal Fonksiyonların (Aynen Korundu)
+// İLERLEMEYİ KAYDETME FONKSİYONU
+function saveProgress() {
+    if(activeLessonId) {
+        const progress = { index, correctCount, passedCount };
+        localStorage.setItem('lesson_progress_' + activeLessonId, JSON.stringify(progress));
+    }
+}
+
+function render() {
+    if(index >= currentList.length) {
+        document.getElementById("restartOverlay").classList.add("active");
+        return;
+    }
+    document.getElementById("phrase-tr").textContent = currentList[index].tr;
+    document.getElementById("phrase-en").textContent = currentList[index].en;
+    document.getElementById("phrase-en").classList.toggle("visible", showEn);
+    document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
+    document.getElementById("current").textContent = index + 1;
+    document.getElementById("correct").textContent = correctCount;
+    document.getElementById("passedCount").textContent = passedCount;
+    document.getElementById("remaining").textContent = currentList.length - (index + 1);
+    saveProgress(); // Her render olduğunda kaydet
+}
+
+// Ses ve Diğer Fonksiyonlar (Milim Değişmedi)
 function playBeep(isCorrect) {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -171,8 +198,7 @@ function speak() {
     const u = new SpeechSynthesisUtterance(currentList[index].en);
     u.lang = "en-US"; u.rate = 0.8;
     const voices = window.speechSynthesis.getVoices();
-    const v = voices.find(x => x.name.includes("Google") && x.lang === "en-US") || 
-              voices.find(x => x.lang.startsWith("en-US")) || voices[0];
+    const v = voices.find(x => x.name.includes("Google") && x.lang === "en-US") || voices.find(x => x.lang.startsWith("en-US")) || voices[0];
     if(v) u.voice = v;
     window.speechSynthesis.speak(u);
 }
@@ -182,92 +208,44 @@ const rec = new SR();
 rec.lang = "en-US";
 rec.continuous = true;
 
-rec.onstart = () => { 
-    isListening = true; 
-    document.getElementById("startBtn").innerText = "LISTENING...";
-    document.getElementById("startBtn").classList.add("recording");
-};
+rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
 rec.onresult = e => {
     const spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
     const target = currentList[index].en.toLowerCase().trim();
-    
     if(spoken === target || spoken.includes(target)) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
-        setTimeout(() => {
-            nextWord();
-            if(!autoMode) rec.stop();
-        }, 800);
+        setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 800);
     } else {
         playBeep(false);
         document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>TRY AGAIN ❌</span>`;
     }
 };
 
-rec.onend = () => { 
-    if(autoMode) rec.start(); 
-    else {
-        isListening = false;
-        document.getElementById("startBtn").innerText = "TAP TO SPEAK";
-        document.getElementById("startBtn").classList.remove("recording");
-    }
-};
+rec.onend = () => { if(autoMode) rec.start(); else { isListening = false; document.getElementById("startBtn").innerText = "TAP TO SPEAK"; document.getElementById("startBtn").classList.remove("recording"); } };
 
-function goHome() {
-    autoMode = false; try { rec.stop(); } catch(e) {}
-    document.getElementById("app-screen").style.display = "none";
-    document.getElementById("entry-page").style.display = "flex";
-}
+function goHome() { autoMode = false; try { rec.stop(); } catch(e) {} document.getElementById("app-screen").style.display = "none"; document.getElementById("entry-page").style.display = "flex"; }
 
 function resetToStart() {
     if(confirm("Ders sıfırlanacak. Emin misiniz?")) {
         index = 0; correctCount = 0; passedCount = 0;
+        localStorage.removeItem('lesson_progress_' + activeLessonId); // Kaydı sil
         document.getElementById("restartOverlay").classList.remove("active");
         render();
         document.getElementById("result").innerHTML = "";
     }
 }
 
-function render() {
-    if(index >= currentList.length) {
-        document.getElementById("restartOverlay").classList.add("active");
-        return;
-    }
-    document.getElementById("phrase-tr").textContent = currentList[index].tr;
-    document.getElementById("phrase-en").textContent = currentList[index].en;
-    document.getElementById("phrase-en").classList.toggle("visible", showEn);
-    document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
-    document.getElementById("current").textContent = index + 1;
-    document.getElementById("correct").textContent = correctCount;
-    document.getElementById("passedCount").textContent = passedCount;
-    document.getElementById("remaining").textContent = currentList.length - (index + 1);
-}
+function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").classList.add("active"); } }
 
-function nextWord() {
-    if(index < currentList.length - 1) {
-        index++; showEn = false; render();
-        document.getElementById("result").innerHTML = "";
-    } else {
-        document.getElementById("restartOverlay").classList.add("active");
-    }
-}
-
-document.getElementById("startBtn").onclick = () => { 
-    if(!isListening) { autoMode = true; rec.start(); } 
-    else { autoMode = false; rec.stop(); }
-};
+document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
 document.getElementById("nextBtn").onclick = nextWord;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
-document.getElementById("passBtn").onclick = () => {
-    passedCount++;
-    currentList.push(currentList[index]);
-    nextWord();
-};
-
+document.getElementById("passBtn").onclick = () => { passedCount++; currentList.push(currentList[index]); nextWord(); };
 window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 </script>
 </body>

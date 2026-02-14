@@ -14,16 +14,16 @@
     "title": "#Lesson 2",
     "subTitle": "Günlük Pratik Cümleler",
     "content": [
-      [cite_start]{"tr": "Kapıyı açıyorum.", "en": "I open the door."}, [cite: 1, 2]
-      [cite_start]{"tr": "Kapıyı açtım.", "en": "I opened the door."}, [cite: 3, 4]
-      [cite_start]{"tr": "Kapıyı açacak mısın?", "en": "Will you open the door?"}, [cite: 5, 6]
-      [cite_start]{"tr": "Kapıyı ne zaman açacaklar?", "en": "When will they open the door?"}, [cite: 7, 8]
-      [cite_start]{"tr": "Kapıyı niye açmıyorlar?", "en": "Why aren’t they opening the door?"}, [cite: 9, 10]
-      [cite_start]{"tr": "Bankalar saat 9’den 5’e açıktır.", "en": "The banks are open from 9 to 5."}, [cite: 11, 12]
-      [cite_start]{"tr": "Dükkanlar açık.", "en": "The shops are open."}, [cite: 13, 14]
-      [cite_start]{"tr": "Dükkanlar kapalı.", "en": "The shops are closed."}, [cite: 15, 16]
-      [cite_start]{"tr": "Yaşlı adam dükkanını kapattı.", "en": "The old man closed his shop."}, [cite: 17, 18]
-      [cite_start]{"tr": "Burada yeni bir dükkan açacaklar.", "en": "They will open a new shop here."} [cite: 19, 20]
+      {"tr": "Kapıyı açıyorum.", "en": "I open the door."},
+      {"tr": "Kapıyı açtım.", "en": "I opened the door."},
+      {"tr": "Kapıyı açacak mısın?", "en": "Will you open the door?"},
+      {"tr": "Kapıyı ne zaman açacaklar?", "en": "When will they open the door?"},
+      {"tr": "Kapıyı niye açmıyorlar?", "en": "Why aren’t they opening the door?"},
+      {"tr": "Bankalar saat 9’den 5’e açıktır.", "en": "The banks are open from 9 to 5."},
+      {"tr": "Dükkanlar açık.", "en": "The shops are open."},
+      {"tr": "Dükkanlar kapalı.", "en": "The shops are closed."},
+      {"tr": "Yaşlı adam dükkanını kapattı.", "en": "The old man closed his shop."},
+      {"tr": "Burada yeni bir dükkan açacaklar.", "en": "They will open a new shop here."}
     ]
   }
 ]

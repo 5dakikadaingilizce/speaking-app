@@ -2,106 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - JSON Pro</title>
+    <title>5 Dakikada İngilizce</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.85);
-            --primary: #38bdf8;
-            --secondary: #2dd4bf;
-            --accent: #fb7185;
-            --text-main: #f8fafc;
-            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316);
+            --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.85);
+            --primary: #38bdf8; --secondary: #2dd4bf; --accent: #fb7185;
+            --text-main: #f8fafc; --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316);
         }
-
         body {
-            margin: 0; font-family: 'Inter', sans-serif; 
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            min-height: 100dvh; display: flex; justify-content: center; align-items: center; 
-            color: var(--text-main); overflow: hidden;
-            padding: 10px; box-sizing: border-box;
+            margin: 0; font-family: 'Inter', sans-serif; background: #0f172a;
+            min-height: 100dvh; display: flex; justify-content: center; align-items: center; color: var(--text-main); overflow: hidden; padding: 10px; box-sizing: border-box;
         }
-
-        .v-tag {
-            position: absolute; top: 10px; right: 10px; font-size: 10px;
-            color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05);
-            padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
-            z-index: 100;
-        }
-
-        #entry-page { 
-            display: flex; flex-direction: column; align-items: center; 
-            width: 100%; max-height: 95vh; overflow-y: auto;
-        }
-        .main-title-white { font-size: 20px; font-weight: 900; color: white; margin-bottom: 10px; }
-        
-        .lesson-card {
-            background: var(--card-bg); padding: 15px; border-radius: 20px; width: 85%; max-width: 280px;
-            margin: 8px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center;
-        }
-
-        #app-screen { 
-            display: none; width: 100%; max-width: 400px; 
-            max-height: 98dvh; flex-direction: column; 
-        }
-        
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; width: 100%; }
-        
-        .nav-btn { 
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold;
-            cursor: pointer; color: white; display: flex; align-items: center; gap: 6px;
-        }
-
-        .app-box {
-            background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            padding: 20px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative;
-            text-align: center;
-        }
-
-        .app-logo { width: 60px; height: 60px; margin: 0 auto 5px auto; display: block; }
-        .lesson-title-grad { 
-            background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            font-weight: 900; font-size: 20px; margin-bottom: 4px;
-        }
-        .lesson-sub-white { color: white; font-size: 11px; font-weight: 500; margin-bottom: 10px; }
-
-        .phrase-container { min-height: 90px; display: flex; flex-direction: column; justify-content: center; margin: 10px 0; text-align: center; }
-        #phrase-tr { font-size: 24px; font-weight: 800; color: var(--secondary); }
-        #phrase-en { font-size: 17px; color: #94a3b8; margin-top: 5px; font-style: italic; opacity: 0; transition: 0.3s; }
+        #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; max-height: 95vh; overflow-y: auto; }
+        .lesson-card { background: var(--card-bg); padding: 20px; border-radius: 20px; width: 85%; max-width: 300px; margin: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; text-align: center; }
+        #app-screen { display: none; width: 100%; max-width: 400px; flex-direction: column; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; width: 100%; }
+        .nav-btn { background: rgba(255,255,255,0.1); border-radius: 12px; height: 45px; padding: 0 15px; font-size: 12px; font-weight: bold; cursor: pointer; color: white; border: none; display: flex; align-items: center; gap: 8px; }
+        .app-box { background: var(--card-bg); padding: 25px; border-radius: 35px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; position: relative; }
+        .app-logo { width: 70px; margin-bottom: 10px; }
+        .lesson-title-grad { background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; font-size: 22px; }
+        #phrase-tr { font-size: 28px; font-weight: 800; color: var(--secondary); margin: 20px 0; min-height: 40px; }
+        #phrase-en { font-size: 18px; color: #94a3b8; margin-bottom: 20px; opacity: 0; }
         #phrase-en.visible { opacity: 1; }
-
-        .start { 
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; width: 100%; padding: 15px; 
-            border-radius: 18px; font-size: 16px; font-weight: 800; border: none; cursor: pointer;
-        }
+        .start { background: #38bdf8; color: #0f172a; width: 100%; padding: 18px; border-radius: 20px; font-size: 18px; font-weight: 800; border: none; cursor: pointer; letter-spacing: 1px; }
         .recording { background: #fb7185 !important; }
-
-        .ctrl-container { display: flex; gap: 6px; margin: 12px 0; flex-wrap: wrap; }
-        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 11px; }
-        
-        .stats { margin-top: 8px; font-size: 7px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 18px; display: flex; justify-content: space-between; }
-        .stat-val { color: var(--primary); font-weight: 800; font-size: 12px; }
-        
-        .restart-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 30px; flex-direction: column; justify-content: center; align-items: center; z-index: 50; }
-        .restart-overlay.active { display: flex; }
+        .ctrl-container { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
+        .ctrl { background: rgba(51, 65, 85, 0.6); color: white; flex: 1; padding: 12px; border-radius: 15px; border: none; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .stats { margin-top: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 20px; display: flex; justify-content: space-around; }
+        .stat-item { text-align: center; font-size: 9px; color: #94a3b8; font-weight: bold; }
+        .stat-val { color: var(--primary); font-size: 16px; display: block; margin-top: 5px; }
+        .stat-val.pass { color: var(--accent); }
     </style>
 </head>
 <body>
 
-<div class="v-tag">V.2.4 (JSON)</div>
-
 <div id="entry-page">
-    <img src="logo.png" style="width: 70px; margin-bottom: 5px;">
-    <div class="main-title-white">5 Dakikada İngilizce</div>
-    <div id="lesson-list-container" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        </div>
+    <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
+    <h2 style="margin-bottom: 20px;">5 Dakikada İngilizce</h2>
+    <div id="lesson-list-container"></div>
 </div>
 
 <div id="app-screen">
@@ -109,122 +49,85 @@
         <button class="nav-btn" onclick="goHome()"><span class="material-symbols-rounded">home</span> HOME</button>
         <button class="nav-btn" onclick="resetToStart()"><span class="material-symbols-rounded">refresh</span> RESTART</button>
     </div>
-    
     <div class="app-box">
-        <div id="restartOverlay" class="restart-overlay">
-            <h2 style="color:white;">Completed! 🏆</h2>
-            <button class="start" onclick="resetToStart()">RESTART</button>
-        </div>
-
         <img src="logo.png" class="app-logo">
         <div id="lessonTitle" class="lesson-title-grad">...</div>
-        <div id="lessonSub" class="lesson-sub-white">...</div>
-        
-        <div class="phrase-container">
-            <div id="phrase-tr">...</div>
-            <div id="phrase-en">...</div>
-        </div>
-
+        <div id="phrase-tr">...</div>
+        <div id="phrase-en">...</div>
         <button class="start" id="startBtn">TAP TO SPEAK</button>
-        
         <div class="ctrl-container">
-            <button class="ctrl" id="toggleBtn" style="width:100%; margin-bottom:4px; border:1px solid var(--primary); color:var(--primary)">SHOW ENGLISH</button>
-            <button class="ctrl" id="passBtn" style="color:var(--accent)">PASS</button>
-            <button class="ctrl" id="listenBtn">LISTEN</button>
-            <div style="display:flex; width:100%; gap:6px; margin-top:6px;">
-                <button class="ctrl" id="backBtn">← BACK</button>
-                <button class="ctrl" id="nextBtn">NEXT →</button>
+            <button class="ctrl" onclick="toggleEn()" style="width:100%; color:var(--primary); margin-bottom:5px;">SHOW ENGLISH</button>
+            <button class="ctrl" onclick="passWord()" style="color:var(--accent)">PASS</button>
+            <button class="ctrl" onclick="listenWord()">LISTEN</button>
+            <div style="display:flex; width:100%; gap:8px; margin-top:5px;">
+                <button class="ctrl" onclick="prevWord()">← BACK</button>
+                <button class="ctrl" onclick="nextWord()">NEXT →</button>
             </div>
         </div>
-
-        <div id="result" style="height:30px; font-weight:bold; margin:5px 0;"></div>
-
+        <div id="result" style="height:25px; margin:10px 0; font-weight:bold;"></div>
         <div class="stats">
             <div class="stat-item">ORDER <span id="current" class="stat-val">0</span></div>
             <div class="stat-item">CORRECT <span id="correct" class="stat-val">0</span></div>
+            <div class="stat-item">PASS <span id="passCount" class="stat-val pass">0</span></div>
             <div class="stat-item">REMAIN <span id="remaining" class="stat-val">0</span></div>
         </div>
     </div>
 </div>
 
 <script>
-let allData = [];
-let currentList = [];
-let index = 0, correctCount = 0, isListening = false, showEn = false, autoMode = false;
+let allData = [], currentList = [], index = 0, correctCount = 0, passCount = 0, isListening = false, showEn = false;
 
-// GitHub Pages veya Sunucu üzerindeki data.json'u yükler
-fetch('data.json')
-    .then(response => response.json())
-    .then(data => {
-        allData = data;
-        renderLessonList();
-    })
-    .catch(err => console.error("Data yüklenemedi:", err));
+fetch('data.json').then(res => res.json()).then(data => { allData = data; renderLessonList(); });
 
 function renderLessonList() {
     const container = document.getElementById('lesson-list-container');
-    container.innerHTML = `<h1 style="background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 24px; margin: 15px 0;">Select Lesson</h1>`;
     allData.forEach(lesson => {
         const card = document.createElement('div');
         card.className = 'lesson-card';
-        card.onclick = () => startLesson(lesson.id);
-        card.innerHTML = `<h3>${lesson.title}</h3><div style="font-size:11px; opacity:0.8">${lesson.subTitle}</div>`;
+        card.onclick = () => {
+            currentList = lesson.content;
+            document.getElementById('lessonTitle').innerText = lesson.title;
+            document.getElementById('entry-page').style.display = 'none';
+            document.getElementById('app-screen').style.display = 'flex';
+            resetToStart();
+        };
+        card.innerHTML = `<h3>${lesson.title}</h3><p style="font-size:12px;opacity:0.7">${lesson.subTitle}</p>`;
         container.appendChild(card);
     });
 }
 
-function startLesson(id) {
-    const lesson = allData.find(l => l.id === id);
-    currentList = [...lesson.content];
-    document.getElementById('lessonTitle').innerText = lesson.title;
-    document.getElementById('lessonSub').innerText = lesson.subTitle;
-    index = 0; correctCount = 0;
-    document.getElementById('entry-page').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'flex';
-    render();
-}
-
 function render() {
-    if(index >= currentList.length) { document.getElementById("restartOverlay").classList.add("active"); return; }
+    if(index >= currentList.length) { alert("Lesson Completed! 🏆"); goHome(); return; }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
     document.getElementById("phrase-en").classList.toggle("visible", showEn);
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
+    document.getElementById("passCount").textContent = passCount;
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const rec = new SR(); rec.lang = "en-US"; rec.continuous = true;
-
+const rec = new SR(); rec.lang = "en-US"; 
 rec.onresult = e => {
-    const spoken = e.results[e.results.length-1][0].transcript.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    const spoken = e.results[0][0].transcript.toLowerCase().trim();
     const target = currentList[index].en.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    if(spoken === target || spoken.includes(target)) {
-        correctCount++; render();
-        document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>✅ EXCELLENT!</span>";
-        setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 800);
-    } else {
-        document.getElementById("result").innerHTML = "<span style='color:var(--accent)'>❌ TRY AGAIN</span>";
-    }
+    if(spoken.includes(target)) {
+        correctCount++; document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>✅ EXCELLENT!</span>";
+        setTimeout(nextWord, 1000);
+    } else { document.getElementById("result").innerHTML = "<span style='color:var(--accent)'>❌ TRY AGAIN</span>"; }
 };
+rec.onstart = () => { isListening = true; document.getElementById("startBtn").classList.add("recording"); document.getElementById("startBtn").innerText = "LISTENING..."; };
+rec.onend = () => { isListening = false; document.getElementById("startBtn").classList.remove("recording"); document.getElementById("startBtn").innerText = "TAP TO SPEAK"; };
 
-rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
-rec.onend = () => { isListening = false; document.getElementById("startBtn").innerText = "TAP TO SPEAK"; document.getElementById("startBtn").classList.remove("recording"); if(autoMode) rec.start(); };
-
-function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").classList.add("active"); } }
-function goHome() { document.getElementById('app-screen').style.display = 'none'; document.getElementById('entry-page').style.display = 'flex'; autoMode = false; try{rec.stop();}catch(e){} }
-function resetToStart() { index = 0; correctCount = 0; document.getElementById("restartOverlay").classList.remove("active"); render(); }
-
-document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
-document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
-document.getElementById("nextBtn").onclick = nextWord;
-document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
-document.getElementById("listenBtn").onclick = () => {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(currentList[index].en); u.lang = "en-US"; u.rate = 0.8;
-    window.speechSynthesis.speak(u);
-};
+function nextWord() { index++; showEn = false; document.getElementById("result").innerHTML = ""; render(); }
+function prevWord() { if(index > 0) { index--; render(); } }
+function passWord() { passCount++; nextWord(); }
+function toggleEn() { showEn = !showEn; render(); }
+function listenWord() { const u = new SpeechSynthesisUtterance(currentList[index].en); u.lang = "en-US"; window.speechSynthesis.speak(u); }
+function goHome() { document.getElementById('entry-page').style.display = 'flex'; document.getElementById('app-screen').style.display = 'none'; }
+function resetToStart() { index = 0; correctCount = 0; passCount = 0; render(); }
+document.getElementById("startBtn").onclick = () => { if(!isListening) rec.start(); };
 </script>
 </body>
 </html>

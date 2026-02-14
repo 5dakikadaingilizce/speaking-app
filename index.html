@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - Practice v3.1</title>
+    <title>5 Dakikada İngilizce - Practice V.1.3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -35,6 +35,7 @@
             background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             padding: 30px; border-radius: 35px; width: 88%; max-width: 420px; text-align: center; 
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            position: relative;
         }
 
         .app-logo { width: 90px; height: 90px; margin-bottom: 10px; object-fit: contain; }
@@ -71,6 +72,8 @@
         .ctrl:active { transform: scale(0.95); background: var(--primary); }
         .btn-toggle { width: 100%; background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid var(--primary); margin-bottom: 5px; }
         .btn-pass { background: rgba(251, 113, 133, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+        
+        .nav-group { display: flex; width: 100%; gap: 8px; }
 
         #result { font-size: 15px; font-weight: 700; margin: 10px 0; height: 35px; }
         .correct-text { color: var(--secondary); }
@@ -82,15 +85,26 @@
             padding: 12px; border-radius: 20px; display: flex; justify-content: space-between;
         }
         .stat-item { display: flex; align-items: center; gap: 4px; }
-        .stat-icon { width: 14px; height: 14px; opacity: 0.7; }
         .stat-value { color: var(--primary); font-weight: 800; font-size: 14px; }
+
+        .restart-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); border-radius: 35px; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 20;
+        }
+        .restart-overlay.active { display: flex; }
     </style>
 </head>
 <body>
 
-<div class="version-tag">VERSİYON 3.1</div>
+<div class="version-tag">V.1.3</div>
 
 <div class="app">
+    <div id="restartOverlay" class="restart-overlay">
+        <h2 style="color:white; font-size: 24px; margin-bottom: 20px;">Lesson Completed! 🏆</h2>
+        <button class="start" onclick="restartLesson()" style="width: 80%;">RESTART LESSON</button>
+    </div>
+
     <img src="logo.png" alt="Logo" class="app-logo">
     <h2>5 Dakikada İngilizce</h2>
     <div class="sub-title">#Lesson 1</div>
@@ -106,8 +120,10 @@
         <button class="ctrl btn-toggle" id="toggleBtn">SHOW ENGLISH</button>
         <button class="ctrl btn-pass" id="passBtn">PASS</button>
         <button class="ctrl" id="listenBtn">LISTEN</button>
-        <button class="ctrl" id="backBtn">BACK</button>
-        <button class="ctrl" id="nextBtn">NEXT</button>
+        <div class="nav-group">
+            <button class="ctrl" id="backBtn">← BACK</button>
+            <button class="ctrl" id="nextBtn">NEXT →</button>
+        </div>
     </div>
 
     <div id="result"></div>
@@ -121,18 +137,42 @@
 </div>
 
 <script>
-// --- GÜNCEL LİSTE ---
+// --- VERİ LİSTESİ (örnekler 300 isim.docx) ---
 const data = [
-    {tr:"Gün", en:"Day"}, {tr:"Pazartesi", en:"Monday"}, {tr:"Salı", en:"Tuesday"}, {tr:"Çarşamba", en:"Wednesday"}, {tr:"Perşembe", en:"Thursday"}, {tr:"Cuma", en:"Friday"}, {tr:"Cumartesi", en:"Saturday"}, {tr:"Pazar", en:"Sunday"}, {tr:"Tatil", en:"Holiday"}, {tr:"Doğum günü", en:"Birthday"}, {tr:"Dün", en:"Yesterday"}, {tr:"Bugün", en:"Today"}, {tr:"Yarın", en:"Tomorrow"}, {tr:"Ay ( Ocak, Şubat..)", en:"Month"}, {tr:"Ocak", en:"January"}, {tr:"Şubat", en:"February"}, {tr:"Mart", en:"March"}, {tr:"Nisan", en:"April"}, {tr:"Mayıs", en:"May"}, {tr:"Haziran", en:"June"}, {tr:"Temmuz", en:"July"}, {tr:"Ağustos", en:"August"}, {tr:"Eylül", en:"September"}, {tr:"Ekim", en:"October"}, {tr:"Kasım", en:"November"}, {tr:"Aralık", en:"December"}, {tr:"Mevsim", en:"Season"}, {tr:"İlkbahar", en:"Spring"}, {tr:"Yaz", en:"Summer"}, {tr:"Sonbahar", en:"Autumn"}, {tr:"Kış", en:"Winter"}, {tr:"Zaman", en:"Time"}, {tr:"Saniye", en:"Second"}, {tr:"Dakika", en:"Minute"}, {tr:"Saat", en:"Hour"}, {tr:"Hafta", en:"Week"}, {tr:"Yıl", en:"Year"}, {tr:"Sabah", en:"Morning"}, {tr:"Öğle", en:"Noon"}, {tr:"Öğleden sonra", en:"Afternoon"}, {tr:"Akşam", en:"Evening"}, {tr:"Gece", en:"Night"}, {tr:"Meslek", en:"Job"}, {tr:"Öğretmen", en:"Teacher"}, {tr:"Garson", en:"Waiter"}, {tr:"Öğrenci", en:"Student"}, {tr:"Müdür", en:"Manager"}, {tr:"Asker", en:"Soldier"}, {tr:"Polis", en:"Cop"}, {tr:"Hemşire", en:"Nurse"}, {tr:"Doktor", en:"Doctor"}, {tr:"Veteriner", en:"Vet"}, {tr:"Avukat", en:"Lawyer"}, {tr:"Aşçı", en:"Cook"}, {tr:"İşçi", en:"Worker"}, {tr:"İş", en:"Work"}, {tr:"Köy", en:"Village"}, {tr:"Kasaba", en:"Town"}, {tr:"Şehir", en:"City"}, {tr:"Ülke", en:"Country"}, {tr:"Türkiye", en:"Turkey"}, {tr:"Türk", en:"Turkish"}, {tr:"Amerika", en:"America"}, {tr:"Amerikan", en:"American"}, {tr:"Almanya", en:"Germany"}, {tr:"Alman", en:"German"}, {tr:"Fransa", en:"France"}, {tr:"Fransız", en:"French"}, {tr:"İtalya", en:"Italy"}, {tr:"İtalyan", en:"Italian"}, {tr:"İngiltere", en:"England"}, {tr:"İngiliz", en:"English"}, {tr:"Rusya", en:"Russia"}, {tr:"Rus", en:"Russian"}, {tr:"Çin", en:"China"}, {tr:"Çinli", en:"Chinese"}, {tr:"Nehir", en:"River"}, {tr:"Deniz", en:"Sea"}, {tr:"Göl", en:"Lake"}, {tr:"Dağ", en:"Mountain"}, {tr:"Gökyüzü", en:"Sky"}, {tr:"Yıldız", en:"Star"}, {tr:"Ay (gök cismi)", en:"Moon"}, {tr:"Dünya", en:"World"}, {tr:"Yerküre", en:"Earth"}, {tr:"Güneş", en:"Sun"}, {tr:"Hava durumu", en:"Weather"}, {tr:"Yağmur", en:"Rain"}, {tr:"Rüzgar", en:"Wind"}, {tr:"Kar", en:"Snow"}, {tr:"Bulut", en:"Cloud"}, {tr:"Sis", en:"Fog"}, {tr:"Fırtına", en:"Storm"}, {tr:"Ağaç", en:"Tree"}, {tr:"Orman", en:"Forest"}, {tr:"Bahçe", en:"Garden"}, {tr:"Çiçek", en:"Flower"}, {tr:"Çimen", en:"Grass"}, {tr:"Yer", en:"Place"}, {tr:"Burada", en:"Here"}, {tr:"Orada", en:"There"}, {tr:"Ev", en:"House"}, {tr:"Okul", en:"School"}, {tr:"Banka", en:"Bank"}, {tr:"Hastane", en:"Hospital"}, {tr:"Dükkan", en:"Shop"}, {tr:"Kafe", en:"Cafe"}, {tr:"Restoran", en:"Restaurant"}, {tr:"Ofis", en:"Office"}, {tr:"Yatak odası", en:"Bedroom"}, {tr:"Mutfak", en:"Kitchen"}, {tr:"Oturma odası", en:"Living room"}, {tr:"Banyo", en:"Bathroom"}, {tr:"Misafir odası", en:"Guest room"}, {tr:"Oda", en:"Room"}, {tr:"Kapı", en:"Door"}, {tr:"Pencere", en:"Window"}, {tr:"Zemin", en:"Floor"}, {tr:"Tekli Koltuk", en:"Armchair"}, {tr:"Sandalye", en:"Chair"}, {tr:"Kanepe", en:"Couch"}, {tr:"Yatak", en:"Bed"}, {tr:"Masa", en:"Table"}, {tr:"Çalışma masası", en:"Desk"}, {tr:"Kitap", en:"Book"}, {tr:"Defter", en:"Notebook"}, {tr:"Kalem", en:"Pencil"}, {tr:"Bilgisayar", en:"Computer"}, {tr:"Telefon", en:"Phone"}, {tr:"Televizyon", en:"TV"}, {tr:"Buzdolabı", en:"Fridge"}, {tr:"Ocak ( Yemek pişirme için..)", en:"Stove"}, {tr:"Fırın", en:"Oven"}, {tr:"Kaşık", en:"Spoon"}, {tr:"Çatal", en:"Fork"}, {tr:"Bıçak", en:"Knife"}, {tr:"Tabak", en:"Plate"}, {tr:"Fincan", en:"Cup"}, {tr:"Bardak", en:"Glass"}, {tr:"Şişe", en:"Bottle"}, {tr:"Bulaşıklar", en:"Dishes"}, {tr:"Bulaşık makinesi", en:"Dishwasher"}, {tr:"Çamaşır", en:"Laundry"}, {tr:"Çamaşır makinesi", en:"Laundry machine"}, {tr:"Hayat / Yaşam", en:"Life"}, {tr:"Aşk / Sevgi", en:"Love"}, {tr:"Şans", en:"Luck"}, {tr:"Renk", en:"Color"}, {tr:"Şey", en:"Thing"}, {tr:"Top", en:"Ball"}, {tr:"Oyuncak", en:"Toy"}, {tr:"Hikaye", en:"Story"}, {tr:"Sayı / Numara", en:"Number"}, {tr:"Şarkı", en:"Song"}, {tr:"Soru", en:"Question"}, {tr:"Cevap / Yanıt", en:"Answer"}, {tr:"Sorun / Dert", en:"Problem"}, {tr:"Rapor / Karne", en:"Report"}, {tr:"Toplantı", en:"Meeting"}, {tr:"Para", en:"Money"}, {tr:"Uygulama", en:"App"}, {tr:"Fotoğraf", en:"Photo"}, {tr:"Sosyal medya", en:"Social media"}, {tr:"Resim", en:"Picture"}, {tr:"Araba", en:"Car"}, {tr:"Otobüs", en:"Bus"}, {tr:"Tren", en:"Train"}, {tr:"Gemi", en:"Ship"}, {tr:"Tekne", en:"Boat"}, {tr:"Uçak", en:"Plane"}, {tr:"Bisiklet", en:"Bike"}, {tr:"Motosiklet", en:"Motorbike"}, {tr:"Yol", en:"Road"}, {tr:"Sokak", en:"Street"}, {tr:"Köprü", en:"Bridge"}, {tr:"Tünel", en:"Tunnel"}, {tr:"Otobüs durağı", en:"Bus stop"}, {tr:"İstasyon", en:"Station"}, {tr:"Havalimanı", en:"Airport"}, {tr:"Metro", en:"Subway"}, {tr:"Kahvaltı", en:"Breakfast"}, {tr:"Öğle yemeği", en:"Lunch"}, {tr:"Akşam yemeği", en:"Dinner"}, {tr:"İçecek", en:"Drink"}, {tr:"Çay", en:"Tea"}, {tr:"Kahve", en:"Coffee"}, {tr:"Su", en:"Water"}, {tr:"Kola", en:"Coke"}, {tr:"Portakal suyu", en:"Orange juice"}, {tr:"Süt", en:"Milk"}, {tr:"Yemek/ Besin / Gıda", en:"Food"}, {tr:"Et", en:"Meat"}, {tr:"Peynir", en:"Cheese"}, {tr:"Yağ", en:"Oil"}, {tr:"Tuz", en:"Salt"}, {tr:"Şeker", en:"Sugar"}, {tr:"Ekmek", en:"Bread"}, {tr:"Tereyağı", en:"Butter"}, {tr:"Bal", en:"Honey"}, {tr:"Reçel", en:"Jam"}, {tr:"Hamburger", en:"Hamburger"}, {tr:"Pasta ( Tatlı )", en:"Cake"}, {tr:"Tavuk", en:"Chicken"}, {tr:"Tatlı", en:"Dessert"}, {tr:"Yumurta", en:"Egg"}, {tr:"Zeytin", en:"Olive"}, {tr:"Makarna", en:"Pasta"}, {tr:"Pizza", en:"Pizza"}, {tr:"Salata", en:"Salad"}, {tr:"Meyveler", en:"Fruits"}, {tr:"Çilek", en:"Strawberry"}, {tr:"Elma", en:"Apple"}, {tr:"Muz", en:"Banana"}, {tr:"Portakal", en:"Orange"}, {tr:"Kiraz", en:"Cherry"}, {tr:"Sebzeler", en:"Vegetables"}, {tr:"Domates", en:"Tomato"}, {tr:"Salatalık", en:"Cucumber"}, {tr:"Biber", en:"Pepper"}, {tr:"Patates", en:"Potato"}, {tr:"Hayvan", en:"Animal"}, {tr:"Kedi", en:"Cat"}, {tr:"Köpek", en:"Dog"}, {tr:"Kuş", en:"Bird"}, {tr:"Balık", en:"Fish"}, {tr:"At", en:"Horse"}, {tr:"Sinek", en:"Fly"}, {tr:"Fare", en:"Mouse"}, {tr:"Yılan", en:"Snake"}, {tr:"Maymun", en:"Monkey"}, {tr:"Fil", en:"Elephant"}, {tr:"Kişi / Birey", en:"Person"}, {tr:"Adam", en:"Man"}, {tr:"Kadın", en:"Woman"}, {tr:"Çocuk", en:"Child"}, {tr:"Erkek çocuk", en:"Boy"}, {tr:"Kız çocuk", en:"Girl"}, {tr:"Bebek", en:"Baby"}, {tr:"Genç / Ergen", en:"Teenager"}, {tr:"Akrabalar", en:"Relatives"}, {tr:"Aile", en:"Family"}, {tr:"Ebeveynler", en:"Parents"}, {tr:"Baba", en:"Father"}, {tr:"Anne", en:"Mother"}, {tr:"Dede", en:"Grandfather"}, {tr:"Büyükanne", en:"Grandmother"}, {tr:"Erkek torun", en:"Grandson"}, {tr:"Kız torun", en:"Granddaughter"}, {tr:"Erkek evlat", en:"Son"}, {tr:"Kız evlat", en:"Daughter"}, {tr:"Erkek kardeş", en:"Brother"}, {tr:"Kız kardeş", en:"Sister"}, {tr:"Teyze/hala", en:"Aunt"}, {tr:"Amca/dayı", en:"Uncle"}, {tr:"Kuzen", en:"Cousin"}, {tr:"Giysiler", en:"Clothes"}, {tr:"Palto / Mont / Kaban", en:"Coat"}, {tr:"Elbise", en:"Dress"}, {tr:"Şapka", en:"Hat"}, {tr:"Ceket", en:"Jacket"}, {tr:"Kot pantolon", en:"Jeans"}, {tr:"Gömlek", en:"Shirt"}, {tr:"Ayakkabı(lar)", en:"Shoes"}, {tr:"Şort", en:"Shorts"}, {tr:"Çorap(lar)", en:"Socks"}, {tr:"Kazak", en:"Sweater"}, {tr:"Pantolon", en:"Trousers"}, {tr:"Saat (kol saati)", en:"Watch"}, {tr:"Tişört", en:"T-shirt"}, {tr:"Vücut", en:"Body"}, {tr:"Baş ( İnsan kafası)", en:"Head"}, {tr:"Yüz (insan yüzü)", en:"Face"}, {tr:"Göz", en:"Eye"}, {tr:"Saç", en:"Hair"}, {tr:"Kulak", en:"Ear"}, {tr:"Burun", en:"Nose"}, {tr:"Ağız", en:"Mouth"}, {tr:"Diş", en:"Tooth"}, {tr:"Dil", en:"Tongue"}, {tr:"Kol", en:"Arm"}, {tr:"Bacak", en:"Leg"}, {tr:"El", en:"Hand"}, {tr:"Parmak ( el )", en:"Finger"}, {tr:"Ayak", en:"Foot"}, {tr:"Ayak parmağı", en:"Toe"}
+    {tr:"Gün", en:"Day"}, {tr:"Pazartesi", en:"Monday"}, {tr:"Salı", en:"Tuesday"}, {tr:"Çarşamba", en:"Wednesday"}, {tr:"Perşembe", en:"Thursday"}, {tr:"Cuma", en:"Friday"}, {tr:"Cumartesi", en:"Saturday"}, {tr:"Pazar", en:"Sunday"}, {tr:"Tatil", en:"Holiday"}, {tr:"Doğum günü", en:"Birthday"}, {tr:"Dün", en:"Yesterday"}, {tr:"Bugün", en:"Today"}, {tr:"Yarın", en:"Tomorrow"}, {tr:"Ay ( Ocak, Şubat..)", en:"Month"}, {tr:"Ocak", en:"January"}, {tr:"Şubat", en:"February"}, {tr:"Mart", en:"March"}, {tr:"Nisan", en:"April"}, {tr:"Mayıs", en:"May"}, {tr:"Haziran", en:"June"}, {tr:"Temmuz", en:"July"}, {tr:"Ağustos", en:"August"}, {tr:"Eylül", en:"September"}, {tr:"Ekim", en:"October"}, {tr:"Kasım", en:"November"}, {tr:"Aralık", en:"December"}, {tr:"Mevsim", en:"Season"}, {tr:"İlkbahar", en:"Spring"}, {tr:"Yaz", en:"Summer"}, {tr:"Sonbahar", en:"Autumn"}, {tr:"Kış", en:"Winter"}, {tr:"Zaman", en:"Time"}, {tr:"Saniye", en:"Second"}, {tr:"Dakika", en:"Minute"}, {tr:"Saat", en:"Hour"}, {tr:"Hafta", en:"Week"}, {tr:"Yıl", en:"Year"}, {tr:"Sabah", en:"Morning"}, {tr:"Öğle", en:"Noon"}, {tr:"Öğleden sonra", en:"Afternoon"}, {tr:"Akşam", en:"Evening"}, {tr:"Gece", en:"Night"}, {tr:"Meslek", en:"Job"}, {tr:"Öğretmen", en:"Teacher"}, {tr:"Garson", en:"Waiter"}, {tr:"Öğrenci", en:"Student"}, {tr:"Müdür", en:"Manager"}, {tr:"Asker", en:"Soldier"}, {tr:"Polis", en:"Cop"}, {tr:"Hemşire", en:"Nurse"}, {tr:"Doktor", en:"Doctor"}, {tr:"Veteriner", en:"Vet"}, {tr:"Avukat", en:"Lawyer"}, {tr:"Aşçı", en:"Cook"}, {tr:"İşçi", en:"Worker"}, {tr:"İş", en:"Work"}, {tr:"Köy", en:"Village"}, {tr:"Kasaba", en:"Town"}, {tr:"Şehir", en:"City"}, {tr:"Ülke", en:"Country"}, {tr:"Türkiye", en:"Turkey"}, {tr:"Türk", en:"Turkish"}, {tr:"Amerika", en:"America"}, {tr:"Amerikan", en:"American"}, {tr:"Almanya", en:"Germany"}, {tr:"Alman", en:"German"}, {tr:"Fransa", en:"France"}, {tr:"Fransız", en:"French"}, {tr:"İtalya", en:"Italy"}, {tr:"İtalyan", en:"Italian"}, {tr:"İngiltere", en:"England"}, {tr:"İngiliz", en:"English"}, {tr:"Rusya", en:"Russia"}, {tr:"Rus", en:"Russian"}, {tr:"Çin", en:"China"}, {tr:"Çinli", en:"Chinese"}, {tr:"Nehir", en:"River"}, {tr:"Deniz", en:"Sea"}, {tr:"Göl", en:"Lake"}, {tr:"Dağ", en:"Mountain"}, {tr:"Gökyüzü", en:"Sky"}, {tr:"Yıldız", en:"Star"}, {tr:"Ay (gök cismi)", en:"Moon"}, {tr:"Dünya", en:"World"}, {tr:"Yerküre", en:"Earth"}, {tr:"Güneş", en:"Sun"}, {tr:"Hava durumu", en:"Weather"}, {tr:"Yağmur", en:"Rain"}, {tr:"Rüzgar", en:"Wind"}, {tr:"Kar", en:"Snow"}, {tr:"Bulut", en:"Cloud"}, {tr:"Sis", en:"Fog"}, {tr:"Fırtına", en:"Storm"}, {tr:"Ağaç", en:"Tree"}, {tr:"Orman", en:"Forest"}, {tr:"Bahçe", en:"Garden"}, {tr:"Çiçek", en:"Flower"}, {tr:"Çimen", en:"Grass"}, {tr:"Yer", en:"Place"}, {tr:"Burada", en:"Here"}, {tr:"Orada", en:"There"}, {tr:"Ev", en:"House"}, {tr:"Okul", en:"School"}, {tr:"Banka", en:"Bank"}, {tr:"Hastane", en:"Hospital"}, {tr:"Dükkan", en:"Shop"}, {tr:"Kafe", en:"Cafe"}, {tr:"Restoran", en:"Restaurant"}, {tr:"Ofis", en:"Office"}, {tr:"Yatak odası", en:"Bedroom"}, {tr:"Mutfak", en:"Kitchen"}, {tr:"Oturma odası", en:"Living room"}, {tr:"Banyo", en:"Bathroom"}, {tr:"Misafir odası", en:"Guest room"}, {tr:"Oda", en:"Room"}, {tr:"Kapı", en:"Door"}, {tr:"Pencere", en:"Window"}, {tr:"Zemin", en:"Floor"}, {tr:"Tekli Koltuk", en:"Armchair"}, {tr:"Sandalye", en:"Chair"}, {tr:"Kanepe", en:"Couch"}, {tr:"Yatak", en:"Bed"}, {tr:"Masa", en:"Table"}, {tr:"Çalışma masası", en:"Desk"}, {tr:"Kitap", en:"Book"}, {tr:"Defter", en:"Notebook"}, {tr:"Kalem", en:"Pencil"}, {tr:"Bilgisayar", en:"Computer"}, {tr:"Telefon", en:"Phone"}, {tr:"Televizyon", en:"TV"}, {tr:"Buzdolabı", en:"Fridge"}, {tr:"Ocak", en:"Stove"}, {tr:"Fırın", en:"Oven"}, {tr:"Kaşık", en:"Spoon"}, {tr:"Çatal", en:"Fork"}, {tr:"Bıçak", en:"Knife"}, {tr:"Tabak", en:"Plate"}, {tr:"Fincan", en:"Cup"}, {tr:"Bardak", en:"Glass"}, {tr:"Şişe", en:"Bottle"}, {tr:"Bulaşıklar", en:"Dishes"}, {tr:"Bulaşık makinesi", en:"Dishwasher"}, {tr:"Çamaır", en:"Laundry"}, {tr:"Çamaşır makinesi", en:"Laundry machine"}, {tr:"Hayat / Yaşam", en:"Life"}, {tr:"Aşk / Sevgi", en:"Love"}, {tr:"Şans", en:"Luck"}, {tr:"Renk", en:"Color"}, {tr:"Şey", en:"Thing"}, {tr:"Top", en:"Ball"}, {tr:"Oyuncak", en:"Toy"}, {tr:"Hikaye", en:"Story"}, {tr:"Sayı / Numara", en:"Number"}, {tr:"Şarkı", en:"Song"}, {tr:"Soru", en:"Question"}, {tr:"Cevap / Yanıt", en:"Answer"}, {tr:"Sorun / Dert", en:"Problem"}, {tr:"Rapor / Karne", en:"Report"}, {tr:"Toplantı", en:"Meeting"}, {tr:"Para", en:"Money"}, {tr:"Uygulama", en:"App"}, {tr:"Fotoğraf", en:"Photo"}, {tr:"Sosyal medya", en:"Social media"}, {tr:"Resim", en:"Picture"}, {tr:"Araba", en:"Car"}, {tr:"Otobüs", en:"Bus"}, {tr:"Tren", en:"Train"}, {tr:"Gemi", en:"Ship"}, {tr:"Tekne", en:"Boat"}, {tr:"Uçak", en:"Plane"}, {tr:"Bisiklet", en:"Bike"}, {tr:"Motosiklet", en:"Motorbike"}, {tr:"Yol", en:"Road"}, {tr:"Sokak", en:"Street"}, {tr:"Köprü", en:"Bridge"}, {tr:"Tünel", en:"Tunnel"}, {tr:"Otobüs durağı", en:"Bus stop"}, {tr:"İstasyon", en:"Station"}, {tr:"Havalimanı", en:"Airport"}, {tr:"Metro", en:"Subway"}, {tr:"Kahvaltı", en:"Breakfast"}, {tr:"Öğle yemeği", en:"Lunch"}, {tr:"Akşam yemeği", en:"Dinner"}, {tr:"İçecek", en:"Drink"}, {tr:"Çay", en:"Tea"}, {tr:"Kahve", en:"Coffee"}, {tr:"Su", en:"Water"}, {tr:"Kola", en:"Coke"}, {tr:"Portakal suyu", en:"Orange juice"}, {tr:"Süt", en:"Milk"}, {tr:"Yemek/ Besin / Gıda", en:"Food"}, {tr:"Et", en:"Meat"}, {tr:"Peynir", en:"Cheese"}, {tr:"Yağ", en:"Oil"}, {tr:"Tuz", en:"Salt"}, {tr:"Şeker", en:"Sugar"}, {tr:"Ekmek", en:"Bread"}, {tr:"Tereyağı", en:"Butter"}, {tr:"Bal", en:"Honey"}, {tr:"Reçel", en:"Jam"}, {tr:"Hamburger", en:"Hamburger"}, {tr:"Pasta", en:"Cake"}, {tr:"Tavuk", en:"Chicken"}, {tr:"Tatlı", en:"Dessert"}, {tr:"Yumurta", en:"Egg"}, {tr:"Zeytin", en:"Olive"}, {tr:"Makarna", en:"Pasta"}, {tr:"Pizza", en:"Pizza"}, {tr:"Salata", en:"Salad"}, {tr:"Meyveler", en:"Fruits"}, {tr:"Çilek", en:"Strawberry"}, {tr:"Elma", en:"Apple"}, {tr:"Muz", en:"Banana"}, {tr:"Portakal", en:"Orange"}, {tr:"Kiraz", en:"Cherry"}, {tr:"Sebzeler", en:"Vegetables"}, {tr:"Domates", en:"Tomato"}, {tr:"Salatalık", en:"Cucumber"}, {tr:"Biber", en:"Pepper"}, {tr:"Patates", en:"Potato"}, {tr:"Hayvan", en:"Animal"}, {tr:"Kedi", en:"Cat"}, {tr:"Köpek", en:"Dog"}, {tr:"Kuş", en:"Bird"}, {tr:"Balık", en:"Fish"}, {tr:"At", en:"Horse"}, {tr:"Sinek", en:"Fly"}, {tr:"Fare", en:"Mouse"}, {tr:"Yılan", en:"Snake"}, {tr:"Maymun", en:"Monkey"}, {tr:"Fil", en:"Elephant"}, {tr:"Kişi / Birey", en:"Person"}, {tr:"Adam", en:"Man"}, {tr:"Kadın", en:"Woman"}, {tr:"Çocuk", en:"Child"}, {tr:"Erkek çocuk", en:"Boy"}, {tr:"Kız çocuk", en:"Girl"}, {tr:"Bebek", en:"Baby"}, {tr:"Genç / Ergen", en:"Teenager"}, {tr:"Akrabalar", en:"Relatives"}, {tr:"Aile", en:"Family"}, {tr:"Ebeveynler", en:"Parents"}, {tr:"Baba", en:"Father"}, {tr:"Anne", en:"Mother"}, {tr:"Dede", en:"Grandfather"}, {tr:"Büyükanne", en:"Grandmother"}, {tr:"Erkek torun", en:"Grandson"}, {tr:"Kız torun", en:"Granddaughter"}, {tr:"Erkek evlat", en:"Son"}, {tr:"Kız evlat", en:"Daughter"}, {tr:"Erkek kardeş", en:"Brother"}, {tr:"Kız kardeş", en:"Sister"}, {tr:"Teyze/hala", en:"Aunt"}, {tr:"Amca/dayı", en:"Uncle"}, {tr:"Kuzen", en:"Cousin"}, {tr:"Giysiler", en:"Clothes"}, {tr:"Palto / Mont / Kaban", en:"Coat"}, {tr:"Elbise", en:"Dress"}, {tr:"Şapka", en:"Hat"}, {tr:"Ceket", en:"Jacket"}, {tr:"Kot pantolon", en:"Jeans"}, {tr:"Gömlek", en:"Shirt"}, {tr:"Ayakkabı(lar)", en:"Shoes"}, {tr:"Şort", en:"Shorts"}, {tr:"Çorap(lar)", en:"Socks"}, {tr:"Kazak", en:"Sweater"}, {tr:"Pantolon", en:"Trousers"}, {tr:"Saat (kol saati)", en:"Watch"}, {tr:"Tişört", en:"T-shirt"}, {tr:"Vücut", en:"Body"}, {tr:"Baş ( İnsan kafası)", en:"Head"}, {tr:"Yüz (insan yüzü)", en:"Face"}, {tr:"Göz", en:"Eye"}, {tr:"Saç", en:"Hair"}, {tr:"Kulak", en:"Ear"}, {tr:"Burun", en:"Nose"}, {tr:"Ağız", en:"Mouth"}, {tr:"Diş", en:"Tooth"}, {tr:"Dil", en:"Tongue"}, {tr:"Kol", en:"Arm"}, {tr:"Bacak", en:"Leg"}, {tr:"El", en:"Hand"}, {tr:"Parmak ( el )", en:"Finger"}, {tr:"Ayak", en:"Foot"}, {tr:"Ayak parmağı", en:"Toe"}
 ];
 
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false;
+let currentList = [...data];
+
 const phraseTrEl = document.getElementById("phrase-tr");
 const phraseEnEl = document.getElementById("phrase-en");
 const resultEl = document.getElementById("result");
 const startBtn = document.getElementById("startBtn");
 const toggleBtn = document.getElementById("toggleBtn");
 const passBtn = document.getElementById("passBtn");
+const restartOverlay = document.getElementById("restartOverlay");
+
+// --- GELİŞMİŞ SABİT SESLENDİRME ---
+function speak() {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(currentList[index].en);
+    u.lang = "en-US";
+    u.rate = 0.8; // Doğru telaffuz için hafif yavaşlatılmış
+    u.pitch = 1.1; // Daha doğal bir kadın sesi tonu için hafif tiz
+
+    // Tarayıcıdaki tüm sesleri al ve en iyi US-English kadın sesini seç
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => (v.name.includes("Female") || v.name.includes("Google")) && v.lang.startsWith("en-US")) 
+                         || voices.find(v => v.lang.startsWith("en-US"));
+    
+    if (preferredVoice) u.voice = preferredVoice;
+    
+    window.speechSynthesis.speak(u);
+}
+
+// Ses listesi yüklendiğinde hazırlık yap (Bazı tarayıcılar için gerekli)
+window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 
 function playBeep(isCorrect) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -149,8 +189,13 @@ function playBeep(isCorrect) {
 }
 
 function render() {
-    phraseTrEl.textContent = data[index].tr;
-    phraseEnEl.textContent = data[index].en;
+    if (index >= currentList.length) {
+        restartOverlay.classList.add("active");
+        return;
+    }
+    
+    phraseTrEl.textContent = currentList[index].tr;
+    phraseEnEl.textContent = currentList[index].en;
     
     if(!showEn) phraseEnEl.classList.remove("visible");
     else phraseEnEl.classList.add("visible");
@@ -160,29 +205,30 @@ function render() {
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
     document.getElementById("passedCount").textContent = passedCount;
-    document.getElementById("remaining").textContent = data.length - (index + 1);
+    document.getElementById("remaining").textContent = currentList.length - (index + 1);
+}
+
+function restartLesson() {
+    index = 0; correctCount = 0; passedCount = 0;
+    currentList = [...data];
+    restartOverlay.classList.remove("active");
+    resultEl.innerHTML = "";
+    render();
 }
 
 toggleBtn.onclick = () => { showEn = !showEn; render(); };
 
 passBtn.onclick = () => {
     passedCount++;
-    resultEl.innerHTML = '<span style="color:#94a3b8">PASSED ⏭️</span>';
+    currentList.push(currentList[index]); // Pas geçileni sona at
+    resultEl.innerHTML = '<span style="color:#94a3b8">PASSED ⏭️ (Sent to end)</span>';
     setTimeout(() => {
-        if(index < data.length - 1) { 
-            index++; 
-            resultEl.innerHTML = ""; 
-            showEn = false; 
-            render(); 
-        } else { resultEl.innerHTML = "🏆 LESSON COMPLETED!"; }
+        index++; 
+        resultEl.innerHTML = ""; 
+        showEn = false; 
+        render(); 
     }, 200);
 };
-
-function speak() {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(data[index].en);
-    u.lang = "en-US"; u.rate = 0.85; window.speechSynthesis.speak(u);
-}
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
@@ -198,19 +244,17 @@ rec.onstart = () => {
 
 rec.onresult = e => {
     const spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().replace(/[.,!?;:]/g, "").trim();
-    const target = data[index].en.toLowerCase().replace(/[.,!?;:]/g, "").trim();
+    const target = currentList[index].en.toLowerCase().replace(/[.,!?;:]/g, "").trim();
 
     if (spoken === target || spoken.includes(target)) {
         correctCount++;
         resultEl.innerHTML = '<span class="correct-text">EXCELLENT! ✅</span>';
         playBeep(true);
         setTimeout(() => {
-            if(index < data.length - 1) { 
-                index++; 
-                resultEl.innerHTML = ""; 
-                showEn = false; 
-                render(); 
-            } else { resultEl.innerHTML = "🏆 LESSON COMPLETED!"; }
+            index++; 
+            resultEl.innerHTML = ""; 
+            showEn = false; 
+            render(); 
         }, 200); 
     } else {
         resultEl.innerHTML = `<span class="wrong-text">TRY AGAIN ❌</span><span class="heard-text">Heard: "${spoken}"</span>`;
@@ -232,7 +276,7 @@ startBtn.onclick = () => {
 
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; resultEl.innerHTML = ""; showEn = false; render(); } };
-document.getElementById("nextBtn").onclick = () => { if(index < data.length - 1) { index++; resultEl.innerHTML = ""; showEn = false; render(); } };
+document.getElementById("nextBtn").onclick = () => { index++; resultEl.innerHTML = ""; showEn = false; render(); };
 
 render();
 </script>

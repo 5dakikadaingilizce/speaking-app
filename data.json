@@ -1,32 +1,7 @@
 [
-  { 
-    "id": 1, 
-    "title": "#Lesson 1", 
-    "subTitle": "Temel İsimler", 
-    "file": "lessons/lesson1data.json" 
-  },
-  { 
-    "id": 2, 
-    "title": "#Lesson 2", 
-    "subTitle": "A, An, The Kullanımı", 
-    "file": "lessons/lesson2data.json" 
-  },
-  { 
-    "id": 3, 
-    "title": "#Lesson 3", 
-    "subTitle": "a/an, the, this, that, my, your kullanımı", 
-    "file": "lessons/lesson3data.json" 
-  },
-  {
-    "id": 4,
-    "title": "#Lesson 4",
-    "subTitle": "İsimleri Çoğul Yapma",
-    "file": "lessons/lesson4data.json"
-  },
-    {
-    "id": 5,
-    "title": "#Lesson 5",
-    "subTitle": "The-2-3-4-these-those-my-your çoğullarla Çalışma",
-    "file": "lessons/lesson5data.json"
-  },
+  { "id": 1, "title": "#Lesson 1", "subTitle": "Temel İsimler", "file": "lessons/lesson1data.json" },
+  { "id": 2, "title": "#Lesson 2", "subTitle": "A, An, The Kullanımı", "file": "lessons/lesson2data.json" },
+  { "id": 3, "title": "#Lesson 3", "subTitle": "Dizilimler", "file": "lessons/lesson3data.json" },
+  { "id": 4, "title": "#Lesson 4", "subTitle": "İsimleri Çoğul Yapma", "file": "lessons/lesson4data.json" },
+  { "id": 5, "title": "#Lesson 5", "subTitle": "The-2-3-4-these-those-my-your Çoğullarla Çalışma", "file": "lessons/lesson5data.json" }
 ]

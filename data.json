@@ -22,5 +22,11 @@
     "title": "#Lesson 4",
     "subTitle": "İsimleri Çoğul Yapma",
     "file": "lessons/lesson4data.json"
-  }
+  },
+    {
+    "id": 5,
+    "title": "#Lesson 5",
+    "subTitle": "The-2-3-4-these-those-my-your çoğullarla Çalışma",
+    "file": "lessons/lesson5data.json"
+  },
 ]

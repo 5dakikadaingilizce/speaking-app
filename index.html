@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.2.6</title>
+    <title>5 Dakikada İngilizce - V.2.7</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -47,7 +47,7 @@
             padding-bottom: 20px; 
         }
 
-        /* SADECE BURAYI DEĞİŞTİRDİM: DERSLERİ YAN YANA GETİREN GRID */
+        /* DERSLERİ YAN YANA GETİREN GRID */
         #lesson-list-container { 
             width: 100%; 
             display: grid; 
@@ -83,7 +83,7 @@
         .lesson-card h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: #f97316; font-weight: 800; }
         .lesson-desc { font-size: 11px; color: #94a3b8; font-weight: 500; }
 
-        /* UYGULAMA EKRANI (SENİN ORİJİNAL TASARIMIN) */
+        /* UYGULAMA EKRANI */
         #app-screen { display: none; width: 100%; max-width: 400px; max-height: 98dvh; flex-direction: column; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; width: 100%; }
         .nav-btn, .start, .ctrl, .btn-toggle { cursor: pointer !important; transition: transform 0.1s; }
@@ -116,7 +116,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.2.6</div>
+<div class="v-tag">V.2.7</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -180,7 +180,6 @@
 </div>
 
 <script>
-/* SCRIPT KISMI TAMAMEN SENİN ORİJİNAL KODUN */
 let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];
@@ -283,17 +282,39 @@ rec.continuous = true;
 
 rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
+// GÜNCELLENEN HASSASİYET AYARLI SONUÇ FONKSİYONU
 rec.onresult = e => {
-    const spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
-    const target = currentList[index].en.toLowerCase().trim();
-    if(spoken === target || spoken.includes(target)) {
+    let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
+    let target = currentList[index].en.toLowerCase().trim();
+
+    // SAYI TERCÜME SİSTEMİ
+    const numberMap = {
+        "one": "1", "two": "2", "three": "3", "tree": "3", "free": "3",
+        "four": "4", "for": "4", "five": "5", "six": "6", 
+        "seven": "7", "eight": "8", "ate": "8", "nine": "9", "ten": "10",
+        "twenty": "20"
+    };
+
+    // Karşılaştırma öncesi temizlik ve sayı dönüşümü
+    let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+
+    // Kelimeleri tek tek kontrol et ve sayıya çevir
+    Object.keys(numberMap).forEach(key => {
+        const regex = new RegExp(`\\b${key}\\b`, 'g');
+        processedSpoken = processedSpoken.replace(regex, numberMap[key]);
+    });
+
+    // ESNEK EŞLEŞME KONTROLÜ
+    if(processedSpoken === processedTarget || processedSpoken.includes(processedTarget) || processedTarget.includes(processedSpoken)) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
         setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 800);
     } else {
         playBeep(false);
-        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>TRY AGAIN ❌</span>`;
+        // Hata durumunda ne duyduğunu gösteriyoruz (Hata ayıklama için)
+        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>HEARD: "${spoken}" ❌</span>`;
     }
 };
 

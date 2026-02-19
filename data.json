@@ -16,5 +16,9 @@
     "title": "#Lesson 3", 
     "subTitle": "a/an, the, this, that, my, your kullanımı", 
     "file": "lessons/lesson3data.json" 
-  }
+  },
+  "id": 4,
+  "title": "#Lesson 4",
+  "subTitle": "İsimlerin Çoğul Yapma",
+  "file": "lessons/lesson4data.json"
 ]

@@ -4,5 +4,7 @@
   { "id": 3, "title": "#Lesson 3", "subTitle": "A, An, The, this, that, my, your Kullanımı", "file": "lessons/lesson3data.json" },
   { "id": 4, "title": "#Lesson 4", "subTitle": "İsimleri Çoğul Yapma", "file": "lessons/lesson4data.json" },
   { "id": 5, "title": "#Lesson 5", "subTitle": "The-2-3-4-these-those-my-your Çoğullarla Çalışma", "file": "lessons/lesson5data.json" },
-  { "id": 6, "title": "#Lesson 6", "subTitle": " Sayılamayanları Saymanın Yolu", "file": "lessons/lesson6data.json" }
+  { "id": 6, "title": "#Lesson 6", "subTitle": " Sayılamayanları Saymanın Yolu", "file": "lessons/lesson6data.json" },
+  { "id": 7, "title": "#Lesson 7", "subTitle": " of  / to kullanımı ", "file": "lessons/lesson7data.json" },
+  { "id": 8, "title": "#Lesson 8", "subTitle": " of  / to / with / without kullanımı", "file": "lessons/lesson8data.json" }
 ]

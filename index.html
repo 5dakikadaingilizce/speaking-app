@@ -124,7 +124,6 @@
         #phrase-tr { font-size: 26px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; }
         #phrase-en { font-size: 18px; color: #94a3b8; font-style: italic; transition: 0.3s; }
         
-        /* TAP TO SPEAK PARLAMA EFEKTİ */
         .start { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); 
             color: #0f172a; 
@@ -254,10 +253,10 @@ function renderLessonMenu() {
     container.innerHTML = "";
     allLessonsData.forEach(lesson => {
         const card = document.createElement('div');
-        const isAvailable = lesson.file ? true : false;
+        const isAvailable = !!lesson.file;
         card.className = 'lesson-card' + (!isAvailable ? ' disabled' : '');
         card.onclick = () => { if(isAvailable) startLesson(lesson); };
-        card.innerHTML = <h3>${lesson.title}</h3><div class="lesson-desc">${!isAvailable ? 'Coming Soon' : lesson.subTitle}</div>;
+        card.innerHTML = `<h3>${lesson.title}</h3><div class="lesson-desc">${!isAvailable ? 'Coming Soon' : lesson.subTitle}</div>`;
         container.appendChild(card);
     });
 }
@@ -336,7 +335,10 @@ rec.onresult = e => {
     const numMap = { "one": "1", "two": "2", "three": "3", "four": "4", "five": "5" };
     let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
     let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    Object.keys(numMap).forEach(key => { processedSpoken = processedSpoken.replace(new RegExp(\\b${key}\\b, 'g'), numMap[key]); });
+    
+    Object.keys(numMap).forEach(key => { 
+        processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); 
+    });
 
     if(processedSpoken === processedTarget) {
         correctCount++;
@@ -345,7 +347,7 @@ rec.onresult = e => {
         setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 800);
     } else {
         playBeep(false);
-        document.getElementById("result").innerHTML = <span style='color:var(--accent)'>HEARD: "${spoken}" ❌</span>;
+        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>HEARD: "${spoken}" ❌</span>`;
     }
 };
 

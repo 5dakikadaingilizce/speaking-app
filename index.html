@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.1</title>
+    <title>5 Dakikada İngilizce - V.3.2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -169,7 +169,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.3.1</div>
+<div class="v-tag">V.3.2</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -242,6 +242,7 @@ let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];
 let activeLessonId = null;
+let currentAudio = null; // Ses nesnesini global tutalım
 
 fetch('data.json').then(res => res.json()).then(data => {
     allLessonsData = data;
@@ -289,6 +290,16 @@ function saveProgress() {
     }
 }
 
+// Ses Preload Fonksiyonu
+function preloadAudio() {
+    if(index < currentList.length) {
+        const text = currentList[index].en;
+        const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`;
+        currentAudio = new Audio(url);
+        currentAudio.load(); // Arka planda indirmeyi başlat
+    }
+}
+
 function render() {
     if(index >= currentList.length) { document.getElementById("restartOverlay").style.display = "flex"; return; }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
@@ -299,6 +310,8 @@ function render() {
     document.getElementById("correct").textContent = correctCount;
     document.getElementById("passedCount").textContent = passedCount;
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
+    
+    preloadAudio(); // Yeni kelime gelince sesi hemen yükle
     saveProgress();
 }
 
@@ -315,34 +328,45 @@ function playBeep(isCorrect) {
     } catch(e) {}
 }
 
-// GÜNCELLENMİŞ LISTEN FONKSİYONU - AMERİKAN AKSANI (V.3.1)
 function speak() {
-    const text = currentList[index].en;
-    const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`;
-    const audio = new Audio(audioUrl);
-    audio.play().catch(e => console.error("Ses çalma hatası:", e));
+    if(currentAudio) {
+        currentAudio.play().catch(e => {
+            // Eğer preload başarısız olduysa tekrar dene
+            const text = currentList[index].en;
+            new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`).play();
+        });
+    }
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
 rec.continuous = true;
+rec.interimResults = false; // Sadece kesin sonuçları bekle (hızlandırır)
 
 rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
 rec.onresult = e => {
     let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
     let target = currentList[index].en.toLowerCase().trim();
+    
+    // Temizleme: Noktalama işaretlerini ve gereksiz boşlukları at
+    const clean = (str) => str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, " ").trim();
+    
+    let processedSpoken = clean(spoken);
+    let processedTarget = clean(target);
+    
+    // Sayı dönüşümü (Daha esnek algılama için)
     const numMap = { "one": "1", "two": "2", "three": "3", "four": "4", "five": "5" };
-    let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    Object.keys(numMap).forEach(key => { processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); });
+    Object.keys(numMap).forEach(key => { 
+        processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); 
+    });
 
     if(processedSpoken === processedTarget) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
-        setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 800);
+        setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 600);
     } else {
         playBeep(false);
         document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>HEARD: "${spoken}" ❌</span>`;
@@ -371,7 +395,6 @@ document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(
 document.getElementById("nextBtn").onclick = nextWord;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
 document.getElementById("passBtn").onclick = () => { passedCount++; currentList.push(currentList[index]); nextWord(); };
-window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 </script>
 </body>
 </html>

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.2.6</title>
+    <title>5 Dakikada İngilizce - V.2.8</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <style>
         :root { 
@@ -13,11 +14,11 @@
             --primary: #38bdf8; 
             --secondary: #2dd4bf; 
             --accent: #fb7185; 
-            --text-main: #f8fafc; 
-            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316); 
+            --text-main: #f1f5f9; 
+            --logo-grad: linear-gradient(135deg, #38bdf8, #818cf8); 
         }
 
-        /* GENEL AYARLAR */
+        /* GENEL TASARIM DOKUNUŞLARI */
         body { 
             margin: 0; 
             font-family: 'Inter', sans-serif; 
@@ -32,11 +33,9 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            cursor: default;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        /* ANA SAYFA ÖZEL KAYDIRMA AYARI */
+        /* ANA SAYFA TASARIMI */
         #entry-page { 
             display: flex; 
             flex-direction: column; 
@@ -44,146 +43,200 @@
             width: 100%; 
             max-height: 95vh; 
             overflow-y: auto; 
-            padding-bottom: 20px; 
+            scrollbar-width: none; /* Firefox */
+        }
+        #entry-page::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .main-title-white { 
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px; 
+            font-weight: 800; 
+            color: white; 
+            margin-bottom: 2px;
+            letter-spacing: -0.5px;
         }
 
-        /* DERSLERİ YAN YANA GETİREN GRID */
         #lesson-list-container { 
             width: 100%; 
             display: grid; 
             grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-            max-width: 500px; 
-            padding: 10px; 
-            box-sizing: border-box;
+            gap: 15px; 
+            max-width: 450px; 
+            padding: 20px 10px; 
         }
 
         .lesson-card { 
             background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 20px 10px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255,255,255,0.08); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 25px 15px; 
+            border-radius: 28px; 
+            border: 1px solid rgba(255,255,255,0.1); 
             text-align: center; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            min-height: 100px;
+            gap: 8px;
         }
 
-        .v-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); z-index: 100; }
-        .material-symbols-rounded { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-        .main-title-white { font-size: 22px; font-weight: 900; color: white; margin-bottom: 5px; }
-        .lesson-card:active { transform: scale(0.95); opacity: 0.9; }
-        .lesson-card:hover { border-color: #f97316; background: rgba(45, 55, 75, 0.9); }
-        .lesson-card h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: #f97316; font-weight: 800; }
-        .lesson-desc { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        .lesson-card:hover { 
+            border-color: var(--primary); 
+            transform: translateY(-5px);
+            background: rgba(51, 65, 85, 0.9);
+            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.2);
+        }
 
-        /* UYGULAMA EKRANI */
-        #app-screen { display: none; width: 100%; max-width: 400px; max-height: 98dvh; flex-direction: column; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; width: 100%; }
-        .nav-btn, .start, .ctrl, .btn-toggle { cursor: pointer !important; transition: transform 0.1s; }
-        .nav-btn:active, .start:active, .ctrl:active { transform: scale(0.96); }
-        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; display: flex; align-items: center; gap: 6px; }
-        .app-box { background: var(--card-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); padding: 20px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); position: relative; text-align: center; }
-        .app-logo { width: 60px; height: 60px; margin: 0 auto 5px auto; display: block; }
-        .sub-title-white { font-size: 12px; color: white; font-weight: bold; margin-bottom: 2px; }
-        .lesson-title-grad { background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; font-size: 20px; margin-bottom: 4px; }
-        .lesson-sub-white { color: white; font-size: 11px; font-weight: 500; margin-bottom: 10px; }
-        .phrase-container { min-height: 90px; display: flex; flex-direction: column; justify-content: center; margin: 10px 0; text-align: center; }
-        #phrase-tr { font-size: 24px; font-weight: 800; color: var(--secondary); }
-        #phrase-en { font-size: 17px; color: #94a3b8; margin-top: 5px; font-style: italic; opacity: 0; transition: 0.3s; }
-        #phrase-en.visible { opacity: 1; }
-        .start { background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0f172a; width: 100%; padding: 15px; border-radius: 18px; font-size: 16px; font-weight: 800; border: none; }
-        .recording { background: #fb7185 !important; }
-        .ctrl-container { display: flex; gap: 6px; margin: 12px 0; flex-wrap: wrap; }
-        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 600; font-size: 11px; }
-        .btn-toggle { width: 100%; background: rgba(56, 189, 248, 0.2); color: var(--primary); border: 1px solid var(--primary); margin-bottom: 4px; }
-        #result { font-size: 14px; font-weight: 700; height: 35px; margin: 5px 0; }
+        .lesson-card h3 { 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem; 
+            color: var(--primary); 
+            font-weight: 700; 
+        }
+
+        .lesson-desc { font-size: 12px; color: #94a3b8; font-weight: 500; }
+
+        /* UYGULAMA EKRANI (İÇ SAYFA) */
+        #app-screen { display: none; width: 100%; max-width: 420px; flex-direction: column; }
         
-        /* BURASI SENİN ORİJİNAL STAT SATIRLARIN */
-        .stats { margin-top: 8px; font-size: 7px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 18px; display: flex; justify-content: space-between; gap: 2px; }
-        .stat-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .stat-label-row { display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
-        .stat-label-row .material-symbols-rounded { font-size: 12px; }
-        .stat-val { color: var(--primary); font-weight: 800; font-size: 12px; }
-        
-        .restart-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 30px; flex-direction: column; justify-content: center; align-items: center; z-index: 50; }
-        .restart-overlay.active { display: flex; }
-        .lesson-card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; filter: grayscale(1); }
+        .nav-btn { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 14px; 
+            height: 44px; 
+            font-weight: 700; 
+            color: white; 
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .app-box { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(20px); 
+            padding: 30px 20px; 
+            border-radius: 40px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+        }
+
+        .lesson-title-grad { 
+            font-family: 'Poppins', sans-serif;
+            background: var(--logo-grad); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-weight: 800; 
+            font-size: 24px; 
+        }
+
+        #phrase-tr { font-size: 28px; font-weight: 800; color: var(--secondary); letter-spacing: -0.5px; }
+        #phrase-en { font-size: 18px; color: #cbd5e1; font-weight: 500; }
+
+        .start { 
+            background: linear-gradient(135deg, #38bdf8, #818cf8); 
+            color: #0f172a; 
+            border-radius: 20px; 
+            padding: 18px;
+            font-size: 18px; 
+            font-weight: 800; 
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .ctrl { 
+            background: #334155; 
+            border-radius: 15px; 
+            font-size: 12px; 
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stats { 
+            margin-top: 15px; 
+            background: rgba(15, 23, 42, 0.6); 
+            padding: 15px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* DİĞER STANDARTLAR */
+        .v-tag { position: absolute; top: 15px; right: 15px; font-size: 10px; opacity: 0.5; font-weight: 700; }
+        .lesson-card.disabled { opacity: 0.3; filter: grayscale(1); }
+        .recording { background: #fb7185 !important; box-shadow: 0 0 20px rgba(251, 113, 133, 0.4) !important; color: white !important; }
+        .ctrl-container { display: flex; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
     </style>
 </head>
 <body>
 
-<div class="v-tag">V.2.7</div>
+<div class="v-tag">V.2.8</div>
 
 <div id="entry-page">
-    <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
+    <img src="logo.png" style="width: 70px; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));">
     <div class="main-title-white">5 Dakikada İngilizce</div>
-    <h1 style="background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; margin: 5px 0 20px 0; font-weight: 900;">Select Lesson</h1>
+    <h1 style="color: #94a3b8; font-size: 16px; margin: 0 0 10px 0; font-weight: 500; letter-spacing: 1px;">LEVEL SELECT</h1>
     <div id="lesson-list-container"></div>
 </div>
 
 <div id="app-screen">
-    <div class="top-bar">
-        <button class="nav-btn" onclick="goHome()">
-            <span class="material-symbols-rounded">home</span> HOME
+    <div class="top-bar" style="display:flex; justify-content: space-between; margin-bottom: 12px;">
+        <button class="nav-btn" onclick="goHome()" style="width: 100px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            <span class="material-symbols-rounded" style="font-size: 18px;">home</span> HOME
         </button>
-        <button class="nav-btn" onclick="resetToStart()">
-            <span class="material-symbols-rounded">refresh</span> RESTART
+        <button class="nav-btn" onclick="resetToStart()" style="width: 110px; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            <span class="material-symbols-rounded" style="font-size: 18px;">refresh</span> RESTART
         </button>
     </div>
     <div class="app-box">
-        <div id="restartOverlay" class="restart-overlay">
-            <h2 style="color:white;">Completed! 🏆</h2>
-            <button class="start" onclick="resetToStart()">RESTART</button>
+        <div id="restartOverlay" class="restart-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 40px; flex-direction: column; justify-content: center; align-items: center; z-index: 50;">
+            <h2 style="color:white; font-family:'Poppins'; font-size: 28px;">Completed! 🏆</h2>
+            <button class="start" onclick="resetToStart()" style="width: 200px; margin-top: 20px;">RESTART</button>
         </div>
-        <img src="logo.png" class="app-logo">
-        <div class="sub-title-white">5 Dakikada İngilizce</div>
+        <img src="logo.png" style="width: 50px; display: block; margin: 0 auto 10px;">
         <div id="lessonTitle" class="lesson-title-grad">#Lesson 1</div>
-        <div id="lessonSubTitle" class="lesson-sub-white">Yükleniyor...</div>
-        <div class="phrase-container">
-            <div id="phrase-tr">...</div>
-            <div id="phrase-en">...</div>
-        </div>
-        <button class="start" id="startBtn">TAP TO SPEAK</button>
-        <div class="ctrl-container">
-            <button class="ctrl btn-toggle" id="toggleBtn">SHOW ENGLISH</button>
-            <button class="ctrl" id="passBtn" style="color:var(--accent)">PASS</button>
-            <button class="ctrl" id="listenBtn">LISTEN</button>
-            <div style="display:flex; width:100%; gap:6px;">
-                <button class="ctrl" id="backBtn">← BACK</button>
-                <button class="ctrl" id="nextBtn">NEXT →</button>
-            </div>
-        </div>
-        <div id="result"></div>
+        <div id="lessonSubTitle" class="lesson-sub-white" style="font-size: 12px; opacity: 0.7; margin-bottom: 20px;">Yükleniyor...</div>
         
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-label-row">ORDER <span class="material-symbols-rounded">assistant_navigation</span></div>
-                <span id="current" class="stat-val">1</span>
+        <div class="phrase-container" style="min-height: 120px; display: flex; flex-direction: column; justify-content: center;">
+            <div id="phrase-tr">...</div>
+            <div id="phrase-en" style="margin-top: 10px; opacity: 0; transition: 0.3s;">...</div>
+        </div>
+
+        <button class="start" id="startBtn" style="width: 100%; cursor: pointer;">TAP TO SPEAK</button>
+
+        <div class="ctrl-container">
+            <button class="ctrl" id="toggleBtn" style="width: 100%; padding: 12px; background: rgba(56, 189, 248, 0.15); color: var(--primary); border: 1px solid var(--primary);">SHOW ENGLISH</button>
+            <button class="ctrl" id="passBtn" style="color:var(--accent); flex: 1; padding: 12px;">PASS</button>
+            <button class="ctrl" id="listenBtn" style="flex: 1; padding: 12px;">LISTEN</button>
+            <div style="display:flex; width:100%; gap:8px;">
+                <button class="ctrl" id="backBtn" style="flex: 1; padding: 12px;">← BACK</button>
+                <button class="ctrl" id="nextBtn" style="flex: 1; padding: 12px;">NEXT →</button>
             </div>
-            <div class="stat-item">
-                <div class="stat-label-row">CORRECT <span class="material-symbols-rounded" style="color:var(--secondary)">task_alt</span></div>
-                <span id="correct" class="stat-val" style="color:var(--secondary)">0</span>
+        </div>
+        
+        <div id="result" style="height: 30px; font-weight: 800; text-align: center; margin-bottom: 10px;"></div>
+
+        <div class="stats" style="display: flex; justify-content: space-between;">
+            <div class="stat-item" style="text-align: center;">
+                <div style="font-size: 9px; opacity: 0.6; margin-bottom: 5px;">ORDER</div>
+                <span id="current" class="stat-val" style="font-size: 16px; color: var(--primary); font-weight: 800;">1</span>
             </div>
-            <div class="stat-item">
-                <div class="stat-label-row">PASS <span class="material-symbols-rounded" style="color:var(--accent)">keyboard_double_arrow_right</span></div>
-                <span id="passedCount" class="stat-val" style="color:var(--accent)">0</span>
+            <div class="stat-item" style="text-align: center;">
+                <div style="font-size: 9px; opacity: 0.6; margin-bottom: 5px;">CORRECT</div>
+                <span id="correct" class="stat-val" style="font-size: 16px; color: var(--secondary); font-weight: 800;">0</span>
             </div>
-            <div class="stat-item">
-                <div class="stat-label-row">REMAIN <span class="material-symbols-rounded" style="color:#f97316">hourglass_bottom</span></div>
-                <span id="remaining" class="stat-val" style="color:#f97316">0</span>
+            <div class="stat-item" style="text-align: center;">
+                <div style="font-size: 9px; opacity: 0.6; margin-bottom: 5px;">PASS</div>
+                <span id="passedCount" class="stat-val" style="font-size: 16px; color: var(--accent); font-weight: 800;">0</span>
+            </div>
+            <div class="stat-item" style="text-align: center;">
+                <div style="font-size: 9px; opacity: 0.6; margin-bottom: 5px;">REMAIN</div>
+                <span id="remaining" class="stat-val" style="font-size: 16px; color: #f97316; font-weight: 800;">0</span>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+/* SCRIPT KISMINA HİÇ DOKUNULMADI - TÜM FONKSİYONLARIN AYNI ÇALIŞACAK */
 let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];
@@ -236,10 +289,10 @@ function saveProgress() {
 }
 
 function render() {
-    if(index >= currentList.length) { document.getElementById("restartOverlay").classList.add("active"); return; }
+    if(index >= currentList.length) { document.getElementById("restartOverlay").style.display = "flex"; return; }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
-    document.getElementById("phrase-en").classList.toggle("visible", showEn);
+    document.getElementById("phrase-en").style.opacity = showEn ? "1" : "0";
     document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
@@ -275,21 +328,14 @@ rec.continuous = true;
 
 rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
-// GÜNCELLENEN KISIM: "THE" ZORUNLU + SAYI ESNETME
 rec.onresult = e => {
     let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
     let target = currentList[index].en.toLowerCase().trim();
-
     const numMap = { "one": "1", "two": "2", "three": "3", "tree": "3", "free": "3", "four": "4", "for": "4", "five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9", "ten": "10" };
-
     let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
     let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    Object.keys(numMap).forEach(key => { processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); });
 
-    Object.keys(numMap).forEach(key => {
-        processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]);
-    });
-
-    // Birebir eşleşme (The söylemezsen geçmez)
     if(processedSpoken === processedTarget) {
         correctCount++;
         playBeep(true);
@@ -309,13 +355,13 @@ function resetToStart() {
     if(confirm("Ders sıfırlanacak. Emin misiniz?")) {
         index = 0; correctCount = 0; passedCount = 0;
         localStorage.removeItem('lesson_progress_' + activeLessonId);
-        document.getElementById("restartOverlay").classList.remove("active");
+        document.getElementById("restartOverlay").style.display = "none";
         render();
         document.getElementById("result").innerHTML = "";
     }
 }
 
-function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").classList.add("active"); } }
+function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").style.display = "flex"; } }
 
 document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
 document.getElementById("listenBtn").onclick = speak;

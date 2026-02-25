@@ -2,387 +2,187 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.4</title>
+    <title>5 Dakikada İngilizce - V.3.6</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <style>
-        :root { 
-            --bg-dark: #0f172a; 
-            --card-bg: rgba(30, 41, 59, 0.6); 
-            --primary: #38bdf8; 
-            --secondary: #2dd4bf; 
-            --accent: #fb7185; 
-            --text-main: #f8fafc; 
-            --logo-grad: linear-gradient(90deg, #ff4d4d, #f97316); 
-            --white-grad: linear-gradient(180deg, #ffffff, #94a3b8);
-        }
-
-        body { 
-            margin: 0; 
-            font-family: 'Inter', sans-serif; 
-            background: radial-gradient(circle at top right, #1e293b, #0f172a); 
-            min-height: 100dvh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            color: var(--text-main); 
-            overflow: hidden; 
-            padding: 10px; 
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; max-height: 95vh; overflow-y: auto; padding-bottom: 20px; }
-
-        .main-title-white { 
-            font-family: 'Poppins'; 
-            font-size: 24px; 
-            font-weight: 900; 
-            background: var(--white-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px; 
-        }
-
-        .select-lesson-title {
-            background: var(--logo-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 26px; 
-            margin: 5px 0 20px 0; 
-            font-weight: 900; 
-            font-family: 'Poppins';
-        }
-
-        #lesson-list-container { 
-            width: 100%; 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-            max-width: 500px; 
-            padding: 10px; 
-        }
-
-        .lesson-card { 
-            background: var(--card-bg); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 20px 10px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255,255,255,0.12); 
-            text-align: center; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100px;
-        }
-
-        .lesson-card:hover { border-color: #f97316; background: rgba(45, 55, 75, 0.8); transform: translateY(-3px); }
+        :root { --bg-dark: #0f172a; --card-bg: rgba(30, 41, 59, 0.7); --primary: #38bdf8; --secondary: #2dd4bf; --accent: #fb7185; --text-main: #f8fafc; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: #0f172a; min-height: 100dvh; display: flex; justify-content: center; align-items: center; color: var(--text-main); padding: 15px; box-sizing: border-box; overflow: hidden; }
         
-        .lesson-card h3 { 
-            margin: 0 0 8px 0; 
-            font-family: 'Poppins'; 
-            font-size: 1.1rem; 
-            font-weight: 800; 
-            background: var(--logo-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .lesson-desc { font-size: 11px; color: #94a3b8; font-weight: 500; }
-        .v-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .material-symbols-rounded { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-
-        #app-screen { display: none; width: 100%; max-width: 400px; flex-direction: column; }
-        .app-box { 
-            background: var(--card-bg); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            padding: 25px; 
-            border-radius: 30px; 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
-            text-align: center; 
-        }
+        #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .main-title { font-family: 'Poppins'; font-size: 26px; font-weight: 900; background: linear-gradient(90deg, #ff4d4d, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
         
-        .phrase-container { 
-            min-height: 100px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-            text-align: center; 
-            margin: 10px 0;
-        }
+        #lesson-list-container { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 500px; }
+        .lesson-card { background: var(--card-bg); padding: 20px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; cursor: pointer; transition: 0.2s; }
+        .lesson-card:active { transform: scale(0.95); background: #1e293b; }
+        .lesson-card h3 { margin: 0; font-size: 1rem; color: #f97316; font-family: 'Poppins'; }
 
-        #phrase-tr { font-size: 26px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; }
-        #phrase-en { font-size: 18px; color: #94a3b8; font-style: italic; transition: 0.3s; }
+        #app-screen { display: none; width: 100%; max-width: 400px; flex-direction: column; gap: 15px; }
+        .app-box { background: var(--card-bg); padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; }
         
-        .start { 
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9); 
-            color: #0f172a; 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 18px; 
-            font-size: 16px; 
-            font-weight: 900; 
-            border: none; 
-            font-family: 'Poppins'; 
-            cursor: pointer; 
-            position: relative;
-            overflow: hidden;
-            animation: pulse-glow 2s infinite;
-        }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); transform: scale(1); }
-            70% { box-shadow: 0 0 0 15px rgba(56, 189, 248, 0); transform: scale(1.02); }
-            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); transform: scale(1); }
-        }
-
-        .recording { background: #fb7185 !important; animation: recording-glow 1s infinite !important; color: white; }
-        @keyframes recording-glow {
-            0% { box-shadow: 0 0 5px #fb7185; }
-            50% { box-shadow: 0 0 20px #fb7185; }
-            100% { box-shadow: 0 0 5px #fb7185; }
-        }
-
-        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 11px; cursor: pointer; }
+        #phrase-tr { font-size: 28px; font-weight: 800; color: var(--secondary); margin-bottom: 10px; min-height: 40px; }
+        #phrase-en { font-size: 18px; color: #94a3b8; margin-bottom: 20px; height: 24px; font-style: italic; }
         
-        .stats { margin-top: 15px; font-size: 7px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 18px; display: flex; justify-content: space-between; gap: 2px; }
-        .stat-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .stat-label-row { display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
-        .stat-label-row .material-symbols-rounded { font-size: 12px; }
-        .stat-val { color: var(--primary); font-weight: 800; font-size: 12px; }
+        .start { background: #38bdf8; color: #0f172a; width: 100%; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: 900; border: none; cursor: pointer; transition: 0.3s; }
+        .recording { background: #fb7185 !important; color: white; animation: pulse 1.5s infinite; }
         
-        .lesson-title-grad { background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; font-size: 22px; font-family: 'Poppins'; }
-        .lesson-card.disabled { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; }
+        .ctrl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
+        .ctrl { background: #334155; color: white; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-size: 12px; }
+        
+        #result { margin-top: 15px; min-height: 40px; font-weight: bold; font-size: 14px; line-height: 1.4; }
+        .stats { display: flex; justify-content: space-between; margin-top: 20px; font-size: 12px; opacity: 0.8; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="v-tag">V.3.4</div>
-
 <div id="entry-page">
-    <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
-    <div class="main-title-white">5 Dakikada İngilizce</div>
-    <div class="select-lesson-title">Select Lesson</div>
+    <div class="main-title">5 Dakikada İngilizce</div>
     <div id="lesson-list-container"></div>
 </div>
 
 <div id="app-screen">
-    <div class="top-bar" style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <button class="nav-btn" onclick="goHome()">
-            <span class="material-symbols-rounded">home</span> HOME
-        </button>
-        <button class="nav-btn" onclick="resetToStart()">
-            <span class="material-symbols-rounded">refresh</span> RESTART
-        </button>
-    </div>
+    <button class="ctrl" onclick="location.reload()" style="width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.05);">← ANA MENÜ</button>
     <div class="app-box">
-        <div id="restartOverlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); border-radius: 30px; flex-direction: column; justify-content: center; align-items: center; z-index: 50;">
-            <h2 style="color:white; font-family:'Poppins';">Completed! 🏆</h2>
-            <button class="start" onclick="resetToStart()" style="width:80%">RESTART</button>
-        </div>
-        <img src="logo.png" style="width:50px; margin-bottom:5px;">
-        <div class="sub-title-white" style="font-size:11px; font-weight:bold; color: white;">5 Dakikada İngilizce</div>
-        <div id="lessonTitle" class="lesson-title-grad">#Lesson 1</div>
-        <div id="lessonSubTitle" style="color:white; font-size:11px; margin-bottom:15px; font-weight: 500;">Yükleniyor...</div>
+        <div id="phrase-tr">Yükleniyor...</div>
+        <div id="phrase-en" style="visibility: hidden;">...</div>
         
-        <div class="phrase-container">
-            <div id="phrase-tr">...</div>
-            <div id="phrase-en" style="opacity:0;">...</div>
-        </div>
-
         <button class="start" id="startBtn">TAP TO SPEAK</button>
-
-        <div class="ctrl-container" style="display:flex; flex-wrap:wrap; gap:6px; margin:15px 0;">
-            <button class="ctrl" id="toggleBtn" style="width:100%; background:rgba(56,189,248,0.2); color:var(--primary); border:1px solid var(--primary);">SHOW ENGLISH</button>
-            <button class="ctrl" id="passBtn" style="color:var(--accent)">PASS</button>
-            <button class="ctrl" id="listenBtn">LISTEN</button>
-            <div style="display:flex; width:100%; gap:6px;">
-                <button class="ctrl" id="backBtn">← BACK</button>
-                <button class="ctrl" id="nextBtn">NEXT →</button>
-            </div>
+        
+        <div class="ctrl-grid">
+            <button class="ctrl" id="listenBtn" style="background: #0ea5e9;">LISTEN</button>
+            <button class="ctrl" id="toggleBtn">SHOW</button>
+            <button class="ctrl" id="backBtn">BACK</button>
+            <button class="ctrl" id="nextBtn">NEXT</button>
         </div>
-
-        <div id="result" style="height: 35px; font-weight: 700;"></div>
+        
+        <div id="result"></div>
         
         <div class="stats">
-            <div class="stat-item">
-                <div class="stat-label-row">ORDER <span class="material-symbols-rounded">assistant_navigation</span></div>
-                <span id="current" class="stat-val">1</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label-row">CORRECT <span class="material-symbols-rounded" style="color:var(--secondary)">task_alt</span></div>
-                <span id="correct" class="stat-val" style="color:var(--secondary)">0</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label-row">PASS <span class="material-symbols-rounded" style="color:var(--accent)">keyboard_double_arrow_right</span></div>
-                <span id="passedCount" class="stat-val" style="color:var(--accent)">0</span>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label-row">REMAIN <span class="material-symbols-rounded" style="color:#f97316">hourglass_bottom</span></div>
-                <span id="remaining" class="stat-val" style="color:#f97316">0</span>
-            </div>
+            <span>Sıra: <b id="current">0</b> / <span id="total">0</span></span>
+            <span>Doğru: <b id="correct">0</b></span>
         </div>
     </div>
 </div>
 
 <script>
-let allLessonsData = [];
-let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false;
-let currentList = [];
-let activeLessonId = null;
-let audioCache = {}; // Sesleri burada saklayacağız
+let index = 0, correctCount = 0, currentList = [], isListening = false;
+const startBtn = document.getElementById("startBtn");
+const resultDiv = document.getElementById("result");
 
-fetch('data.json').then(res => res.json()).then(data => {
-    allLessonsData = data;
-    renderLessonMenu();
-});
-
-function renderLessonMenu() {
+// 1. DERSLERİ YÜKLE
+fetch('data.json').then(r => r.json()).then(data => {
     const container = document.getElementById('lesson-list-container');
-    container.innerHTML = "";
-    allLessonsData.forEach(lesson => {
+    data.forEach(l => {
+        if(!l.file) return;
         const card = document.createElement('div');
-        const isAvailable = lesson.file ? true : false;
-        card.className = 'lesson-card' + (!isAvailable ? ' disabled' : '');
-        card.onclick = () => { if(isAvailable) startLesson(lesson); };
-        card.innerHTML = `<h3>${lesson.title}</h3><div class="lesson-desc">${!isAvailable ? 'Coming Soon' : lesson.subTitle}</div>`;
+        card.className = 'lesson-card';
+        card.innerHTML = `<h3>${l.title}</h3>`;
+        card.onclick = () => startLesson(l.file);
         container.appendChild(card);
     });
-}
+});
 
-function startLesson(lesson) {
-    fetch(lesson.file).then(res => res.json()).then(contentData => {
-        activeLessonId = lesson.id;
-        currentList = [...contentData]; 
-        
-        // SESLERİ ÖNDEN YÜKLEME (CACHE)
-        audioCache = {}; 
-        currentList.forEach((item, i) => {
-            const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(item.en)}&type=2`;
-            audioCache[i] = new Audio(url);
-        });
-
-        const saved = localStorage.getItem('lesson_progress_' + activeLessonId);
-        if(saved) {
-            const progress = JSON.parse(saved);
-            index = progress.index;
-            correctCount = progress.correctCount;
-            passedCount = progress.passedCount;
-        } else {
-            index = 0; correctCount = 0; passedCount = 0;
-        }
-        document.getElementById("lessonTitle").innerText = lesson.title;
-        document.getElementById("lessonSubTitle").innerText = lesson.subTitle;
+function startLesson(file) {
+    fetch(file).then(r => r.json()).then(data => {
+        currentList = data;
         document.getElementById("entry-page").style.display = "none";
         document.getElementById("app-screen").style.display = "flex";
+        document.getElementById("total").textContent = currentList.length;
         render();
     });
-}
-
-function saveProgress() {
-    if(activeLessonId) {
-        const progress = { index, correctCount, passedCount };
-        localStorage.setItem('lesson_progress_' + activeLessonId, JSON.stringify(progress));
-    }
 }
 
 function render() {
-    if(index >= currentList.length) { document.getElementById("restartOverlay").style.display = "flex"; return; }
+    if(index >= currentList.length) { 
+        resultDiv.innerHTML = "<span style='color:var(--secondary)'>DERS BİTTİ! 🏆</span>";
+        setTimeout(() => location.reload(), 2000);
+        return; 
+    }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
-    document.getElementById("phrase-en").style.opacity = showEn ? "1" : "0";
-    document.getElementById("toggleBtn").innerText = showEn ? "HIDE ENGLISH" : "SHOW ENGLISH";
+    document.getElementById("phrase-en").style.visibility = "hidden";
     document.getElementById("current").textContent = index + 1;
     document.getElementById("correct").textContent = correctCount;
-    document.getElementById("passedCount").textContent = passedCount;
-    document.getElementById("remaining").textContent = currentList.length - (index + 1);
-    saveProgress();
+    resultDiv.textContent = "";
+    resultDiv.style.color = "white";
 }
 
-function playBeep(isCorrect) {
-    try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.connect(g); g.connect(ctx.destination);
-        osc.frequency.value = isCorrect ? 800 : 150;
-        g.gain.setValueAtTime(0.2, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.start(); osc.stop(ctx.currentTime + 0.3);
-    } catch(e) {}
-}
+// 2. SES ÇALMA (Tıklandığında indirir ve çalar)
+document.getElementById("listenBtn").onclick = () => {
+    const text = currentList[index].en;
+    const audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`);
+    audio.play().catch(() => console.log("Ses hatası."));
+};
 
-function speak() {
-    if(audioCache[index]) {
-        audioCache[index].play().catch(() => {
-            // Eğer cache patlarsa (tarayıcı engeli) manuel yükle
-            const text = currentList[index].en;
-            new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`).play();
-        });
-    }
-}
-
+// 3. SES TANIMA AYARLARI
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) {
+    alert("Tarayıcınız ses tanımayı desteklemiyor. Lütfen Chrome kullanın.");
+}
 const rec = new SR();
 rec.lang = "en-US";
-rec.continuous = true;
-rec.interimResults = true; 
+rec.interimResults = false; // Anlık işlem yapmaz, donmayı önler.
 
-rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
-
-rec.onresult = e => {
-    let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
-    let target = currentList[index].en.toLowerCase().trim();
-    const clean = (str) => str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, " ").trim();
-    
-    let processedSpoken = clean(spoken);
-    let processedTarget = clean(target);
-
-    document.getElementById("result").innerHTML = `HEARD: "${spoken}"`;
-
-    if(processedSpoken === processedTarget) {
-        correctCount++;
-        playBeep(true);
-        document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
+startBtn.onclick = () => {
+    if(!isListening) {
+        try { rec.start(); } catch(e) { rec.stop(); }
+    } else {
         rec.stop();
-        setTimeout(nextWord, 800);
     }
 };
 
-rec.onend = () => { isListening = false; document.getElementById("startBtn").innerText = "TAP TO SPEAK"; document.getElementById("startBtn").classList.remove("recording"); };
+rec.onstart = () => {
+    isListening = true;
+    startBtn.innerText = "LISTENING...";
+    startBtn.classList.add("recording");
+    resultDiv.textContent = "Dinleniyor...";
+};
 
-function goHome() { try { rec.stop(); } catch(e) {} document.getElementById("app-screen").style.display = "none"; document.getElementById("entry-page").style.display = "flex"; }
+rec.onresult = (e) => {
+    let spoken = e.results[0][0].transcript.toLowerCase().trim();
+    
+    // Temizleme: Noktalama işaretlerini at, sadece kelimelere bak
+    const clean = (str) => str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, " ").trim();
+    
+    let processedSpoken = clean(spoken);
+    let processedTarget = clean(currentList[index].en.toLowerCase());
 
-function resetToStart() {
-    if(confirm("Ders sıfırlanacak. Emin misiniz?")) {
-        index = 0; correctCount = 0; passedCount = 0;
-        localStorage.removeItem('lesson_progress_' + activeLessonId);
-        document.getElementById("restartOverlay").style.display = "none";
-        render();
-        document.getElementById("result").innerHTML = "";
+    resultDiv.innerHTML = `Duyulan: <br>"${spoken}"`;
+
+    // KESİN EŞLEŞME KONTROLÜ
+    if(processedSpoken === processedTarget) {
+        correctCount++;
+        resultDiv.style.color = "#2dd4bf";
+        resultDiv.innerHTML = "DOĞRU! ✅";
+        rec.stop(); // Başarılı olunca durdur
+        setTimeout(() => { index++; render(); }, 1200);
+    } else {
+        resultDiv.style.color = "#fb7185";
+        // Yanlışsa durmaz, tekrar denenebilir veya manuel durdurulur.
     }
-}
+};
 
-function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").style.display = "flex"; } }
+rec.onend = () => {
+    isListening = false;
+    startBtn.innerText = "TAP TO SPEAK";
+    startBtn.classList.remove("recording");
+};
 
-document.getElementById("startBtn").onclick = () => { if(!isListening) { rec.start(); } else { rec.stop(); } };
-document.getElementById("listenBtn").onclick = speak;
-document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
-document.getElementById("nextBtn").onclick = nextWord;
+rec.onerror = () => {
+    rec.stop();
+};
+
+// 4. KONTROLLER
+document.getElementById("toggleBtn").onclick = () => {
+    const en = document.getElementById("phrase-en");
+    en.style.visibility = en.style.visibility === "hidden" ? "visible" : "hidden";
+};
+document.getElementById("nextBtn").onclick = () => { index++; render(); };
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
-document.getElementById("passBtn").onclick = () => { passedCount++; currentList.push(currentList[index]); nextWord(); };
 </script>
+
 </body>
 </html>

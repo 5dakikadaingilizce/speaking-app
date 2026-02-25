@@ -10,7 +10,7 @@
     <style>
         :root { 
             --bg-dark: #0f172a; 
-            --card-bg: rgba(30, 41, 59, 0.7); 
+            --card-bg: rgba(30, 41, 59, 0.6); 
             --primary: #38bdf8; 
             --secondary: #2dd4bf; 
             --accent: #fb7185; 
@@ -37,7 +37,6 @@
 
         #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; max-height: 95vh; overflow-y: auto; padding-bottom: 20px; }
 
-        /* Ana Başlık BEYAZ GRADYAN */
         .main-title-white { 
             font-family: 'Poppins'; 
             font-size: 24px; 
@@ -48,7 +47,6 @@
             margin-bottom: 5px; 
         }
 
-        /* SELECT LESSON TURUNCU GRADYAN */
         .select-lesson-title {
             background: var(--logo-grad);
             -webkit-background-clip: text;
@@ -68,16 +66,17 @@
             padding: 10px; 
         }
 
+        /* PARLAMA EFEKTİ BURADA */
         .lesson-card { 
             background: var(--card-bg); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px); /* Parlama/Cam efekti */
+            -webkit-backdrop-filter: blur(15px);
             padding: 20px 10px; 
             border-radius: 24px; 
-            border: 1px solid rgba(255,255,255,0.08); 
+            border: 1px solid rgba(255,255,255,0.12); 
             text-align: center; 
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -85,7 +84,8 @@
             min-height: 100px;
         }
 
-        /* LESSON 1, 2... TURUNCU GRADYAN */
+        .lesson-card:hover { border-color: #f97316; background: rgba(45, 55, 75, 0.8); transform: translateY(-3px); }
+        
         .lesson-card h3 { 
             margin: 0 0 8px 0; 
             font-family: 'Poppins'; 
@@ -97,24 +97,31 @@
         }
 
         .lesson-desc { font-size: 11px; color: #94a3b8; font-weight: 500; }
-
         .v-tag { position: absolute; top: 10px; right: 10px; font-size: 10px; color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
         .material-symbols-rounded { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
 
-        /* APP SCREEN */
+        /* APP SCREEN PARLAMA */
         #app-screen { display: none; width: 100%; max-width: 400px; flex-direction: column; }
-        .app-box { background: var(--card-bg); backdrop-filter: blur(15px); padding: 25px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); text-align: center; }
+        .app-box { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            padding: 25px; 
+            border-radius: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
+            text-align: center; 
+        }
         
         .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; }
         
-        /* DERS İÇİ YAZILARIN ORTALANMASI */
         .phrase-container { 
             min-height: 100px; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            align-items: center; /* Yatayda ortala */
-            text-align: center; /* Metni merkeze al */
+            align-items: center; 
+            text-align: center; 
             margin: 10px 0;
         }
 
@@ -126,7 +133,6 @@
 
         .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 11px; cursor: pointer; }
         
-        /* STATS - LOGOLARIN GERİ GELMESİ */
         .stats { margin-top: 15px; font-size: 7px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 18px; display: flex; justify-content: space-between; gap: 2px; }
         .stat-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
         .stat-label-row { display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
@@ -208,7 +214,6 @@
 </div>
 
 <script>
-/* SCRIPT BÖLÜMÜNE DOKUNULMADI */
 let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];

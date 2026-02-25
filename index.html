@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.2</title>
+    <title>5 Dakikada İngilizce - V.3.4</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -169,7 +169,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.3.2</div>
+<div class="v-tag">V.3.4</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -239,10 +239,10 @@
 
 <script>
 let allLessonsData = [];
-let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
+let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false;
 let currentList = [];
 let activeLessonId = null;
-let currentAudio = null; // Ses nesnesini global tutalım
+let audioCache = {}; // Sesleri burada saklayacağız
 
 fetch('data.json').then(res => res.json()).then(data => {
     allLessonsData = data;
@@ -266,6 +266,14 @@ function startLesson(lesson) {
     fetch(lesson.file).then(res => res.json()).then(contentData => {
         activeLessonId = lesson.id;
         currentList = [...contentData]; 
+        
+        // SESLERİ ÖNDEN YÜKLEME (CACHE)
+        audioCache = {}; 
+        currentList.forEach((item, i) => {
+            const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(item.en)}&type=2`;
+            audioCache[i] = new Audio(url);
+        });
+
         const saved = localStorage.getItem('lesson_progress_' + activeLessonId);
         if(saved) {
             const progress = JSON.parse(saved);
@@ -290,16 +298,6 @@ function saveProgress() {
     }
 }
 
-// Ses Preload Fonksiyonu
-function preloadAudio() {
-    if(index < currentList.length) {
-        const text = currentList[index].en;
-        const url = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`;
-        currentAudio = new Audio(url);
-        currentAudio.load(); // Arka planda indirmeyi başlat
-    }
-}
-
 function render() {
     if(index >= currentList.length) { document.getElementById("restartOverlay").style.display = "flex"; return; }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
@@ -310,8 +308,6 @@ function render() {
     document.getElementById("correct").textContent = correctCount;
     document.getElementById("passedCount").textContent = passedCount;
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
-    
-    preloadAudio(); // Yeni kelime gelince sesi hemen yükle
     saveProgress();
 }
 
@@ -329,9 +325,9 @@ function playBeep(isCorrect) {
 }
 
 function speak() {
-    if(currentAudio) {
-        currentAudio.play().catch(e => {
-            // Eğer preload başarısız olduysa tekrar dene
+    if(audioCache[index]) {
+        audioCache[index].play().catch(() => {
+            // Eğer cache patlarsa (tarayıcı engeli) manuel yükle
             const text = currentList[index].en;
             new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`).play();
         });
@@ -342,40 +338,32 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
 rec.continuous = true;
-rec.interimResults = false; // Sadece kesin sonuçları bekle (hızlandırır)
+rec.interimResults = true; 
 
 rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
 rec.onresult = e => {
     let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
     let target = currentList[index].en.toLowerCase().trim();
-    
-    // Temizleme: Noktalama işaretlerini ve gereksiz boşlukları at
     const clean = (str) => str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"").replace(/\s+/g, " ").trim();
     
     let processedSpoken = clean(spoken);
     let processedTarget = clean(target);
-    
-    // Sayı dönüşümü (Daha esnek algılama için)
-    const numMap = { "one": "1", "two": "2", "three": "3", "four": "4", "five": "5" };
-    Object.keys(numMap).forEach(key => { 
-        processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); 
-    });
+
+    document.getElementById("result").innerHTML = `HEARD: "${spoken}"`;
 
     if(processedSpoken === processedTarget) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
-        setTimeout(() => { nextWord(); if(!autoMode) rec.stop(); }, 600);
-    } else {
-        playBeep(false);
-        document.getElementById("result").innerHTML = `<span style='color:var(--accent)'>HEARD: "${spoken}" ❌</span>`;
+        rec.stop();
+        setTimeout(nextWord, 800);
     }
 };
 
-rec.onend = () => { if(autoMode) rec.start(); else { isListening = false; document.getElementById("startBtn").innerText = "TAP TO SPEAK"; document.getElementById("startBtn").classList.remove("recording"); } };
+rec.onend = () => { isListening = false; document.getElementById("startBtn").innerText = "TAP TO SPEAK"; document.getElementById("startBtn").classList.remove("recording"); };
 
-function goHome() { autoMode = false; try { rec.stop(); } catch(e) {} document.getElementById("app-screen").style.display = "none"; document.getElementById("entry-page").style.display = "flex"; }
+function goHome() { try { rec.stop(); } catch(e) {} document.getElementById("app-screen").style.display = "none"; document.getElementById("entry-page").style.display = "flex"; }
 
 function resetToStart() {
     if(confirm("Ders sıfırlanacak. Emin misiniz?")) {
@@ -389,7 +377,7 @@ function resetToStart() {
 
 function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").style.display = "flex"; } }
 
-document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
+document.getElementById("startBtn").onclick = () => { if(!isListening) { rec.start(); } else { rec.stop(); } };
 document.getElementById("listenBtn").onclick = speak;
 document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
 document.getElementById("nextBtn").onclick = nextWord;

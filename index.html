@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.0</title>
+    <title>5 Dakikada İngilizce - V.3.1</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -124,7 +124,6 @@
         #phrase-tr { font-size: 26px; font-weight: 800; color: var(--secondary); margin-bottom: 8px; }
         #phrase-en { font-size: 18px; color: #94a3b8; font-style: italic; transition: 0.3s; }
         
-        /* TAP TO SPEAK PARLAMA EFEKTİ */
         .start { 
             background: linear-gradient(135deg, #38bdf8, #0ea5e9); 
             color: #0f172a; 
@@ -170,7 +169,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.3.0</div>
+<div class="v-tag">V.3.1</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -316,11 +315,12 @@ function playBeep(isCorrect) {
     } catch(e) {}
 }
 
+// GÜNCELLENMİŞ LISTEN FONKSİYONU - AMERİKAN AKSANI (V.3.1)
 function speak() {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(currentList[index].en);
-    u.lang = "en-US"; u.rate = 0.8;
-    window.speechSynthesis.speak(u);
+    const text = currentList[index].en;
+    const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&type=2`;
+    const audio = new Audio(audioUrl);
+    audio.play().catch(e => console.error("Ses çalma hatası:", e));
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.2 AutoTR</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 Dakikada İngilizce - V.3.3 Final</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -33,6 +33,8 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
+            /* Zoom ve çift tıklama engelleme */
+            touch-action: manipulation;
         }
 
         #entry-page { display: flex; flex-direction: column; align-items: center; width: 100%; max-height: 95vh; overflow-y: auto; padding-bottom: 20px; }
@@ -139,6 +141,7 @@
             position: relative;
             overflow: hidden;
             animation: pulse-glow 2s infinite;
+            touch-action: manipulation;
         }
 
         @keyframes pulse-glow {
@@ -154,7 +157,7 @@
             100% { box-shadow: 0 0 5px #fb7185; }
         }
 
-        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 11px; cursor: pointer; }
+        .ctrl { background: rgba(51, 65, 85, 0.7); color: white; flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: 700; font-size: 11px; cursor: pointer; touch-action: manipulation; }
         
         .stats { margin-top: 15px; font-size: 7px; color: #94a3b8; background: rgba(15, 23, 42, 0.4); padding: 10px; border-radius: 18px; display: flex; justify-content: space-between; gap: 2px; }
         .stat-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
@@ -162,9 +165,8 @@
         .stat-label-row .material-symbols-rounded { font-size: 12px; }
         .stat-val { color: var(--primary); font-weight: 800; font-size: 12px; }
         
-        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; gap: 5px; touch-action: manipulation; }
 
-        /* AUTO TR MODU ÖZEL STİL */
         .auto-tr-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; }
         .auto-tr-btn.active { background: var(--accent); color: white; border-color: white; box-shadow: 0 0 15px rgba(251, 113, 133, 0.4); }
 
@@ -174,7 +176,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.3.2</div>
+<div class="v-tag">V.3.3</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -192,7 +194,7 @@
             <span class="material-symbols-rounded">volume_up</span> AUTO TR
         </button>
         <button class="nav-btn" onclick="resetToStart()">
-            <span class="material-symbols-rounded">refresh</span>
+            <span class="material-symbols-rounded">refresh</span> RESTART
         </button>
     </div>
     <div class="app-box">
@@ -252,7 +254,6 @@ let currentList = [];
 let activeLessonId = null;
 let isAutoTR = localStorage.getItem('auto_tr_voice') === 'true';
 
-// Sayfa yüklendiğinde buton durumunu kontrol et
 if(isAutoTR) document.getElementById('autoTRToggle').classList.add('active');
 
 fetch('data.json').then(res => res.json()).then(data => {
@@ -264,7 +265,7 @@ function toggleAutoTR() {
     isAutoTR = !isAutoTR;
     localStorage.setItem('auto_tr_voice', isAutoTR);
     document.getElementById('autoTRToggle').classList.toggle('active');
-    if(isAutoTR) speakTR();
+    // Butona basınca sadece o anki kelimeyi söyler, diğer butonlarla karışmaz
 }
 
 function speakTR() {
@@ -312,7 +313,7 @@ function startLesson(lesson) {
         document.getElementById("lessonSubTitle").innerText = lesson.subTitle;
         document.getElementById("entry-page").style.display = "none";
         document.getElementById("app-screen").style.display = "flex";
-        render();
+        render(true); // Yeni ders için sesli uyarıyı tetikle
     });
 }
 
@@ -323,7 +324,7 @@ function saveProgress() {
     }
 }
 
-function render() {
+function render(shouldSpeakTR = false) {
     if(index >= currentList.length) { document.getElementById("restartOverlay").style.display = "flex"; return; }
     document.getElementById("phrase-tr").textContent = currentList[index].tr;
     document.getElementById("phrase-en").textContent = currentList[index].en;
@@ -335,8 +336,8 @@ function render() {
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
     saveProgress();
     
-    // YENİ KELİME GELDİĞİNDE OTOMATİK TÜRKÇE SESLENDİR
-    if(isAutoTR) setTimeout(speakTR, 400);
+    // Sadece shouldSpeakTR true ise seslendir (Yeni kelime veya ders başı)
+    if(isAutoTR && shouldSpeakTR) setTimeout(speakTR, 400);
 }
 
 function playBeep(isCorrect) {
@@ -362,20 +363,12 @@ rec.onstart = () => { isListening = true; document.getElementById("startBtn").in
 rec.onresult = e => {
     let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
     let target = currentList[index].en.toLowerCase().trim();
-    const numMap = { "one": "1", "two": "2", "three": "3", "four": "4", "five": "5" };
-    let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    Object.keys(numMap).forEach(key => { processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); });
+    
+    // Temizleme ve Of/Off toleransı
+    let procSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\boff\b/g, "of");
+    let procTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\boff\b/g, "of");
 
-    // --- ESNEK OF/OFF KONTROLÜ ---
-    let isCorrect = (processedSpoken === processedTarget);
-    if (!isCorrect) {
-        let flexSpoken = processedSpoken.replace(/\boff\b/g, "of");
-        let flexTarget = processedTarget.replace(/\boff\b/g, "of");
-        if (flexSpoken === flexTarget) isCorrect = true;
-    }
-
-    if(isCorrect) {
+    if(procSpoken === procTarget || procSpoken.includes(procTarget)) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
@@ -395,20 +388,28 @@ function resetToStart() {
         index = 0; correctCount = 0; passedCount = 0;
         localStorage.removeItem('lesson_progress_' + activeLessonId);
         document.getElementById("restartOverlay").style.display = "none";
-        render();
+        render(true);
         document.getElementById("result").innerHTML = "";
     }
 }
 
-function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").style.display = "flex"; } }
+function nextWord() { 
+    if(index < currentList.length - 1) { 
+        index++; 
+        showEn = false; 
+        render(true); // Yeni kelimeye geçince seslendir
+        document.getElementById("result").innerHTML = ""; 
+    } else { 
+        document.getElementById("restartOverlay").style.display = "flex"; 
+    } 
+}
 
 document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
 document.getElementById("listenBtn").onclick = speakEN;
-document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
+document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(false); }; // False: TR seslendirme tetiklenmez
 document.getElementById("nextBtn").onclick = nextWord;
-document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };
+document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(true); } };
 document.getElementById("passBtn").onclick = () => { passedCount++; currentList.push(currentList[index]); nextWord(); };
-window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.3 Final</title>
+    <title>5 Dakikada İngilizce - V.3.4 Pro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            /* Zoom ve çift tıklama engelleme */
+            /* ZOOM ENGELİ: touch-action manipulation çift tıklamayı engeller */
             touch-action: manipulation;
         }
 
@@ -176,7 +176,7 @@
 </head>
 <body>
 
-<div class="v-tag">V.3.3</div>
+<div class="v-tag">V.3.4</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -265,7 +265,6 @@ function toggleAutoTR() {
     isAutoTR = !isAutoTR;
     localStorage.setItem('auto_tr_voice', isAutoTR);
     document.getElementById('autoTRToggle').classList.toggle('active');
-    // Butona basınca sadece o anki kelimeyi söyler, diğer butonlarla karışmaz
 }
 
 function speakTR() {
@@ -313,7 +312,7 @@ function startLesson(lesson) {
         document.getElementById("lessonSubTitle").innerText = lesson.subTitle;
         document.getElementById("entry-page").style.display = "none";
         document.getElementById("app-screen").style.display = "flex";
-        render(true); // Yeni ders için sesli uyarıyı tetikle
+        render(true);
     });
 }
 
@@ -336,7 +335,6 @@ function render(shouldSpeakTR = false) {
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
     saveProgress();
     
-    // Sadece shouldSpeakTR true ise seslendir (Yeni kelime veya ders başı)
     if(isAutoTR && shouldSpeakTR) setTimeout(speakTR, 400);
 }
 
@@ -353,6 +351,22 @@ function playBeep(isCorrect) {
     } catch(e) {}
 }
 
+/* RAKAM VE OF/OFF SORUNUNU ÇÖZEN NORMALİZE FONKSİYONU */
+function normalizeForComparison(text) {
+    const numMap = { "0":"zero", "1":"one", "2":"two", "3":"three", "4":"four", "5":"five", "6":"six", "7":"seven", "8":"eight", "9":"nine", "10":"ten" };
+    let t = text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+    
+    // Rakamları yazıya çevir (Örn: "2" -> "two")
+    Object.keys(numMap).forEach(num => {
+        t = t.replace(new RegExp(`\\b${num}\\b`, 'g'), numMap[num]);
+    });
+
+    // of/off karmaşasını temizle (of -> off veya tam tersi için tolerans)
+    t = t.replace(/\boff\b/g, "of"); 
+    
+    return t;
+}
+
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
@@ -361,12 +375,12 @@ rec.continuous = true;
 rec.onstart = () => { isListening = true; document.getElementById("startBtn").innerText = "LISTENING..."; document.getElementById("startBtn").classList.add("recording"); };
 
 rec.onresult = e => {
-    let spoken = e.results[e.results.length - 1][0].transcript.toLowerCase().trim();
-    let target = currentList[index].en.toLowerCase().trim();
+    let spoken = e.results[e.results.length - 1][0].transcript;
+    let target = currentList[index].en;
     
-    // Temizleme ve Of/Off toleransı
-    let procSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\boff\b/g, "of");
-    let procTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\boff\b/g, "of");
+    // YENİ KARŞILAŞTIRMA MANTIĞI
+    let procSpoken = normalizeForComparison(spoken);
+    let procTarget = normalizeForComparison(target);
 
     if(procSpoken === procTarget || procSpoken.includes(procTarget)) {
         correctCount++;
@@ -397,7 +411,7 @@ function nextWord() {
     if(index < currentList.length - 1) { 
         index++; 
         showEn = false; 
-        render(true); // Yeni kelimeye geçince seslendir
+        render(true); 
         document.getElementById("result").innerHTML = ""; 
     } else { 
         document.getElementById("restartOverlay").style.display = "flex"; 
@@ -406,7 +420,7 @@ function nextWord() {
 
 document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
 document.getElementById("listenBtn").onclick = speakEN;
-document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(false); }; // False: TR seslendirme tetiklenmez
+document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(false); };
 document.getElementById("nextBtn").onclick = nextWord;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(true); } };
 document.getElementById("passBtn").onclick = () => { passedCount++; currentList.push(currentList[index]); nextWord(); };

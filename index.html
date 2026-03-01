@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.0</title>
+    <title>5 Dakikada İngilizce - V.3.2 AutoTR</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -109,6 +109,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15); 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
             text-align: center; 
+            position: relative;
         }
         
         .phrase-container { 
@@ -161,15 +162,19 @@
         .stat-label-row .material-symbols-rounded { font-size: 12px; }
         .stat-val { color: var(--primary); font-weight: 800; font-size: 12px; }
         
+        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+        /* AUTO TR MODU ÖZEL STİL */
+        .auto-tr-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; }
+        .auto-tr-btn.active { background: var(--accent); color: white; border-color: white; box-shadow: 0 0 15px rgba(251, 113, 133, 0.4); }
+
         .lesson-title-grad { background: var(--logo-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; font-size: 22px; font-family: 'Poppins'; }
         .lesson-card.disabled { opacity: 0.4; filter: grayscale(1); pointer-events: none; }
-
-        .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; height: 40px; padding: 0 12px; font-size: 11px; font-weight: bold; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="v-tag">V.3.0</div>
+<div class="v-tag">V.3.2</div>
 
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px;">
@@ -179,12 +184,15 @@
 </div>
 
 <div id="app-screen">
-    <div class="top-bar" style="display:flex; justify-content:space-between; margin-bottom:10px;">
+    <div class="top-bar" style="display:flex; justify-content:space-between; margin-bottom:10px; gap: 5px;">
         <button class="nav-btn" onclick="goHome()">
             <span class="material-symbols-rounded">home</span> HOME
         </button>
+        <button id="autoTRToggle" class="nav-btn auto-tr-btn" onclick="toggleAutoTR()">
+            <span class="material-symbols-rounded">volume_up</span> AUTO TR
+        </button>
         <button class="nav-btn" onclick="resetToStart()">
-            <span class="material-symbols-rounded">refresh</span> RESTART
+            <span class="material-symbols-rounded">refresh</span>
         </button>
     </div>
     <div class="app-box">
@@ -207,7 +215,7 @@
         <div class="ctrl-container" style="display:flex; flex-wrap:wrap; gap:6px; margin:15px 0;">
             <button class="ctrl" id="toggleBtn" style="width:100%; background:rgba(56,189,248,0.2); color:var(--primary); border:1px solid var(--primary);">SHOW ENGLISH</button>
             <button class="ctrl" id="passBtn" style="color:var(--accent)">PASS</button>
-            <button class="ctrl" id="listenBtn">LISTEN</button>
+            <button class="ctrl" id="listenBtn">LISTEN EN</button>
             <div style="display:flex; width:100%; gap:6px;">
                 <button class="ctrl" id="backBtn">← BACK</button>
                 <button class="ctrl" id="nextBtn">NEXT →</button>
@@ -242,11 +250,37 @@ let allLessonsData = [];
 let index = 0, correctCount = 0, passedCount = 0, isListening = false, showEn = false, autoMode = false;
 let currentList = [];
 let activeLessonId = null;
+let isAutoTR = localStorage.getItem('auto_tr_voice') === 'true';
+
+// Sayfa yüklendiğinde buton durumunu kontrol et
+if(isAutoTR) document.getElementById('autoTRToggle').classList.add('active');
 
 fetch('data.json').then(res => res.json()).then(data => {
     allLessonsData = data;
     renderLessonMenu();
 });
+
+function toggleAutoTR() {
+    isAutoTR = !isAutoTR;
+    localStorage.setItem('auto_tr_voice', isAutoTR);
+    document.getElementById('autoTRToggle').classList.toggle('active');
+    if(isAutoTR) speakTR();
+}
+
+function speakTR() {
+    if(!currentList.length || !isAutoTR) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(currentList[index].tr);
+    u.lang = "tr-TR"; u.rate = 1.0;
+    window.speechSynthesis.speak(u);
+}
+
+function speakEN() {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(currentList[index].en);
+    u.lang = "en-US"; u.rate = 0.8;
+    window.speechSynthesis.speak(u);
+}
 
 function renderLessonMenu() {
     const container = document.getElementById('lesson-list-container');
@@ -300,6 +334,9 @@ function render() {
     document.getElementById("passedCount").textContent = passedCount;
     document.getElementById("remaining").textContent = currentList.length - (index + 1);
     saveProgress();
+    
+    // YENİ KELİME GELDİĞİNDE OTOMATİK TÜRKÇE SESLENDİR
+    if(isAutoTR) setTimeout(speakTR, 400);
 }
 
 function playBeep(isCorrect) {
@@ -315,13 +352,6 @@ function playBeep(isCorrect) {
     } catch(e) {}
 }
 
-function speak() {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(currentList[index].en);
-    u.lang = "en-US"; u.rate = 0.8;
-    window.speechSynthesis.speak(u);
-}
-
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
 rec.lang = "en-US";
@@ -335,12 +365,17 @@ rec.onresult = e => {
     const numMap = { "one": "1", "two": "2", "three": "3", "four": "4", "five": "5" };
     let processedSpoken = spoken.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
     let processedTarget = target.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-    
-    Object.keys(numMap).forEach(key => { 
-        processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); 
-    });
+    Object.keys(numMap).forEach(key => { processedSpoken = processedSpoken.replace(new RegExp(`\\b${key}\\b`, 'g'), numMap[key]); });
 
-    if(processedSpoken === processedTarget) {
+    // --- ESNEK OF/OFF KONTROLÜ ---
+    let isCorrect = (processedSpoken === processedTarget);
+    if (!isCorrect) {
+        let flexSpoken = processedSpoken.replace(/\boff\b/g, "of");
+        let flexTarget = processedTarget.replace(/\boff\b/g, "of");
+        if (flexSpoken === flexTarget) isCorrect = true;
+    }
+
+    if(isCorrect) {
         correctCount++;
         playBeep(true);
         document.getElementById("result").innerHTML = "<span style='color:var(--secondary)'>EXCELLENT! ✅</span>";
@@ -356,7 +391,7 @@ rec.onend = () => { if(autoMode) rec.start(); else { isListening = false; docume
 function goHome() { autoMode = false; try { rec.stop(); } catch(e) {} document.getElementById("app-screen").style.display = "none"; document.getElementById("entry-page").style.display = "flex"; }
 
 function resetToStart() {
-    if(confirm("Ders sıfırlanacak. Emin misiniz?")) {
+    if(confirm("Sıfırlansın mı?")) {
         index = 0; correctCount = 0; passedCount = 0;
         localStorage.removeItem('lesson_progress_' + activeLessonId);
         document.getElementById("restartOverlay").style.display = "none";
@@ -368,7 +403,7 @@ function resetToStart() {
 function nextWord() { if(index < currentList.length - 1) { index++; showEn = false; render(); document.getElementById("result").innerHTML = ""; } else { document.getElementById("restartOverlay").style.display = "flex"; } }
 
 document.getElementById("startBtn").onclick = () => { if(!isListening) { autoMode = true; rec.start(); } else { autoMode = false; rec.stop(); } };
-document.getElementById("listenBtn").onclick = speak;
+document.getElementById("listenBtn").onclick = speakEN;
 document.getElementById("toggleBtn").onclick = () => { showEn = !showEn; render(); };
 document.getElementById("nextBtn").onclick = nextWord;
 document.getElementById("backBtn").onclick = () => { if(index > 0) { index--; render(); } };

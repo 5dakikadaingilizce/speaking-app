@@ -8,5 +8,6 @@
   { "id": 7, "title": "#Lesson 7", "subTitle": " of  / to kullanımı ", "file": "lessons/lesson7data.json" },
   { "id": 8, "title": "#Lesson 8", "subTitle": " of  / to / with / without kullanımı", "file": "lessons/lesson8data.json" },
   { "id": 9, "title": "#Lesson 9", "subTitle": " for / from / of  / to / with / without kullanımı", "file": "lessons/lesson9data.json" },
-  { "id": 10, "title": "#Lesson 10", "subTitle": " before / after / for / from / of  / to / with / without kullanımı", "file": "lessons/lesson10data.json" }
+  { "id": 10, "title": "#Lesson 10", "subTitle": " before / after / for / from / of  / to / with / without kullanımı", "file": "lessons/lesson10data.json" },
+  { "id": 11, "title": "#Lesson 11", "subTitle": " about / because of / before / after / for / from / of  / to / with / without kullanımı", "file": "lessons/lesson11data.json" }
 ]

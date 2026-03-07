@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce - V.3.7</title>
+    <title>5 Dakikada İngilizce - V.3.8</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
@@ -219,7 +219,6 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
         }
         
-        /* Logo ve header ortada */
         .header-center {
             display: flex;
             flex-direction: column;
@@ -260,7 +259,6 @@
             margin-bottom: 8px;
         }
         
-        /* Phrase Container - BÜYÜTÜLMÜŞ */
         .phrase-container { 
             flex: 1;
             display: flex; 
@@ -303,7 +301,6 @@
             line-height: 1.4;
         }
         
-        /* TAP TO SPEAK - icon yok */
         .btn-speak { 
             background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 50%, #0284c7 100%); 
             color: white; 
@@ -353,7 +350,6 @@
             100% { box-shadow: 0 0 5px rgba(251, 113, 133, 0.5); }
         }
 
-        /* 3 buton row: SHOW | PASS | LISTEN */
         .btn-row-3 {
             display: flex;
             gap: 8px;
@@ -397,7 +393,6 @@
             box-shadow: 0 6px 20px rgba(251, 113, 133, 0.4);
         }
 
-        /* LISTEN EN - sadece burada icon var */
         .btn-listen {
             flex: 1;
             background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
@@ -423,7 +418,6 @@
 
         .btn-listen .material-symbols-rounded { font-size: 18px; }
 
-        /* BACK/NEXT - icon yok, sadece ok işaretleri */
         .btn-row-2 {
             display: flex;
             gap: 8px;
@@ -448,7 +442,6 @@
             transform: translateY(-2px);
         }
 
-        /* Result alanı */
         #result {
             min-height: 30px; 
             font-weight: 700;
@@ -459,7 +452,6 @@
             margin: 5px 0 10px 0;
         }
         
-        /* Stats - icon yok */
         .stats { 
             margin-top: auto; 
             font-size: 7px; 
@@ -543,7 +535,7 @@
 <div id="entry-page">
     <img src="logo.png" style="width: 80px; margin-bottom: 10px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));" onerror="this.style.display='none'">
     <div class="main-title-white">5 Dakikada İngilizce</div>
-    <div class="select-lesson-title">Module #1</div>
+    <div class="select-lesson-title"> #Module 1</div>
     <div id="lesson-list-container"></div>
 </div>
 
@@ -566,7 +558,6 @@
             <button class="btn-speak" onclick="resetToStart()" style="width:80%">RESTART</button>
         </div>
         
-        <!-- Logo ve header ORTADA -->
         <div class="header-center">
             <img src="logo.png" class="app-logo" onerror="this.style.display='none'">
             <div class="sub-title-white">5 Dakikada İngilizce</div>
@@ -574,16 +565,13 @@
             <div id="lessonSubTitle">Yükleniyor...</div>
         </div>
         
-        <!-- Phrase Container - BÜYÜTÜLMÜŞ -->
         <div class="phrase-container">
             <div id="phrase-tr">...</div>
             <div id="phrase-en" style="opacity:0;">...</div>
         </div>
 
-        <!-- TAP TO SPEAK - icon yok -->
         <button class="btn-speak" id="startBtn">TAP TO SPEAK</button>
 
-        <!-- 3 buton: SHOW | PASS | LISTEN -->
         <div class="btn-row-3">
             <button class="btn-show" id="toggleBtn">SHOW<br>ENGLISH</button>
             <button class="btn-pass" id="passBtn">PASS</button>
@@ -592,16 +580,13 @@
             </button>
         </div>
 
-        <!-- BACK | NEXT - icon yok -->
         <div class="btn-row-2">
             <button class="btn-nav" id="backBtn">← BACK</button>
             <button class="btn-nav" id="nextBtn">NEXT →</button>
         </div>
 
-        <!-- Result -->
         <div id="result"></div>
         
-        <!-- Stats - icon yok -->
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-label">ORDER</div>

@@ -1,3 +1,128 @@
-[
-  {"tr": "Araba", "en": "The car"}, {"tr": "Köpek", "en": "The dog"}, {"tr": "Bardak", "en": "The glass"}, {"tr": "Tabak", "en": "The plate"}, {"tr": "Çatal", "en": "The fork"}, {"tr": "Bir çatal", "en": "A fork"}, {"tr": "Bir tabak", "en": "A plate"}, {"tr": "Masa", "en": "The table"}, {"tr": "Sandalye", "en": "The chair"}, {"tr": "Defter", "en": "The notebook"}, {"tr": "Bir Ev", "en": "A house"}, {"tr": "Bir Baba", "en": "A father"}, {"tr": "Kedi", "en": "The cat"}, {"tr": "Bilgisayar", "en": "The computer"}, {"tr": "Bir bilgisayar", "en": "A computer"}, {"tr": "Maymun", "en": "The monkey"}, {"tr": "Elma", "en": "The apple"}, {"tr": "Bir elma", "en": "An apple"}, {"tr": "Portakal", "en": "The orange"}, {"tr": "Bir portakal", "en": "An orange"}, {"tr": "Bir amca", "en": "An uncle"}, {"tr": "Bir hala", "en": "An aunt"}, {"tr": "Amca", "en": "The uncle"}, {"tr": "Hala", "en": "The aunt"}, {"tr": "bir restoran", "en": "A restaurant"}, {"tr": "Kitap", "en": "The book"}, {"tr": "Aile", "en": "The family"}, {"tr": "Bir aile", "en": "A family"}, {"tr": "Arkadaş", "en": "The friend"}, {"tr": "Bir arkadaş", "en": "A friend"}, {"tr": "Tatil", "en": "The holiday"}, {"tr": "Bir tatil", "en": "A holiday"}, {"tr": "Pazartesi", "en": "Monday"}, {"tr": "Bir Salı", "en": "A Tuesday"}, {"tr": "Çarşamba", "en": "Wednesday"}, {"tr": "Bir Perşembe", "en": "A Thursday"}, {"tr": "Cuma", "en": "Friday"}, {"tr": "Bir Cumartesi", "en": "A Saturday"}, {"tr": "Pazar", "en": "Sunday"}, {"tr": "Ocak", "en": "January"}, {"tr": "Bir Şubat ayı", "en": "A February"}, {"tr": "Bir Mart ayı", "en": "A March"}, {"tr": "Nisan", "en": "April"}, {"tr": "Mayıs", "en": "May"}, {"tr": "Haziran", "en": "June"}, {"tr": "Temmuz", "en": "July"}, {"tr": "Bir Ağustos ayı", "en": "An August"}, {"tr": "Eylül", "en": "September"}, {"tr": "Bir Ekim ayı", "en": "An October"}, {"tr": "Kasım", "en": "November"}, {"tr": "İlkbahar", "en": "Spring"}, {"tr": "Bir Sonbahar", "en": "An autumn"}, {"tr": "Bir Yaz", "en": "A summer"}, {"tr": "Kış", "en": "Winter"}, {"tr": "Dakika", "en": "The minute"}, {"tr": "Bir dakika", "en": "A minute"}, {"tr": "Bir gün", "en": "A day"}, {"tr": "Gün", "en": "The day"}, {"tr": "Bir hafta", "en": "A week"}, {"tr": "Hafta", "en": "The week"}, {"tr": "Bir ay", "en": "A month"}, {"tr": "Ay", "en": "The month"}, {"tr": "Bir yıl", "en": "A year"}, {"tr": "Yıl", "en": "The year"}, {"tr": "Bir Sabah", "en": "A morning"}, {"tr": "Sabah", "en": "The morning"}, {"tr": "Öğlen", "en": "Noon"}, {"tr": "Bir öğlen", "en": "A noon"}, {"tr": "Bir Öğleden sonrası", "en": "An afternoon"}, {"tr": "Akşam", "en": "The evening"}, {"tr": "Bir akşam", "en": "An evening"}, {"tr": "Gece", "en": "The night"}, {"tr": "Bir gece", "en": "A night"}, {"tr": "Çocuk", "en": "The child"}, {"tr": "Bir çocuk", "en": "A child"}, {"tr": "Adam", "en": "The man"}, {"tr": "Bir adam", "en": "A man"}, {"tr": "Kadın", "en": "The woman"}, {"tr": "Bir kadın", "en": "A woman"}, {"tr": "İnsan", "en": "The person"}, {"tr": "Bir insan", "en": "A person"}, {"tr": "Bir Alman", "en": "A German"}, {"tr": "Alman", "en": "German"}, {"tr": "Almanya", "en": "Germany"}, {"tr": "Bir Fransız", "en": "A Frenchman"}, {"tr": "Fransız", "en": "French"}, {"tr": "Fransa", "en": "France"}, {"tr": "Bir Türkiye", "en": "A Turkey"}, {"tr": "Türkiye", "en": "Turkey"}, {"tr": "Türk", "en": "Turkish"}, {"tr": "Bir Türk", "en": "A Turk"}, {"tr": "Bir bulut", "en": "A cloud"}, {"tr": "Bir yüz", "en": "A face"}, {"tr": "Bir el", "en": "A hand"}, {"tr": "El", "en": "The hand"}, {"tr": "Bir ayakkabı", "en": "A shoe"}, {"tr": "Ayakkabı", "en": "The shoe"}, {"tr": "Bir anne", "en": "A mother"}, {"tr": "Bir baba", "en": "A father"}, {"tr": "Bir sokak", "en": "A street"}, {"tr": "Sokak", "en": "The street"}, {"tr": "Bir ülke", "en": "A country"}, {"tr": "Ülke", "en": "The country"}, {"tr": "Bir göl", "en": "A lake"}, {"tr": "Göl", "en": "The lake"}, {"tr": "Irmak", "en": "The river"}, {"tr": "Bir ırmak", "en": "A river"}, {"tr": "Yatak", "en": "The bed"}, {"tr": "Bir yatak", "en": "A bed"}, {"tr": "Bir yatak odası", "en": "A bedroom"}, {"tr": "Banyo", "en": "The bathroom"}, {"tr": "Bir banyo", "en": "A bathroom"}, {"tr": "Bir çilek", "en": "A strawberry"}, {"tr": "Çilek", "en": "The strawberry"}, {"tr": "Bir sebze", "en": "A vegetable"}, {"tr": "Sebze", "en": "The vegetable"}, {"tr": "Bir meyve", "en": "A fruit"}, {"tr": "Meyve", "en": "The fruit"}, {"tr": "Mutfak", "en": "The kitchen"}, {"tr": "Bir mutfak", "en": "A kitchen"}, {"tr": "Bir Oturma odası", "en": "A living room"}, {"tr": "Oturma odası", "en": "The living room"}, {"tr": "Çamaşır makinesi", "en": "The washing machine"}, {"tr": "Bir çamaşır makinesi", "en": "A washing machine"}, {"tr": "Bir ofis", "en": "An office"}, {"tr": "Ofis", "en": "The office"}, {"tr": "Bulaşık makinesi", "en": "The dishwasher"}, {"tr": "Bir bulaşık makinesi", "en": "A dishwasher"}
-]
+1. {"tr": "Araba", "en": "The car"}
+2. {"tr": "Köpek", "en": "The dog"}
+3. {"tr": "Bardak", "en": "The glass"}
+4. {"tr": "Tabak", "en": "The plate"}
+5. {"tr": "Çatal", "en": "The fork"}
+6. {"tr": "Bir çatal", "en": "A fork"}
+7. {"tr": "Bir tabak", "en": "A plate"}
+8. {"tr": "Masa", "en": "The table"}
+9. {"tr": "Sandalye", "en": "The chair"}
+10. {"tr": "Defter", "en": "The notebook"}
+11. {"tr": "Bir Ev", "en": "A house"}
+12. {"tr": "Bir Baba", "en": "A father"}
+13. {"tr": "Kedi", "en": "The cat"}
+14. {"tr": "Bilgisayar", "en": "The computer"}
+15. {"tr": "Bir bilgisayar", "en": "A computer"}
+16. {"tr": "Maymun", "en": "The monkey"}
+17. {"tr": "Elma", "en": "The apple"}
+18. {"tr": "Bir elma", "en": "An apple"}
+19. {"tr": "Portakal", "en": "The orange"}
+20. {"tr": "Bir portakal", "en": "An orange"}
+21. {"tr": "Bir amca", "en": "An uncle"}
+22. {"tr": "Bir hala", "en": "An aunt"}
+23. {"tr": "Amca", "en": "The uncle"}
+24. {"tr": "Hala", "en": "The aunt"}
+25. {"tr": "bir restoran", "en": "A restaurant"}
+26. {"tr": "Kitap", "en": "The book"}
+27. {"tr": "Aile", "en": "The family"}
+28. {"tr": "Bir aile", "en": "A family"}
+29. {"tr": "Arkadaş", "en": "The friend"}
+30. {"tr": "Bir arkadaş", "en": "A friend"}
+31. {"tr": "Tatil", "en": "The holiday"}
+32. {"tr": "Bir tatil", "en": "A holiday"}
+33. {"tr": "Pazartesi", "en": "Monday"}
+34. {"tr": "Bir Salı", "en": "A Tuesday"}
+35. {"tr": "Çarşamba", "en": "Wednesday"}
+36. {"tr": "Bir Perşembe", "en": "A Thursday"}
+37. {"tr": "Cuma", "en": "Friday"}
+38. {"tr": "Bir Cumartesi", "en": "A Saturday"}
+39. {"tr": "Pazar", "en": "Sunday"}
+40. {"tr": "Ocak", "en": "January"}
+41. {"tr": "Bir Şubat ayı", "en": "A February"}
+42. {"tr": "Bir Mart ayı", "en": "A March"}
+43. {"tr": "Nisan", "en": "April"}
+44. {"tr": "Mayıs", "en": "May"}
+45. {"tr": "Haziran", "en": "June"}
+46. {"tr": "Temmuz", "en": "July"}
+47. {"tr": "Bir Ağustos ayı", "en": "An August"}
+48. {"tr": "Eylül", "en": "September"}
+49. {"tr": "Bir Ekim ayı", "en": "An October"}
+50. {"tr": "Kasım", "en": "November"}
+51. {"tr": "İlkbahar", "en": "The Spring"}
+52. {"tr": "Bir Sonbahar", "en": "An autumn"}
+53. {"tr": "Bir Yaz", "en": "A summer"}
+54. {"tr": "Kış", "en": " The winter"}
+55. {"tr": "Dakika", "en": "The minute"}
+56. {"tr": "Bir dakika", "en": "A minute"}
+57. {"tr": "Bir gün", "en": "A day"}
+58. {"tr": "Gün", "en": "The day"}
+59. {"tr": "Bir hafta", "en": "A week"}
+60. {"tr": "Hafta", "en": "The week"}
+61. {"tr": "Bir ay", "en": "A month"}
+62. {"tr": "Ay", "en": "The month"}
+63. {"tr": "Bir yıl", "en": "A year"}
+64. {"tr": "Yıl", "en": "The year"}
+65. {"tr": "Bir Sabah", "en": "A morning"}
+66. {"tr": "Sabah", "en": "The morning"}
+67. {"tr": "Öğlen", "en": "Noon"}
+68. {"tr": "Bir öğlen", "en": "A noon"}
+69. {"tr": "Bir Öğleden sonrası", "en": "An afternoon"}
+70. {"tr": "Akşam", "en": "The evening"}
+71. {"tr": "Bir akşam", "en": "An evening"}
+72. {"tr": "Gece", "en": "the night"}
+73. {"tr": "Bir gece", "en": "A night"}
+74. {"tr": "Çocuk", "en": "The child"}
+75. {"tr": "Bir çocuk", "en": "A child"}
+76. {"tr": "Adam", "en": "The man"}
+77. {"tr": "Bir adam", "en": "A man"}
+78. {"tr": "Kadın", "en": "The woman"}
+79. {"tr": "Bir kadın", "en": "A woman"}
+80. {"tr": "İnsan", "en": "The person"}
+81. {"tr": "Bir insan", "en": "A person"}
+82. {"tr": "Bir Alman", "en": "A German"}
+83. {"tr": "Alman", "en": "German"}
+84. {"tr": "Almanya", "en": "Germany"}
+85. {"tr": "Bir Fransız", "en": "A Frenchman"}
+86. {"tr": "Fransız", "en": "French"}
+87. {"tr": "Fransa", "en": "France"}
+88. {"tr": "Bir Türkiye", "en": "A Turkey"}
+89. {"tr": "Türkiye", "en": "Turkey"}
+90. {"tr": "Türk", "en": "Turkish"}
+91. {"tr": "Bir Türk", "en": "A Turk"}
+92. {"tr": "Bir bulut", "en": "A cloud"}
+93. {"tr": "Bir yüz", "en": "A face"}
+94. {"tr": "Bir el", "en": "A hand"}
+95. {"tr": "El", "en": "The hand"}
+96. {"tr": "Bir ayakkabı", "en": "A shoe"}
+97. {"tr": "Ayakkabı", "en": "The shoe"}
+98. {"tr": "Bir anne", "en": "A mother"}
+99. {"tr": "Bir baba", "en": "A father"}
+100. {"tr": "Bir sokak", "en": "A street"}
+101. {"tr": "Sokak", "en": "The street"}
+102. {"tr": "Bir ülke", "en": "A country"}
+103. {"tr": "Ülke", "en": "The country"}
+104. {"tr": "Bir göl", "en": "A lake"}
+105. {"tr": "Göl", "en": "The lake"}
+106. {"tr": "Irmak", "en": "The river"}
+107. {"tr": "Bir ırmak", "en": "A river"}
+108. {"tr": "Yatak", "en": "The bed"}
+109. {"tr": "Bir yatak", "en": "A bed"}
+110. {"tr": "Bir yatak odası", "en": "A bedroom"}
+111. {"tr": "Banyo", "en": "The bathroom"}
+112. {"tr": "Bir banyo", "en": "A bathroom"}
+113. {"tr": "Bir çilek", "en": "A strawberry"}
+114. {"tr": "Çilek", "en": "The strawberry"}
+115. {"tr": "Bir sebze", "en": "A vegetable"}
+116. {"tr": "Sebze", "en": "The vegetable"}
+117. {"tr": "Bir meyve", "en": "A fruit"}
+118. {"tr": "Meyve", "en": "The fruit"}
+119. {"tr": "Mutfak", "en": "The kitchen"}
+120. {"tr": "Bir mutfak", "en": "A kitchen"}
+121. {"tr": "Bir Oturma odası", "en": "A living room"}
+122. {"tr": "Oturma odası", "en": "The living room"}
+123. {"tr": "Çamaşır makinesi", "en": "The washing machine"}
+124. {"tr": "Bir çamaşır makinesi", "en": "A washing machine"}
+125. {"tr": "Bir ofis", "en": "An office"}
+126. {"tr": "Ofis", "en": "The office"}
+127. {"tr": "Bulaşık makinesi", "en": "The dishwasher"}
+128. {"tr": "Bir bulaşık makinesi", "en": "A dishwasher"}

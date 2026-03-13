@@ -267,20 +267,7 @@
             position: absolute; top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, transparent, var(--secondary), transparent); opacity: 0.5;
         }
-        /* IKNOW / IDON'T KNOW rehber göstergeleri */
-        .phrase-guide-top {
-            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--secondary); opacity: 0.35; pointer-events: none;
-        }
-        .phrase-guide-bottom {
-            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-            display: flex; flex-direction: column; align-items: center;
-            color: var(--accent); opacity: 0.35; pointer-events: none;
-        }
-        .phrase-guide-top .material-symbols-rounded,
-        .phrase-guide-bottom .material-symbols-rounded { font-size: 22px; margin: -2px 0; }
-        .phrase-guide-label { font-size: 9px; font-weight: 900; font-family: 'Poppins'; letter-spacing: 1px; }
+
 
         #phrase-tr {
             font-size: clamp(22px,6.5vw,32px); font-weight: 800;
@@ -488,16 +475,8 @@
         </div>
 
         <div class="phrase-container">
-            <div class="phrase-guide-top">
-                <span class="material-symbols-rounded">keyboard_double_arrow_up</span>
-                <span class="phrase-guide-label">I KNOW</span>
-            </div>
             <div id="phrase-tr">...</div>
             <div id="phrase-en" style="opacity:0;">...</div>
-            <div class="phrase-guide-bottom">
-                <span class="phrase-guide-label">I DON'T KNOW</span>
-                <span class="material-symbols-rounded">keyboard_double_arrow_down</span>
-            </div>
         </div>
 
         <button class="btn-speak" id="startBtn">
@@ -593,12 +572,10 @@ function renderLessonMenu() {
     allLessonsData.forEach((lesson, i) => {
         const ok = !!lesson.file;
         const colorSet = rainbowColors[i % rainbowColors.length];
-        const logoFile = lesson.logo ? `logos/${lesson.logo}` : null;
+        const logoFile = lesson.logo ? `logos/${lesson.logo}` : `logos/lessonlogo${lesson.id}.svg`;
         const starCount = getStarCount(lesson.id);
 
-        const nodeLogo = logoFile
-            ? `<div class="node-logo" style="background-image:url('${logoFile}');"></div>`
-            : `<div class="node-num">${i + 1}</div>`;
+        const nodeLogo = `<div class="node-logo" style="background-image:url('${logoFile}');"></div>`;
 
         const card = document.createElement('div');
         card.className = 'lesson-card' + (!ok ? ' disabled' : '');

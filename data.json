@@ -10,5 +10,6 @@
   { "id": 9, "title": "#Lesson 9", "subTitle": "for / from / of / to / with / without kullanımı", "file": "lessons/lesson9data.json", "logo": "lessonlogo9.svg" },
   { "id": 10, "title": "#Lesson 10", "subTitle": "before / after / for / from / of / to / with / without kullanımı", "file": "lessons/lesson10data.json", "logo": "lessonlogo10.svg" },
   { "id": 11, "title": "#Lesson 11", "subTitle": "about / because of / before / after / for / from / of / to / with / without kullanımı", "file": "lessons/lesson11data.json", "logo": "lessonlogo11.svg" },
-  { "id": 12, "title": "#Lesson 12", "subTitle": " in / on / at kullanımı", "file": "lessons/lesson12data.json", "logo": "lessonlogo12.svg" }
+  { "id": 12, "title": "#Lesson 12", "subTitle": " in / on / at kullanımı", "file": "lessons/lesson12data.json", "logo": "lessonlogo12.svg" },
+  { "id": 13, "title": "#Lesson 13", "subTitle": " PREPOSITOINS EGZERSİZ ", "file": "lessons/lesson13data.json", "logo": "lessonlogo13.svg" }
 ]

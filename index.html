@@ -7,7 +7,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&family=Raleway:wght@700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=voice_selection,noise_aware" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal; font-style: normal;
+            font-size: 24px; line-height: 1;
+            letter-spacing: normal; text-transform: none;
+            display: inline-block; white-space: nowrap;
+            word-wrap: normal; direction: ltr;
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
     <style>
         :root {
             --bg-dark: #0c0118;
@@ -465,15 +478,15 @@
 
         .btn-pass {
             flex: 1;
-            background: linear-gradient(135deg, #dc2626, #ef4444);
+            background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ef4444 100%);
             color: white; border: none; border-radius: 16px;
             height: clamp(46px,9.5vw,56px); font-size: clamp(10px,2.8vw,12px);
             font-weight: 900; cursor: pointer; transition: all 0.2s;
             font-family: 'Poppins'; letter-spacing: 0.5px;
-            box-shadow: 0 6px 0 #991b1b, 0 10px 25px rgba(220,38,38,0.4);
+            box-shadow: 0 6px 0 #7f1d1d, 0 10px 25px rgba(185,28,28,0.5);
         }
-        .btn-pass:active { transform: translateY(4px); box-shadow: 0 2px 0 #991b1b; }
-        .btn-pass:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #991b1b, 0 14px 30px rgba(220,38,38,0.5); }
+        .btn-pass:active { transform: translateY(4px); box-shadow: 0 2px 0 #7f1d1d; }
+        .btn-pass:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #7f1d1d, 0 14px 30px rgba(185,28,28,0.6); }
 
         .btn-listen {
             flex: 1;
@@ -583,7 +596,7 @@
         </button>
     </div>
 
-    <img src="logo.png" style="width:70px;margin-bottom:10px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.4));animation:float3d 3s ease-in-out infinite;" onerror="this.style.display='none'">
+    <img src="module1logo.png" style="width:130px;margin-bottom:10px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.4));" onerror="this.src='logo.png'">
     <div class="main-title-white">5 Dakikada İngilizce</div>
     <div class="select-lesson-title">#Module 1</div>
     <div id="lesson-list-container"></div>
@@ -622,7 +635,7 @@
         </div>
 
         <button class="btn-speak" id="startBtn">
-            <span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">voice_selection</span>TAP TO SPEAK
+            <span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">voice_selection</span>TAP TO SPEAK
         </button>
 
         <div class="btn-row-3">
@@ -863,7 +876,7 @@ function normalizeForComparison(text) {
 /* ── SR Events — orijinal mantık korundu ── */
 rec.onstart = () => {
     isListening = true;
-    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">noise_aware</span>LISTENING...';
+    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">noise_aware</span>LISTENING...';
     document.getElementById('startBtn').classList.add('recording');
 };
 
@@ -889,7 +902,7 @@ rec.onend = () => {
         rec.start();
     } else {
         isListening = false;
-        document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">voice_selection</span>TAP TO SPEAK';
+        document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">voice_selection</span>TAP TO SPEAK';
         document.getElementById('startBtn').classList.remove('recording');
     }
 };
@@ -917,7 +930,7 @@ function toggleAutoTR() {
 function goHome() {
     autoMode = false; try { rec.stop(); } catch(e) {}
     isListening = false;
-    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">voice_selection</span>TAP TO SPEAK';
+    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">voice_selection</span>TAP TO SPEAK';
     document.getElementById('startBtn').classList.remove('recording');
     document.getElementById('app-screen').style.display = 'none';
     document.getElementById('entry-page').style.display = 'flex';

@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&family=Raleway:wght@700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=voice_selection,noise_aware" rel="stylesheet" />
     <style>
         :root {
             --bg-dark: #0c0118;
@@ -294,6 +295,8 @@
             border-radius: 12px; border: 1px solid rgba(139,92,246,0.2);
             font-weight: 600; letter-spacing: 0.5px; z-index: 200; pointer-events: none;
         }
+        /* app-screen açıkken v-tag gizle */
+        body.in-lesson .v-tag { display: none; }
         .material-symbols-rounded {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             vertical-align: middle; transition: transform 0.2s;
@@ -434,16 +437,14 @@
             70%  { box-shadow: 0 8px 0 #0891b2, 0 0 0 12px rgba(6,182,212,0), 0 16px 40px rgba(6,182,212,0.5); }
             100% { box-shadow: 0 8px 0 #0891b2, 0 0 0 0 rgba(6,182,212,0), 0 12px 30px rgba(6,182,212,0.4); }
         }
+        /* recording: mavi kalır, sadece glow hızlanır */
         .recording {
-            background: var(--gradient-accent) !important;
-            color: white !important;
-            animation: recording-glow 1s infinite !important;
-            box-shadow: 0 8px 0 #be185d, 0 12px 30px rgba(244,114,182,0.4) !important;
+            animation: recording-glow 0.8s infinite !important;
         }
-        .recording:active { transform: translateY(4px); box-shadow: 0 4px 0 #be185d !important; }
+        .recording:active { transform: translateY(4px); box-shadow: 0 4px 0 #0891b2 !important; }
         @keyframes recording-glow {
-            0%,100% { box-shadow: 0 8px 0 #be185d, 0 0 12px rgba(244,114,182,0.5); }
-            50%      { box-shadow: 0 8px 0 #be185d, 0 0 30px rgba(244,114,182,0.9), 0 0 50px rgba(244,114,182,0.4); }
+            0%,100% { box-shadow: 0 8px 0 #0891b2, 0 0 15px rgba(6,182,212,0.6), 0 12px 30px rgba(6,182,212,0.4); }
+            50%      { box-shadow: 0 8px 0 #0891b2, 0 0 40px rgba(6,182,212,1), 0 0 60px rgba(6,182,212,0.5); }
         }
 
         /* ── 3-Button Row ── */
@@ -451,28 +452,28 @@
 
         .btn-show {
             flex: 1;
-            background: rgba(139,92,246,0.15);
-            border: 2px solid rgba(139,92,246,0.4);
-            color: #c4b5fd; border-radius: 16px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border: none;
+            color: white; border-radius: 16px;
             height: clamp(46px,9.5vw,56px); font-size: clamp(10px,2.8vw,12px);
             font-weight: 800; cursor: pointer; transition: all 0.25s;
             font-family: 'Poppins'; letter-spacing: 0.3px; line-height: 1.3;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 0 #3730a3, 0 10px 25px rgba(79,70,229,0.35);
         }
-        .btn-show:hover { background: rgba(139,92,246,0.25); border-color: #a855f7; transform: translateY(-2px); color: white; }
-        .btn-show:active { transform: translateY(0); }
+        .btn-show:hover { background: linear-gradient(135deg, #6366f1, #a855f7); transform: translateY(-2px); box-shadow: 0 8px 0 #3730a3, 0 14px 30px rgba(99,102,241,0.4); }
+        .btn-show:active { transform: translateY(4px); box-shadow: 0 2px 0 #3730a3; }
 
         .btn-pass {
             flex: 1;
-            background: var(--gradient-accent);
+            background: linear-gradient(135deg, #dc2626, #ef4444);
             color: white; border: none; border-radius: 16px;
             height: clamp(46px,9.5vw,56px); font-size: clamp(10px,2.8vw,12px);
             font-weight: 900; cursor: pointer; transition: all 0.2s;
             font-family: 'Poppins'; letter-spacing: 0.5px;
-            box-shadow: 0 6px 0 #be185d, 0 10px 25px rgba(244,114,182,0.35);
+            box-shadow: 0 6px 0 #991b1b, 0 10px 25px rgba(220,38,38,0.4);
         }
-        .btn-pass:active { transform: translateY(4px); box-shadow: 0 2px 0 #be185d; }
-        .btn-pass:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #be185d, 0 14px 30px rgba(244,114,182,0.4); }
+        .btn-pass:active { transform: translateY(4px); box-shadow: 0 2px 0 #991b1b; }
+        .btn-pass:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #991b1b, 0 14px 30px rgba(220,38,38,0.5); }
 
         .btn-listen {
             flex: 1;
@@ -538,10 +539,10 @@
         .stat-icon { font-size: 8px; font-weight: 900; font-family: 'Poppins'; width: 13px; height: 13px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .stat-icon-sym { font-size: 11px !important; font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 20; line-height: 1; }
         .stat-val { font-size: clamp(14px,4vw,17px); font-weight: 900; font-variant-numeric: tabular-nums; color: white; }
-        .stat-val.blue  { color: #67e8f9; }
+        .stat-val.blue  { color: white; }
         .stat-val.green { color: #2dd4bf; }
         .stat-val.red   { color: #f472b6; }
-        .stat-val.orange{ color: #a855f7; }
+        .stat-val.orange{ color: white; }
 
         /* ── Restart Overlay ── */
         #restartOverlay {
@@ -621,7 +622,7 @@
         </div>
 
         <button class="btn-speak" id="startBtn">
-            <span class="material-symbols-rounded" style="font-size:20px;vertical-align:middle;margin-right:6px;">mic</span>TAP TO SPEAK
+            <span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">voice_selection</span>TAP TO SPEAK
         </button>
 
         <div class="btn-row-3">
@@ -801,6 +802,7 @@ function startLesson(lesson) {
         document.getElementById('lessonSubTitle').innerText = lesson.subTitle;
         document.getElementById('entry-page').style.display = 'none';
         document.getElementById('app-screen').style.display = 'flex';
+        document.body.classList.add('in-lesson');
         render(true);
     });
 }
@@ -861,7 +863,7 @@ function normalizeForComparison(text) {
 /* ── SR Events — orijinal mantık korundu ── */
 rec.onstart = () => {
     isListening = true;
-    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-rounded" style="font-size:20px;vertical-align:middle;margin-right:6px;">hearing</span>LISTENING...';
+    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">noise_aware</span>LISTENING...';
     document.getElementById('startBtn').classList.add('recording');
 };
 
@@ -887,7 +889,7 @@ rec.onend = () => {
         rec.start();
     } else {
         isListening = false;
-        document.getElementById('startBtn').innerHTML = '<span class="material-symbols-rounded" style="font-size:20px;vertical-align:middle;margin-right:6px;">mic</span>TAP TO SPEAK';
+        document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">voice_selection</span>TAP TO SPEAK';
         document.getElementById('startBtn').classList.remove('recording');
     }
 };
@@ -915,10 +917,11 @@ function toggleAutoTR() {
 function goHome() {
     autoMode = false; try { rec.stop(); } catch(e) {}
     isListening = false;
-    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-rounded" style="font-size:20px;vertical-align:middle;margin-right:6px;">mic</span>TAP TO SPEAK';
+    document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">voice_selection</span>TAP TO SPEAK';
     document.getElementById('startBtn').classList.remove('recording');
     document.getElementById('app-screen').style.display = 'none';
     document.getElementById('entry-page').style.display = 'flex';
+    document.body.classList.remove('in-lesson');
 }
 function resetToStart() {
     if (confirm('Sıfırlansın mı?')) {

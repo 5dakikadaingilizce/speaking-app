@@ -936,6 +936,7 @@ function getLastReadId() {
     return parseInt(localStorage.getItem('changelog_last_id') || '0');
 }
 
+/* updateBadge: sadece badge gösterir, last_id YAZMAZ */
 function updateBadge(data) {
     const lastId = getLastReadId();
     const unread = data.filter(item => item.id > lastId).length;
@@ -943,9 +944,6 @@ function updateBadge(data) {
     if (!badge) return;
     if (unread > 0) { badge.innerText = unread; badge.classList.add('show'); }
     else { badge.classList.remove('show'); }
-    if (data.length > 0) {
-        localStorage.setItem('changelog_last_id', Math.max(...data.map(d => d.id)));
-    }
 }
 
 function openChangelog() {
@@ -976,7 +974,10 @@ function openChangelog() {
         }).join('');
         document.getElementById('changelog-overlay').classList.add('show');
         document.getElementById('changelog-sheet').classList.add('show');
-        localStorage.setItem('changelog_last_read', Date.now());
+        /* Açılınca okundu say — en yüksek id'yi kaydet, badge'i sıfırla */
+        if (data.length > 0) {
+            localStorage.setItem('changelog_last_id', Math.max(...data.map(d => d.id)));
+        }
         updateBadge([]);
     }).catch(() => {
         const list = document.getElementById('sheet-list');
@@ -991,6 +992,7 @@ function closeChangelog() {
     document.getElementById('changelog-sheet').classList.remove('show');
 }
 
+/* initChangelog: sadece badge sayısını gösterir, hiçbir şey yazmaz */
 function initChangelog() {
     fetchNoCache('changelog.json').then(r => r.json()).then(data => {
         updateBadge(data);

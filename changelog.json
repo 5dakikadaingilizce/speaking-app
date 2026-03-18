@@ -1,11 +1,4 @@
 [
-  {
-    "id": 1,
-    "date": "14 Mart 2026",
-    "version": "4.6",
-    "items": [
-      "Güncelleme bildirim paneli eklendi.",
-      "Tasarımda revizyonlar yapıldı."
-    ]
-  }
+  { "id": 2, "date": "18 Mart 2026", "version": "4.7", "items": ["Module #2 eklendi."] },
+  { "id": 1, "date": "14 Mart 2026", "version": "4.6", "items": ["Güncelleme bildirim paneli eklendi.", "Tasarımda revizyonlar yapıldı."] }
 ]

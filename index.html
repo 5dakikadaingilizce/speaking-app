@@ -1064,7 +1064,7 @@ function startLesson(lesson) {
 function render(speakTR = false) {
     if (index >= currentList.length) { document.getElementById('restartOverlay').style.display = 'flex'; return; }
     document.getElementById('phrase-tr').textContent = currentList[index].tr;
-    document.getElementById('phrase-en').textContent = currentList[index].en;
+    const alts = (currentList[index].alt || []).join(' / '); document.getElementById('phrase-en').textContent = currentList[index].en + (alts ? ' / ' + alts : '');
     document.getElementById('phrase-en').style.opacity = showEn ? '1' : '0';
     document.getElementById('toggleBtn').innerHTML = showEn ? 'HIDE<br>ENGLISH' : 'SHOW<br>ENGLISH';
     document.getElementById('current').textContent = index + 1;

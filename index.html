@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce Module#1 - V.4.6</title>
+    <title>5 Dakikada İngilizce Speaking app - V.4.7</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&family=Raleway:wght@700;900&display=swap" rel="stylesheet">
@@ -55,7 +55,6 @@
             position: relative;
         }
 
-        /* Animated background orbs */
         body::before {
             content: '';
             position: fixed;
@@ -75,9 +74,118 @@
             66% { transform: translate(-20px, 20px) rotate(240deg); }
         }
 
+        /* ══════════════════════════════════════
+           [YENİ] MODULE PAGE
+        ══════════════════════════════════════ */
+        #module-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            height: 100dvh;
+            justify-content: center;
+            padding: 24px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .module-card {
+            background: linear-gradient(145deg, rgba(30,15,60,0.9) 0%, rgba(15,10,40,0.95) 100%);
+            backdrop-filter: blur(20px);
+            padding: 24px 15px 20px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0.7;
+        }
+
+        .module-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(168, 85, 247, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .module-card:hover {
+            border-color: rgba(168,85,247,0.5);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -10px rgba(139, 92, 246, 0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        .module-card:hover::after { opacity: 1; }
+        .module-card:active { transform: scale(0.97); }
+
+        .module-card .module-icon {
+            width: 110px; height: 110px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
+        }
+        .module-card .module-icon img {
+            width: 100%; height: 100%; object-fit: contain;
+            animation: float3d 3s ease-in-out infinite;
+            filter: drop-shadow(0 8px 25px rgba(139,92,246,0.4));
+        }
+
+        @keyframes float3d {
+            0%   { transform: translateY(0px) rotateX(0deg); }
+            50%  { transform: translateY(-10px) rotateX(6deg); }
+            100% { transform: translateY(0px) rotateX(0deg); }
+        }
+
+        .module-card h2 {
+            margin: 0;
+            font-family: 'Raleway';
+            font-size: 1.25rem;
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative; z-index: 1;
+        }
+        .module-card p {
+            margin: 0;
+            font-size: 11px;
+            color: #c4b5fd;
+            -webkit-text-fill-color: #c4b5fd;
+            font-weight: 500;
+            line-height: 1.4;
+            position: relative; z-index: 1;
+        }
+        /* ══════════════════════════════════════
+           [YENİ] MODULE PAGE — SONU
+        ══════════════════════════════════════ */
+
         /* ══ ENTRY PAGE ══ */
         #entry-page {
-            display: flex;
+            display: none; /* [DEĞİŞTİ] başlangıçta gizli */
             flex-direction: column;
             align-items: center;
             width: 100%;
@@ -112,6 +220,26 @@
             font-family: 'Raleway';
             filter: drop-shadow(0 0 20px rgba(139,92,246,0.4));
         }
+
+        /* [YENİ] Geri butonu — entry-page içinde */
+        .back-to-modules-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.3);
+            border-radius: 12px;
+            padding: 8px 16px;
+            color: #c4b5fd;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.3s;
+            align-self: flex-start;
+        }
+        .back-to-modules-btn:hover { background: rgba(139,92,246,0.2); color: white; border-color: rgba(139,92,246,0.5); }
+        .back-to-modules-btn .material-symbols-rounded { font-size: 16px; }
 
         /* ══ 3-COLUMN LESSON GRID ══ */
         #lesson-list-container {
@@ -173,11 +301,6 @@
 
         @keyframes floatAnim { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        @keyframes float3d {
-            0% { transform: translateY(0px) rotateX(0deg); }
-            50% { transform: translateY(-10px) rotateX(6deg); }
-            100% { transform: translateY(0px) rotateX(0deg); }
-        }
 
         .lesson-card.active .node-btn {
             animation: floatAnim 2.5s ease-in-out infinite;
@@ -308,7 +431,6 @@
             border-radius: 12px; border: 1px solid rgba(139,92,246,0.2);
             font-weight: 600; letter-spacing: 0.5px; z-index: 200; pointer-events: none;
         }
-        /* app-screen açıkken v-tag gizle */
         body.in-lesson .v-tag { display: none; }
         .material-symbols-rounded {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -450,7 +572,6 @@
             70%  { box-shadow: 0 8px 0 #0891b2, 0 0 0 12px rgba(6,182,212,0), 0 16px 40px rgba(6,182,212,0.5); }
             100% { box-shadow: 0 8px 0 #0891b2, 0 0 0 0 rgba(6,182,212,0), 0 12px 30px rgba(6,182,212,0.4); }
         }
-        /* recording: mavi kalır, sadece glow hızlanır */
         .recording {
             animation: recording-glow 0.8s infinite !important;
         }
@@ -580,29 +701,83 @@
             .btn-show, .btn-pass, .btn-listen, .btn-nav { height: 38px !important; }
             #result { height: 18px; margin-bottom: 4px; }
         }
+
+        /* ── Page animations ── */
+        @keyframes pageSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .page-anim { animation: pageSlideIn 0.35s ease-out; }
     </style>
 </head>
 <body>
 
-<div class="v-tag" id="v-tag-el">V.4.6</div>
+<div class="v-tag" id="v-tag-el">V.4.7</div>
 
-<!-- ENTRY PAGE -->
+<!-- ══════════════════════════════════════
+     [YENİ] MODULE SEÇME EKRANI
+══════════════════════════════════════ -->
+<div id="module-page" class="page-anim">
+    <!-- Notification button -->
+    <div class="notif-btn-wrap">
+        <button class="notif-btn" onclick="openChangelog()">
+            <span class="material-symbols-rounded">notifications</span>
+            <span class="notif-badge" id="notif-badge-module">0</span>
+        </button>
+    </div>
+
+    <img src="logo.png"
+         style="width:80px;margin-bottom:10px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.4));"
+         onerror="this.src='https://cdn-icons-png.flaticon.com/512/3898/3898082.png'">
+    <div class="main-title-white">5 Dakikada İngilizce</div>
+    <div class="select-lesson-title" style="margin-bottom:24px;">Select Module</div>
+
+    <div class="module-grid">
+        <div class="module-card" onclick="selectModule('module1')">
+            <div class="module-icon">
+                <img src="module1logo.png" alt="Module 1"
+                     onerror="this.outerHTML='<div style=\'font-size:62px;animation:float3d 3s ease-in-out infinite\'>🎙️</div>'">
+            </div>
+            <h2>Module #1</h2>
+            <p id="module1-count">Yükleniyor...</p>
+        </div>
+        <div class="module-card" onclick="selectModule('module2')">
+            <div class="module-icon">
+                <img src="module2logo.png" alt="Module 2"
+                     onerror="this.outerHTML='<div style=\'font-size:62px;animation:float3d 3s ease-in-out infinite\'>🗣️</div>'">
+            </div>
+            <h2>Module #2</h2>
+            <p id="module2-count">Yükleniyor...</p>
+        </div>
+    </div>
+</div>
+<!-- ══════════════════════════════════════
+     [YENİ] MODULE SEÇME EKRANI — SONU
+══════════════════════════════════════ -->
+
+<!-- ENTRY PAGE (lesson listesi) -->
 <div id="entry-page">
     <!-- Notification Button -->
-    <div class="notif-btn-wrap">
+    <div style="position:absolute;top:16px;right:16px;z-index:200;">
         <button class="notif-btn" onclick="openChangelog()">
             <span class="material-symbols-rounded">notifications</span>
             <span class="notif-badge" id="notif-badge">0</span>
         </button>
     </div>
 
-    <img src="module1logo.png" style="width:130px;margin-bottom:10px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.4));" onerror="this.src='logo.png'">
+    <!-- [YENİ] Module logosunu ve adını dinamik göster -->
+    <img id="entry-module-logo" src="" alt=""
+         style="width:130px;margin-bottom:10px;filter:drop-shadow(0 10px 30px rgba(139,92,246,0.4));"
+         onerror="this.style.display='none'">
     <div class="main-title-white">5 Dakikada İngilizce</div>
-    <div class="select-lesson-title">#Module 1</div>
+    <div id="entry-module-title" class="select-lesson-title">#Module 1</div>
+
+    <!-- [YENİ] Geri butonu -->
+    <button class="back-to-modules-btn" onclick="goToModulePage()">
+        <span class="material-symbols-rounded">arrow_back_ios_new</span> Select Module
+    </button>
+
     <div id="lesson-list-container"></div>
 </div>
 
-<!-- APP SCREEN -->
+<!-- APP SCREEN — AYNEN KORUNDU, HİÇBİR ŞEY DEĞİŞMEDİ -->
 <div id="app-screen">
     <div class="top-bar">
         <button class="nav-btn" onclick="goHome()">
@@ -678,7 +853,7 @@
     </div>
 </div>
 
-<!-- CHANGELOG BOTTOM SHEET -->
+<!-- CHANGELOG BOTTOM SHEET — AYNEN KORUNDU -->
 <div id="changelog-overlay" onclick="closeChangelog()"></div>
 <div id="changelog-sheet">
     <div class="sheet-handle"></div>
@@ -695,7 +870,7 @@
 
 <script>
 /* ────────────────────────────────────────
-   SPEECH RECOGNITION — orijinal mantık korundu
+   SPEECH RECOGNITION — AYNEN KORUNDU
 ──────────────────────────────────────── */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const rec = new SR();
@@ -704,8 +879,11 @@ rec.continuous = true;
 rec.interimResults = false;
 rec.maxAlternatives = 3;
 
-/* ── State ── */
-let allLessonsData = [], currentList = [];
+/* ── State — AYNEN KORUNDU ── */
+let allModulesData = null;      // [YENİ] tüm data.json burada tutulur
+let activeModuleKey = null;     // [YENİ] 'module1' veya 'module2'
+let allLessonsData = [];
+let currentList = [];
 let index = 0, correctCount = 0, passedCount = 0;
 let isListening = false, showEn = false, autoMode = false;
 let activeLessonId = null;
@@ -713,9 +891,9 @@ let isAutoTR = localStorage.getItem('auto_tr_voice') === 'true';
 if (isAutoTR) document.getElementById('autoTRToggle').classList.add('active');
 
 /* ── App Version ── */
-const APP_VERSION = '4.6';
+const APP_VERSION = '4.7';
 
-/* ── Rainbow colours for nodes (V.7.3 style) ── */
+/* ── Rainbow colours — AYNEN KORUNDU ── */
 const rainbowColors = [
     {bg:'linear-gradient(135deg, #7c3aed, #a855f7)',shadow:'#5b21b6'},
     {bg:'linear-gradient(135deg, #f97316, #fb923c)',shadow:'#c2410c'},
@@ -733,7 +911,7 @@ const rainbowColors = [
     {bg:'linear-gradient(135deg, #ef4444, #f87171)',shadow:'#b91c1c'},
 ];
 
-/* ── Stars helper ── */
+/* ── Stars helper — AYNEN KORUNDU ── */
 function getStarCount(lessonId) {
     return Math.min(parseInt(localStorage.getItem('speaking_stars_' + lessonId) || '0'), 3);
 }
@@ -747,12 +925,71 @@ function renderStarsHTML(count) {
     return h;
 }
 
-/* ── Data ── */
-fetchNoCache('data.json').then(r => r.json()).then(data => { allLessonsData = data; renderLessonMenu(); });
-
 function fetchNoCache(url) { return fetch(`${url}?v=${Date.now()}`); }
 
-/* ── Menu ── */
+/* ══════════════════════════════════════
+   [YENİ] MODULE SEÇİMİ
+══════════════════════════════════════ */
+
+/* data.json'u tek seferinde yükle, module kartlarına ders sayısını yaz */
+fetchNoCache('data.json').then(r => r.json()).then(data => {
+    allModulesData = data;
+    const m1Count = (data.module1 || []).length;
+    const m2Count = (data.module2 || []).length;
+    document.getElementById('module1-count').innerText = m1Count + ' Ders';
+    document.getElementById('module2-count').innerText = m2Count + ' Ders';
+});
+
+/* Module kartına tıklanınca */
+function selectModule(moduleKey) {
+    if (!allModulesData) return;
+    const lessons = allModulesData[moduleKey];
+    if (!lessons) return;
+
+    activeModuleKey = moduleKey;
+    allLessonsData = lessons;
+
+    /* Logo ve başlık güncelle */
+    const logos   = { module1: 'module1logo.png', module2: 'module2logo.png' };
+    const titles  = { module1: '#Module 1',        module2: '#Module 2'       };
+    const logoEl  = document.getElementById('entry-module-logo');
+    logoEl.src    = logos[moduleKey] || '';
+    logoEl.style.display = 'block';
+    document.getElementById('entry-module-title').innerText = titles[moduleKey] || moduleKey;
+
+    renderLessonMenu();
+    showPage('entry-page');
+}
+
+/* Module seçme ekranına geri dön */
+function goToModulePage() {
+    showPage('module-page');
+}
+
+/* Sayfa geçiş yardımcısı */
+function showPage(pageId) {
+    ['module-page', 'entry-page', 'app-screen'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    const target = document.getElementById(pageId);
+    if (target) {
+        target.style.display = 'flex';
+        target.classList.remove('page-anim');
+        void target.offsetWidth;
+        target.classList.add('page-anim');
+    }
+    /* v-tag: ders ekranında gizle */
+    document.getElementById('v-tag-el').style.display = pageId === 'app-screen' ? 'none' : 'block';
+    /* body class */
+    if (pageId === 'app-screen') document.body.classList.add('in-lesson');
+    else document.body.classList.remove('in-lesson');
+}
+/* ══════════════════════════════════════
+   [YENİ] MODULE SEÇİMİ — SONU
+══════════════════════════════════════ */
+
+/* ── Menu — AYNEN KORUNDU ── */
 function renderLessonMenu() {
     const c = document.getElementById('lesson-list-container');
     c.innerHTML = '';
@@ -779,7 +1016,6 @@ function renderLessonMenu() {
         c.appendChild(card);
     });
 
-    /* active / completed badge */
     const allCards = c.querySelectorAll('.lesson-card');
     let activeFound = false;
     allLessonsData.forEach((lesson, i) => {
@@ -799,7 +1035,7 @@ function renderLessonMenu() {
     });
 }
 
-/* ── Start Lesson ── */
+/* ── Start Lesson — AYNEN KORUNDU ── */
 function startLesson(lesson) {
     fetchNoCache(lesson.file).then(r => r.json()).then(data => {
         activeLessonId = lesson.id;
@@ -813,14 +1049,12 @@ function startLesson(lesson) {
         }
         document.getElementById('lessonTitle').innerText = lesson.title;
         document.getElementById('lessonSubTitle').innerText = lesson.subTitle;
-        document.getElementById('entry-page').style.display = 'none';
-        document.getElementById('app-screen').style.display = 'flex';
-        document.body.classList.add('in-lesson');
+        showPage('app-screen');
         render(true);
     });
 }
 
-/* ── Render ── */
+/* ── Render — AYNEN KORUNDU ── */
 function render(speakTR = false) {
     if (index >= currentList.length) { document.getElementById('restartOverlay').style.display = 'flex'; return; }
     document.getElementById('phrase-tr').textContent = currentList[index].tr;
@@ -838,7 +1072,7 @@ function saveProgress() {
     if (activeLessonId) localStorage.setItem('lesson_progress_' + activeLessonId, JSON.stringify({ index, correctCount, passedCount }));
 }
 
-/* ── TTS ── */
+/* ── TTS — AYNEN KORUNDU ── */
 function doSpeakTR() {
     if (!currentList.length || !isAutoTR) return;
     window.speechSynthesis.cancel();
@@ -852,7 +1086,7 @@ function speakEN() {
     u.lang = 'en-US'; u.rate = 0.8; window.speechSynthesis.speak(u);
 }
 
-/* ── Beep ── */
+/* ── Beep — AYNEN KORUNDU ── */
 function playBeep(ok) {
     try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -865,7 +1099,7 @@ function playBeep(ok) {
     } catch(e) {}
 }
 
-/* ── Normalize ── */
+/* ── Normalize — AYNEN KORUNDU ── */
 function normalizeForComparison(text) {
     const numMap = { '0':'zero','1':'one','2':'two','3':'three','4':'four','5':'five','6':'six','7':'seven','8':'eight','9':'nine','10':'ten' };
     let t = text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,'');
@@ -873,7 +1107,7 @@ function normalizeForComparison(text) {
     return t.replace(/\boff\b/g,'of');
 }
 
-/* ── SR Events — orijinal mantık korundu ── */
+/* ── SR Events — AYNEN KORUNDU ── */
 rec.onstart = () => {
     isListening = true;
     document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">noise_aware</span>LISTENING...';
@@ -907,7 +1141,7 @@ rec.onend = () => {
     }
 };
 
-/* ── Buttons ── */
+/* ── Buttons — AYNEN KORUNDU ── */
 document.getElementById('startBtn').onclick = () => {
     if (!isListening) { autoMode = true; rec.start(); }
     else { autoMode = false; rec.stop(); }
@@ -927,15 +1161,16 @@ function toggleAutoTR() {
     localStorage.setItem('auto_tr_voice', isAutoTR);
     document.getElementById('autoTRToggle').classList.toggle('active');
 }
+
+/* goHome — [DEĞİŞTİ] entry-page'e döner (orijinal davranış korundu) */
 function goHome() {
     autoMode = false; try { rec.stop(); } catch(e) {}
     isListening = false;
     document.getElementById('startBtn').innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;vertical-align:middle;margin-right:6px;">voice_selection</span>TAP TO SPEAK';
     document.getElementById('startBtn').classList.remove('recording');
-    document.getElementById('app-screen').style.display = 'none';
-    document.getElementById('entry-page').style.display = 'flex';
-    document.body.classList.remove('in-lesson');
+    showPage('entry-page');
 }
+
 function resetToStart() {
     if (confirm('Sıfırlansın mı?')) {
         index = 0; correctCount = 0; passedCount = 0;
@@ -945,21 +1180,20 @@ function resetToStart() {
     }
 }
 
-/* ────────────────────────────────────────
-   CHANGELOG — V.7.3 mantığı aynen alındı
-──────────────────────────────────────── */
+/* ── Changelog — AYNEN KORUNDU ── */
 function getLastReadId() {
     return parseInt(localStorage.getItem('changelog_last_id') || '0');
 }
 
-/* updateBadge: sadece badge gösterir, last_id YAZMAZ */
 function updateBadge(data) {
     const lastId = getLastReadId();
     const unread = data.filter(item => item.id > lastId).length;
-    const badge = document.getElementById('notif-badge');
-    if (!badge) return;
-    if (unread > 0) { badge.innerText = unread; badge.classList.add('show'); }
-    else { badge.classList.remove('show'); }
+    ['notif-badge', 'notif-badge-module'].forEach(id => {
+        const badge = document.getElementById(id);
+        if (!badge) return;
+        if (unread > 0) { badge.innerText = unread; badge.classList.add('show'); }
+        else { badge.classList.remove('show'); }
+    });
 }
 
 function openChangelog() {
@@ -990,7 +1224,6 @@ function openChangelog() {
         }).join('');
         document.getElementById('changelog-overlay').classList.add('show');
         document.getElementById('changelog-sheet').classList.add('show');
-        /* Açılınca okundu say — en yüksek id'yi kaydet, badge'i sıfırla */
         if (data.length > 0) {
             localStorage.setItem('changelog_last_id', Math.max(...data.map(d => d.id)));
         }
@@ -1008,7 +1241,6 @@ function closeChangelog() {
     document.getElementById('changelog-sheet').classList.remove('show');
 }
 
-/* initChangelog: sadece badge sayısını gösterir, hiçbir şey yazmaz */
 function initChangelog() {
     fetchNoCache('changelog.json').then(r => r.json()).then(data => {
         updateBadge(data);
@@ -1017,6 +1249,8 @@ function initChangelog() {
 
 /* ── Init ── */
 initChangelog();
+/* Module page başlangıçta görünür */
+document.getElementById('module-page').style.display = 'flex';
 </script>
 </body>
 </html>

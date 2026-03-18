@@ -12,7 +12,8 @@
     { "id": 10, "title": "#Lesson 10", "subTitle": "before / after / for / from / of / to / with / without kullanımı","file": "lessons/m1/m1lesson10.json", "logo": "lessonlogo10.svg" },
     { "id": 11, "title": "#Lesson 11", "subTitle": "about / because of / before / after / for / from / of / to / with / without kullanımı", "file": "lessons/m1/m1lesson11.json", "logo": "lessonlogo11.svg" },
     { "id": 12, "title": "#Lesson 12", "subTitle": "in / on / at kullanımı", "file": "lessons/m1/m1lesson12.json", "logo": "lessonlogo12.svg" },
-    { "id": 13, "title": "#Lesson 13", "subTitle": "PREPOSITIONS EGZERSİZ", "file": "lessons/m1/m1lesson13.json", "logo": "lessonlogo13.svg" }
+    { "id": 13, "title": "#Lesson 13", "subTitle": "PREPOSITIONS EGZERSİZ-1", "file": "lessons/m1/m1lesson13.json", "logo": "lessonlogo13.svg" },
+    { "id": 14, "title": "#Lesson 14", "subTitle": "PREPOSITIONS EGZERSİZ-2", "file": "lessons/m1/m1lesson14.json", "logo": "lessonlogo14.svg" }
   ],
   "module2": [
     { "id": 1, "title": "#Lesson 1", "subTitle": "İsim & Sıfat Tamlamaları ve PREPOSITIONS", "file": "lessons/m2/m2lesson1.json", "logo": "lessonlogo1.svg" },

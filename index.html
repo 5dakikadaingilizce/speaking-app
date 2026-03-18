@@ -1088,8 +1088,19 @@ function doSpeakTR() {
 function speakEN() {
     if (!currentList.length) return;
     window.speechSynthesis.cancel();
+    const alts = currentList[index].alt || [];
     const u = new SpeechSynthesisUtterance(currentList[index].en);
-    u.lang = 'en-US'; u.rate = 0.8; window.speechSynthesis.speak(u);
+    u.lang = 'en-US'; u.rate = 0.8;
+    u.onend = () => {
+        alts.forEach((alt, i) => {
+            setTimeout(() => {
+                const u2 = new SpeechSynthesisUtterance(alt);
+                u2.lang = 'en-US'; u2.rate = 0.8;
+                window.speechSynthesis.speak(u2);
+            }, i * 1200);
+        });
+    };
+    window.speechSynthesis.speak(u);
 }
 
 /* ── Beep — AYNEN KORUNDU ── */

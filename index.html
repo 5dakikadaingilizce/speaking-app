@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>5 Dakikada İngilizce Speaking app - V.4.7</title>
+    <title>5 Dakikada İngilizce Speaking - V.4.8</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;900&family=Inter:wght@400;700&family=Raleway:wght@700;900&display=swap" rel="stylesheet">
@@ -709,7 +709,7 @@
 </head>
 <body>
 
-<div class="v-tag" id="v-tag-el">V.4.7</div>
+<div class="v-tag" id="v-tag-el">V.4.8</div>
 
 <!-- ══════════════════════════════════════
      [YENİ] MODULE SEÇME EKRANI
@@ -891,7 +891,7 @@ let isAutoTR = localStorage.getItem('auto_tr_voice') === 'true';
 if (isAutoTR) document.getElementById('autoTRToggle').classList.add('active');
 
 /* ── App Version ── */
-const APP_VERSION = '4.7';
+const APP_VERSION = '4.8';
 
 /* ── Rainbow colours — AYNEN KORUNDU ── */
 const rainbowColors = [
@@ -913,7 +913,7 @@ const rainbowColors = [
 
 /* ── Stars helper — AYNEN KORUNDU ── */
 function getStarCount(lessonId) {
-    return Math.min(parseInt(localStorage.getItem('speaking_stars_' + lessonId) || '0'), 3);
+    return Math.min(parseInt(localStorage.getItem('speaking_stars_' + activeModuleKey + '_' + lessonId) || '0'), 3);
 }
 function renderStarsHTML(count) {
     let h = '';
@@ -1039,8 +1039,13 @@ function renderLessonMenu() {
 function startLesson(lesson) {
     fetchNoCache(lesson.file).then(r => r.json()).then(data => {
         activeLessonId = lesson.id;
+        // Turkish/English → tr/en normalize
+        data = data.map(item => ({
+            tr: item.tr || item.Turkish || '',
+            en: item.en || item.English || ''
+        }));
         currentList = [...data];
-        const saved = localStorage.getItem('lesson_progress_' + activeLessonId);
+        const saved = localStorage.getItem('lesson_progress_' + activeModuleKey + '_' + activeLessonId);
         if (saved) {
             const p = JSON.parse(saved);
             index = p.index; correctCount = p.correctCount; passedCount = p.passedCount;
@@ -1069,7 +1074,7 @@ function render(speakTR = false) {
     if (isAutoTR && speakTR) setTimeout(doSpeakTR, 400);
 }
 function saveProgress() {
-    if (activeLessonId) localStorage.setItem('lesson_progress_' + activeLessonId, JSON.stringify({ index, correctCount, passedCount }));
+    if (activeLessonId) localStorage.setItem('lesson_progress_' + activeModuleKey + '_' + activeLessonId, JSON.stringify({ index, correctCount, passedCount }));
 }
 
 /* ── TTS — AYNEN KORUNDU ── */
@@ -1174,7 +1179,7 @@ function goHome() {
 function resetToStart() {
     if (confirm('Sıfırlansın mı?')) {
         index = 0; correctCount = 0; passedCount = 0;
-        localStorage.removeItem('lesson_progress_' + activeLessonId);
+        localStorage.removeItem('lesson_progress_' + activeModuleKey + '_' + activeLessonId);
         document.getElementById('restartOverlay').style.display = 'none';
         render(true); document.getElementById('result').innerHTML = '';
     }

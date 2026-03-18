@@ -1125,7 +1125,7 @@ rec.onresult = (e) => {
     const ps = normalizeForComparison(spoken);
     const pt = normalizeForComparison(target);
 
-    if (ps === pt || ps.includes(pt)) {
+    const alternatives = [pt, ...(currentList[index].alt || []).map(a => normalizeForComparison(a))]; if (alternatives.some(a => ps === a || ps.includes(a))) {
         correctCount++;
         playBeep(true);
         document.getElementById('result').innerHTML = "<span style='color:#2dd4bf'>EXCELLENT! ✅</span>";

@@ -1040,10 +1040,11 @@ function startLesson(lesson) {
     fetchNoCache(lesson.file).then(r => r.json()).then(data => {
         activeLessonId = lesson.id;
         // Turkish/English → tr/en normalize
-        data = data.map(item => ({
-            tr: item.tr || item.Turkish || '',
-            en: item.en || item.English || ''
-        }));
+   data = data.map(item => ({
+    tr: item.tr || item.Turkish || '',
+    en: item.en || item.English || '',
+    alt: item.alt || []
+}));
         currentList = [...data];
         const saved = localStorage.getItem('lesson_progress_' + activeModuleKey + '_' + activeLessonId);
         if (saved) {
